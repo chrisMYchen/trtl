@@ -1,0 +1,194 @@
+body {
+    margin: 0;
+    font-family: 'Josefin Sans', sans-serif;
+    background: #eee;
+}
+
+p{
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+div{
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+/* Header */
+div#nav {
+    height: 50px;
+    box-shadow: 0px 0px 5px 0px #000;
+    background: #FFBB8B;
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    width: 100%;
+}
+
+.menu-item{
+    display: flex;
+    justify-content:center;
+    align-content:center;
+    flex-direction:column;
+    padding: 0px 15px;
+}
+
+#branding{
+    margin-left: 35px;
+}
+
+#title{
+    font-size: 20pt
+}
+
+#links{
+    margin-right: 35px;
+    display: flex;
+}
+
+#links div{
+  cursor: pointer;
+  text-transform: uppercase;
+  flex-direction: row;
+}
+
+#links div:hover{
+    background: rgba(255,255,255,0.5);
+}
+
+/* posts */
+
+#wrapper{
+    padding-top: 50px;
+    height: 100%;
+}
+
+#posts{
+    max-width: 500px;
+    margin:auto;
+    height: 100%;
+}
+
+.post{
+    background: #fff;
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 20px;
+}
+
+.post > div{
+    padding: 10px;
+}
+
+.post-user{
+    background: #d9d9e0;
+}
+
+.post-user > div{
+    display: inline-block;
+    margin: 5px;
+}
+
+a.post-handle{
+    color: #666;
+}
+
+div.post-content{
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+    font-size: 13pt;
+}
+
+.post-meta{
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 10pt;
+    background: #778;
+}
+
+.post-meta a{
+    color:#fff;
+    text-decoration: none;
+}
+
+.post-meta a:hover{
+    text-decoration: underline;
+}
+
+/* Posting abilities */
+.input{
+    background: #fff;
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 20px;
+}
+
+input[type=submit].input-submit{
+    padding: 10px;
+    background: none;
+    border:none;
+    color: white;
+    cursor: pointer;
+}
+
+input[type=submit].input-submit:hover{
+    background: rgba(255,255,255,0.2);
+}
+
+.input > textarea{
+    margin-top: 5px;
+    width: calc(100% - 20px);
+    vertical-align: middle;
+    padding: 10px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 12pt;
+    resize:none;
+    border:none;
+}
+
+.input-controls{
+    display: flex;
+    justify-content: flex-end;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 10pt;
+    background: #778;
+}
+
+/* LOGIN */
+#modal-wrapper{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+}
+
+#modal{
+    position: relative;
+    top: 20%;
+    max-width: 500px;
+    margin: auto;
+    background: #fff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+#modal input{
+    padding: 10px;
+    margin: 10px;
+}
+
+#modal input[type=submit]{
+    background: #ddd;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+#modal input[type=submit]:hover{
+    background: #aaa;
+}

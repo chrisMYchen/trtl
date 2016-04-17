@@ -1,0 +1,8 @@
+/home/eli/cs32/trtl/scavenger/src/main/java/edu/brown/cs/ebwhite/entities/AbstractEntity.java
+/home/eli/cs32/trtl/scavenger/src/main/java/edu/brown/cs/ebwhite/database/CacheLayer.java
+/home/eli/cs32/trtl/scavenger/src/main/java/edu/brown/cs/ebwhite/scavenger/Main.java
+/home/eli/cs32/trtl/scavenger/src/main/java/edu/brown/cs/ebwhite/database/EntityCreator.java
+/home/eli/cs32/trtl/scavenger/src/main/java/edu/brown/cs/ebwhite/database/DB.java
+/home/eli/cs32/trtl/scavenger/src/main/java/edu/brown/cs/ebwhite/database/EntityUpdater.java
+/home/eli/cs32/trtl/scavenger/src/main/java/edu/brown/cs/ebwhite/scavenger/SparkServer.java
+/home/eli/cs32/trtl/scavenger/src/main/java/edu/brown/cs/ebwhite/entities/Entity.java
