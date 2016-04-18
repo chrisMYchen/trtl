@@ -19,16 +19,17 @@ div#nav {
     background: #FFBB8B;
     display: flex;
     justify-content: space-between;
+    align-content: center;
     position: fixed;
     width: 100%;
 }
 
-.menu-item{
-    display: flex;
-    justify-content:center;
-    align-content:center;
-    flex-direction:column;
-    padding: 0px 15px;
+#nav > div{
+  display: flex;
+  justify-content:center;
+  align-content:center;
+  flex-direction:row;
+  padding: 0px 15px;
 }
 
 #branding{
@@ -41,13 +42,11 @@ div#nav {
 
 #links{
     margin-right: 35px;
-    display: flex;
 }
 
 #links div{
   cursor: pointer;
   text-transform: uppercase;
-  flex-direction: row;
 }
 
 #links div:hover{
