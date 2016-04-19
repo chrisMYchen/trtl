@@ -10,3 +10,5 @@ deploy:
   application: trtl_app
   deployment_group: trtl-deploy
   revision_type: github
+  on:
+   branch: master
