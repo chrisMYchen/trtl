@@ -1,2 +1,2 @@
 #!/bin/bash
-mvn install -DskipTests=true
+/usr/local/maven/current/bin/mvn install -DskipTests=true
