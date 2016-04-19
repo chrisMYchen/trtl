@@ -8,5 +8,5 @@ deploy:
   skip_cleanup: true
   key: latest/trtl_app.zip
   application: trtl_app
-  deployment_group: trtl-deploy-group
+  deployment_group: trtl-deploy
   revision_type: github
