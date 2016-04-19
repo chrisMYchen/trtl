@@ -7,7 +7,7 @@ hooks:
   BeforeInstall:
     - location: deployment/install.sh
       timeout: 300
-      runas: root    
+      runas: root
   ApplicationStart:
     - location: deployment/start_server.sh
       timeout: 300
@@ -16,3 +16,16 @@ hooks:
     - location: deployment/stop_server.sh
       timeout: 300
       runas: root
+permissions:
+  - object: /var/trtl/
+    pattern: "*"
+    owner: ec2-user
+    mode: 777
+    type:
+      - directory
+  - object: /var/trtl/
+    pattern: "*"
+    owner: ec2-user
+    mode: 777
+    type:
+      - file
