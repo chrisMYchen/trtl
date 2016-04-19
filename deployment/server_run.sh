@@ -45,5 +45,5 @@ MAIN=$(ls ${PROJ}src/main/java/edu/brown/cs/$PROJECT/$PKG/Main.java)
 
 # The funny symbol: "$@" passes the command-line arguments on from
 # this script to your Java program.
-cd /var/trtl/;
+cd /var/trtl/
 sudo java -ea -cp $TARGET:$CP edu.brown.cs.$PROJECT.$PKG.Main "$@"

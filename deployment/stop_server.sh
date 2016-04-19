@@ -1,1 +1,1 @@
-pkill java
+sudo pkill java
