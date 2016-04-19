@@ -22,9 +22,7 @@ fi
 # We store the CLASSPATH in .mvn-classpath if the pom.xml is newer
 # than our existing .mvn-classpath file. (We avoid this command if
 # .mvn-classpath is fresh, since it's rather slow.)
-if [ ! ${PROJ}.mvn-classpath -nt ${PROJ}pom.xml ]; then
-  sudo mvn -f $PROJ dependency:build-classpath -Dmdep.outputFile=.mvn-classpath -q
-fi
+sudo mvn -f $PROJ dependency:build-classpath -Dmdep.outputFile=.mvn-classpath -q
 
 # Now, we set $CP to the contents of the .classpath file.
  CP=$(cat ${PROJ}.mvn-classpath)
