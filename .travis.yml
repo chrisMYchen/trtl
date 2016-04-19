@@ -6,6 +6,7 @@ deploy:
   access_key_id: AKIAJNJSHCCSM4ECA5NA
   secret_access_key: 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
   skip_cleanup: true
+  region: us-west-2
   application: trtl_app
   deployment_group: trtl-deploy
   revision_type: github

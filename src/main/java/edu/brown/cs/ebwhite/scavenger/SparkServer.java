@@ -39,6 +39,7 @@ public class SparkServer{
   }
 
   public void run(){
+    Spark.get("/", new HomeHandler(), new FreeMarkerEngine());
     Spark.get("/home", new HomeHandler(), new FreeMarkerEngine());
   }
 
