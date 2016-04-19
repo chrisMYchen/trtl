@@ -1,3 +1,3 @@
-PID=$(cat pid.txt)
+PID=$(cat /var/trtl/pid.txt)
 kill $PID
-rm -f pid.txt
+rm -f /var/trtl/pid.txt

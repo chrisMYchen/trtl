@@ -22,7 +22,7 @@
   <div id="nav">
     <div id="branding">
       <div id="logo" class="menu-item"></div>
-      <div id="title" class="menu-item">Turtl</div>
+      <div id="title" class="menu-item">Trtl.</div>
     </div>
     <div id="links">
       <div id="signup" class="menu-item">Sign-Up</div>
