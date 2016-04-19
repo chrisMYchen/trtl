@@ -22,7 +22,7 @@ fi
 # We store the CLASSPATH in .mvn-classpath if the pom.xml is newer
 # than our existing .mvn-classpath file. (We avoid this command if
 # .mvn-classpath is fresh, since it's rather slow.)
-sudo mvn -f $PROJ dependency:build-classpath -Dmdep.outputFile=${PROJ}.mvn-classpath -q
+sudo /usr/local/maven/current/bin/mvn -f $PROJ dependency:build-classpath -Dmdep.outputFile=${PROJ}.mvn-classpath -q
 
 # Now, we set $CP to the contents of the .classpath file.
  CP=$(cat ${PROJ}.mvn-classpath)
@@ -45,4 +45,5 @@ MAIN=$(ls ${PROJ}src/main/java/edu/brown/cs/$PROJECT/$PKG/Main.java)
 
 # The funny symbol: "$@" passes the command-line arguments on from
 # this script to your Java program.
+cd /var/trtl/;
 sudo java -ea -cp $TARGET:$CP edu.brown.cs.$PROJECT.$PKG.Main "$@"
