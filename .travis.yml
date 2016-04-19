@@ -1,3 +1,12 @@
 language: java
 jdk:
  - oraclejdk8
+deploy:
+ - provider: codedeploy
+  access_key_id: "AKIAJNJSHCCSM4ECA5NA"
+  secret_access_key: "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"
+  skip_cleanup: true
+  key: latest/trtl_app.zip
+  application: trtl_app
+  deployment_group: trtl-deploy-group
+  revision_type: github

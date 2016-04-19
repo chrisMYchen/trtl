@@ -1,0 +1,79 @@
+Command line:
+"travis"
+
+
+   ________                                 __
+  /        |                               /  |
+  ########/ ______    ______    __     __  ##/    _______
+     ## |  /      \  /      \  /  \   /  | /  |  /       |
+     ## | /######  | ######  | ##  \ /##/  ## | /#######/
+     ## | ## |  ##/  /    ## |  ##  /##/   ## | ##      \
+     ## | ## |      /####### |   ## ##/    ## |  ######  |
+     ## | ## |      ##    ## |    ###/     ## | /     ##/
+     ##/  ##/        #######/      #/      ##/  #######/
+
+     TRajectory Analyzer and VISualizer  -  Open-source freeware under GNU GPL v3
+
+     Copyright (c) Martin Brehm      (2009-2015)
+                   Martin Thomas     (2012-2015)
+                   Barbara Kirchner  (2009-2015)
+                   University of Leipzig / University of Bonn.
+
+     http://www.travis-analyzer.de
+
+     Please cite:
+     M. Brehm and B. Kirchner, J. Chem. Inf. Model. 2011, 51 (8), pp 2007-2023.
+
+     There is absolutely no warranty on any results obtained from TRAVIS.
+
+  #  Running on eli-VirtualBox at Mon Apr 18 01:17:31 2016 (PID 2890).
+  #  Running in /home/eli/cs32/trtl/ebwhite/scavenger
+  #  Source code version: Feb 05 2015.
+  #  Compiled at May 10 2015 23:28:03.
+  #  Compiler version: 4.9.2
+  #  Target platform: Linux
+  #  Compile flags: DEBUG_ARRAYS 
+  #  Machine: int=4b, long=8b, addr=8b, 0xA0B0C0D0=D0,C0,B0,A0.
+  #  User home: /home/eli
+  #  Exe path: /usr/bin/travis
+  #  Input from terminal, Output to terminal
+
+ >>> Please use a color scheme with dark background or specify "-nocolor"! <<<
+
+    Loading configuration from /home/eli/.travis.conf ...
+
+    No trajectory file specified.
+    Please use the -p flag to specify an input trajectory in the command line.
+
+    Enter the file name of the trajectory file to open: [Quit] Q
+
+Could not determine trajectory file format.
+
+The following formats are supported:
+  - XYZ trajectories (extension .xyz)
+  - PDB trajectories (extension .pdb)
+  - LAMMPS trajectories "dump custom element xu yu zu" (extension .lmp)
+  - DLPOLY trajectories (file name "HISTORY", no extension)
+  - Amber trajectories (extension .prmtop / .mdcrd)
+  - Cube file trajectories (extension .cube)
+
+
+
+    Note: To show a list of all persons who contributed to TRAVIS,
+          please add "-credits" to your command line arguments, or set the
+          variable "SHOWCREDITS" to "TRUE" in your travis.conf file.
+
+    Source code from other projects used in TRAVIS:
+      - lmfit     from Joachim Wuttke
+      - kiss_fft  from Mark Borgerding
+      - voro++    from Chris Rycroft
+
+    http://www.travis-analyzer.de
+
+    Please cite:
+
+  * "TRAVIS - A Free Analyzer and Visualizer for Monte Carlo and Molecular Dynamics Trajectories",
+    M. Brehm, B. Kirchner; J. Chem. Inf. Model. 2011, 51 (8), pp 2007-2023.
+
+*** The End ***
+

@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/trtl/
+hooks:
+  BeforeInstall:
+    - location: deployment/install.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: deployment/start_server.sh
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: deployment/stop_server.sh
+      timeout: 300
+      runas: root
