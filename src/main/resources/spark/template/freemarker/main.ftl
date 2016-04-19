@@ -12,6 +12,7 @@
 <body>
   <div id="modal-wrapper" style="display:none">
     <div id="modal">
+      <div id="modal-close"><p>X</p></div>
       <form>
         <input type="text" name="uname" placeholder="USERNAME" size="40">
         <input type="password" name="pword" placeholder="PASSWORD" size="40">
@@ -23,6 +24,9 @@
     <div id="branding">
       <div id="logo" class="menu-item"></div>
       <div id="title" class="menu-item">Trtl.</div>
+    </div>
+    <div id="nav-meta">
+      <div id="location"></div>
     </div>
     <div id="links">
       <div id="signup" class="menu-item">Sign-Up</div>
