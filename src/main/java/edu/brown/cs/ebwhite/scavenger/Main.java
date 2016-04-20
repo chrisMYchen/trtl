@@ -31,22 +31,27 @@ public class Main {
     }
 
     try {
-//      TurtleQuery.postNote(1, 10101010, 71, -41, "This is the first note we ever posted");
-    	/* Testing posting notes and time sorting
-      TurtleQuery.postNote(2, 101010, 71, -41, "This is the third note.");
+      //TurtleQuery.postNote(1, 10101010, 71, -41, "This is the first note we ever posted", 0);
+      //TurtleQuery.postNote(1, 10101010, 71, -41, "This is the second note we ever posted", 0);
+     // TurtleQuery.postNote(1, 10101010, 71, -41, "This is the first private note by katie we ever posted", 1);
+      //TurtleQuery.postNote(2, 10101010, 71, -41, "This is the second private note by chris we ever posted", 1);
+    	// Testing posting notes and time sorting
+      //TurtleQuery.postNote(2, 101010, 71, -41, "This is the third note.", 0);
       List<Note> notes = new ArrayList<>();
 
-      notes = TurtleQuery.getNotes(new LatLong(71, -41), 500, 0, 100, 10101011);
+      notes = TurtleQuery.getNotesAnonymous(new LatLong(71, -41), 500, 0, 100, 10101011);
       for (Note n: notes){
-        System.out.println(String.format("user %d says, %s", n.getId(), n.getText()));
+        System.out.println(String.format("note id %d is, %s", n.getId(), n.getText()));
       }
-      notes = TurtleQuery.getNotes(new LatLong(71, -41), 500, 4, 12, 10101010);
+      notes = TurtleQuery.getNotesAnonymous(new LatLong(71, -41), 500, 4, 12, 10101010);
       if (notes.isEmpty()) {
         System.out.println("No notes from this timestamp.");
       }
-      */
-    	int uID = TurtleQuery.addUser("chrisMYchen", "password", "Chris" , null , "christopher.s.chen@gmail.com", -1);
+      
+    	/* adding a user
+    	 * int uID = TurtleQuery.addUser("chrisMYchen", "password", "Chris" , null , "christopher.s.chen@gmail.com", -1);
     	System.out.println(uID);
+    	*/
     } catch (SQLException e) {
       System.out.println("Error posting note.");
       e.printStackTrace();

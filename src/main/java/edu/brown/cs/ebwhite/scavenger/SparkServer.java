@@ -71,7 +71,7 @@ public class SparkServer {
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
-        notes = TurtleQuery.getNotes(new LatLong(lat, lon), radius, minPost,
+        notes = TurtleQuery.getNotesAnonymous(new LatLong(lat, lon), radius, minPost,
             maxPost, timestamp);
 
       } catch (NullPointerException np) {
@@ -135,6 +135,7 @@ public class SparkServer {
       String lonString = qm.value("lon");
       String timeString = qm.value("timestamp");
       String content = qm.value("text");
+      String privacy = qm.value("private");
       String message = "";
 
       try {
@@ -142,8 +143,8 @@ public class SparkServer {
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
         int timestamp = Integer.parseInt(timeString);
-
-        TurtleQuery.postNote(uID, timestamp, lat, lon, content);
+        int privacyVal = Integer.parseInt(privacy);
+        TurtleQuery.postNote(uID, timestamp, lat, lon, content, privacyVal);
 
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -157,7 +158,7 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-  
+
   private class NewUser implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -168,7 +169,7 @@ public class SparkServer {
       String password = qm.value("password");
       String email = qm.value("email");
       String phoneString = qm.value("phone");
-      
+
       String message = "";
       int userID = -1;
       int phone = -1;
@@ -181,19 +182,19 @@ public class SparkServer {
         message = "number format exception for phone.";
       }
       if (firstname != null && username != null && password != null && email != null){
-	      try {
-	    	  userID = TurtleQuery.addUser(username, password, firstname, lastname, email, phone);
-	    	  if (userID == -1) {
-	    		  message = "Failed to create new user.";
-	    	  }
-	      } catch (SQLException e) {
-	        // TODO Auto-generated catch block
-	        message = "SQL error.";
-	      }
+        try {
+          userID = TurtleQuery.addUser(username, password, firstname, lastname, email, phone);
+          if (userID == -1) {
+            message = "Failed to create new user.";
+          }
+        } catch (SQLException e) {
+          // TODO Auto-generated catch block
+          message = "SQL error.";
+        }
       } else {
-    	  message = "there is a null field being sent.";
+        message = "there is a null field being sent.";
       }
-      
+
       Map<String, Object> variables = new ImmutableMap.Builder().put("error", message).put("userID", userID).build();
       return GSON.toJson(variables);
     }
@@ -204,21 +205,21 @@ public class SparkServer {
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String username = qm.value("username");
-      
+
       String message = "";
 
       try {
-    	  int userID = TurtleQuery.getUserID(username);
-    	  if (userID != -1) {
-    		  message = "This username already exists.";
-    	  }
+        int userID = TurtleQuery.getUserID(username);
+        if (userID != -1) {
+          message = "This username already exists.";
+        }
       } catch (SQLException e) {
         message = "SQL error.";
       }
-      
+
       Map<String, Object> variables = new ImmutableMap.Builder().put("error", message).build();
       return GSON.toJson(variables);
     }
   }
-  
+
 }
