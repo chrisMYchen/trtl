@@ -32,6 +32,7 @@ public class Main {
 
     try {
 //      TurtleQuery.postNote(1, 10101010, 71, -41, "This is the first note we ever posted");
+    	/* Testing posting notes and time sorting
       TurtleQuery.postNote(2, 101010, 71, -41, "This is the third note.");
       List<Note> notes = new ArrayList<>();
 
@@ -43,6 +44,9 @@ public class Main {
       if (notes.isEmpty()) {
         System.out.println("No notes from this timestamp.");
       }
+      */
+    	int uID = TurtleQuery.addUser("chrisMYchen", "password", "Chris" , null , "christopher.s.chen@gmail.com", -1);
+    	System.out.println(uID);
     } catch (SQLException e) {
       System.out.println("Error posting note.");
       e.printStackTrace();

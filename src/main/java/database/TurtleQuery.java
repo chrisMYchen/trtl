@@ -140,6 +140,38 @@ public class TurtleQuery {
       }
     }
   }
+  
+  public static int addUser(String username, String password, String firstname, String lastname, String email, int phone) throws SQLException {
+    String post = "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?);";
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn.prepareStatement(post)) {
+        prep.setString(1, username);
+        prep.setString(2, password);
+        prep.setString(3, firstname);
+        prep.setString(4, lastname);
+        prep.setString(5, email);
+        prep.setInt(6, phone);
+        prep.executeUpdate();
+      }
+    }
+    return getUserID(username);
+  }
+  
+  public static int getUserID(String username) throws SQLException {
+	try (Connection conn = Db.getConnection()) {
+	  try (PreparedStatement prep = conn.prepareStatement("SELECT id FROM user WHERE username=?;")) {
+		prep.setString(1, username);
+		try (ResultSet rs = prep.executeQuery()) {
+			int uID = -1;
+	        if (rs.next()) {
+	        	uID = rs.getInt(1);
+	        }
+	        return uID;
+		}
+	  }
+	}
+  }
+  
   public static double deg2rad(double deg) {
     return (deg * Math.PI / 180.0);
   }

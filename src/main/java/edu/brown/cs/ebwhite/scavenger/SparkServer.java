@@ -37,6 +37,8 @@ public class SparkServer {
     Spark.post("/getNotes", new GetNotes());
     Spark.post("/updateNotes", new UpdateNotes());
     Spark.post("/postNote", new PostNote());
+    Spark.post("/newUser", new NewUser());
+    Spark.post("/checkUsername", new CheckUsername());
   }
 
   private class HomeHandler implements TemplateViewRoute {
@@ -155,5 +157,68 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
+  
+  private class NewUser implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String firstname = qm.value("firstname");
+      String lastname = qm.value("lastname");
+      String username = qm.value("username");
+      String password = qm.value("password");
+      String email = qm.value("email");
+      String phoneString = qm.value("phone");
+      
+      String message = "";
+      int userID = -1;
+      int phone = -1;
+      try {
+        phone = Integer.parseInt(phoneString);
 
+      } catch (NullPointerException np) {
+        message = "Fields not filled. smtn null.";
+      } catch (NumberFormatException nfe) {
+        message = "number format exception for phone.";
+      }
+      if (firstname != null && username != null && password != null && email != null){
+	      try {
+	    	  userID = TurtleQuery.addUser(username, password, firstname, lastname, email, phone);
+	    	  if (userID == -1) {
+	    		  message = "Failed to create new user.";
+	    	  }
+	      } catch (SQLException e) {
+	        // TODO Auto-generated catch block
+	        message = "SQL error.";
+	      }
+      } else {
+    	  message = "there is a null field being sent.";
+      }
+      
+      Map<String, Object> variables = new ImmutableMap.Builder().put("error", message).put("userID", userID).build();
+      return GSON.toJson(variables);
+    }
+  }
+
+  private class CheckUsername implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String username = qm.value("username");
+      
+      String message = "";
+
+      try {
+    	  int userID = TurtleQuery.getUserID(username);
+    	  if (userID != -1) {
+    		  message = "This username already exists.";
+    	  }
+      } catch (SQLException e) {
+        message = "SQL error.";
+      }
+      
+      Map<String, Object> variables = new ImmutableMap.Builder().put("error", message).build();
+      return GSON.toJson(variables);
+    }
+  }
+  
 }
