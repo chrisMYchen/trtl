@@ -36,6 +36,7 @@ sudo /usr/local/maven/current/bin/mvn -f $PROJ dependency:build-classpath -Dmdep
 
  PROJECT=ebwhite
  PKG=scavenger
+ PID_FILE=/var/trtl/trtl-pid
 
 # Find the package that Main is in. TAs use "staff", students should
 # rename it to their own username. In the file names and in the source!
@@ -46,4 +47,7 @@ MAIN=$(ls ${PROJ}src/main/java/edu/brown/cs/$PROJECT/$PKG/Main.java)
 # The funny symbol: "$@" passes the command-line arguments on from
 # this script to your Java program.
 cd /var/trtl/;
-sudo java -ea -cp $TARGET:$CP edu.brown.cs.$PROJECT.$PKG.Main "$@"
+if [ ! -f $PID_FILE ]; then
+  nohup sudo java -ea -cp $TARGET:$CP edu.brown.cs.$PROJECT.$PKG.Main "$@" 2>> /var/trtl/trtl.log >> /var/trtl/trtl.log &
+  sudo echo $! > $PID_FILE
+fi
