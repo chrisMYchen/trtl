@@ -27,10 +27,6 @@ permissions:
     pattern: "**"
     owner: ec2-user
     mode: 777
-    acls:
-      - "d:u::rwx"
-      - "d:g::rwx"
-      - "d:o::rwx"
     type:
-      - file
+      - directory
       - file
