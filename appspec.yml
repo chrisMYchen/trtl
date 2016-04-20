@@ -25,5 +25,4 @@ permissions:
       - "d:g::rwx"
       - "d:o::rwx"
     type:
-      - file
       - directory
