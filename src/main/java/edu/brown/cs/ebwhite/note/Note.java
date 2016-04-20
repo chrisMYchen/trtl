@@ -1,6 +1,6 @@
-package note;
+package edu.brown.cs.ebwhite.note;
 
-import geo.LatLong;
+import edu.brown.cs.ebwhite.geo.LatLong;
 
 public class Note {
   private int timestamp;

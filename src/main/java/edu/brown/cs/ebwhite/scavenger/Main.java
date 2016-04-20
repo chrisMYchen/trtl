@@ -7,10 +7,10 @@ import java.util.List;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import note.Note;
-import database.TurtleQuery;
 import edu.brown.cs.ebwhite.database.Db;
-import geo.LatLong;
+import edu.brown.cs.ebwhite.database.TurtleQuery;
+import edu.brown.cs.ebwhite.geo.LatLong;
+import edu.brown.cs.ebwhite.note.Note;
 
 public class Main {
   private Integer port;

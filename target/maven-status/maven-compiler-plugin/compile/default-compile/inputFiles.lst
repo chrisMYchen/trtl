@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+/home/eli/cs32/trtl/ebwhite/scavenger/src/main/java/edu/brown/cs/ebwhite/database/DB.java
+/home/eli/cs32/trtl/ebwhite/scavenger/src/main/java/edu/brown/cs/ebwhite/database/CacheLayer.java
+/home/eli/cs32/trtl/ebwhite/scavenger/src/main/java/edu/brown/cs/ebwhite/database/EntityCreator.java
+/home/eli/cs32/trtl/ebwhite/scavenger/src/main/java/edu/brown/cs/ebwhite/entities/Entity.java
+/home/eli/cs32/trtl/ebwhite/scavenger/src/main/java/edu/brown/cs/ebwhite/entities/AbstractEntity.java
+/home/eli/cs32/trtl/ebwhite/scavenger/src/main/java/edu/brown/cs/ebwhite/scavenger/SparkServer.java
+/home/eli/cs32/trtl/ebwhite/scavenger/src/main/java/edu/brown/cs/ebwhite/scavenger/Main.java
+/home/eli/cs32/trtl/ebwhite/scavenger/src/main/java/edu/brown/cs/ebwhite/database/EntityUpdater.java
+=======
 /gpfs/main/home/cchen5/course/cs032/CS32Workspace/turtl/src/main/java/edu/brown/cs/ebwhite/database/Db.java
 /gpfs/main/home/cchen5/course/cs032/CS32Workspace/turtl/src/main/java/database/package-info.java
 /gpfs/main/home/cchen5/course/cs032/CS32Workspace/turtl/src/main/java/edu/brown/cs/ebwhite/entities/AbstractEntity.java
@@ -12,3 +22,4 @@
 /gpfs/main/home/cchen5/course/cs032/CS32Workspace/turtl/src/main/java/edu/brown/cs/ebwhite/database/EntityUpdater.java
 /gpfs/main/home/cchen5/course/cs032/CS32Workspace/turtl/src/main/java/database/TurtleQuery.java
 /gpfs/main/home/cchen5/course/cs032/CS32Workspace/turtl/src/main/java/note/package-info.java
+>>>>>>> origin/chriskatie

@@ -5,4 +5,4 @@
  * @author kzliu
  *
  */
-package database;
+package edu.brown.cs.ebwhite.note;

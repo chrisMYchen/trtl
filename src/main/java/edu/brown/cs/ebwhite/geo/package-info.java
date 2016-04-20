@@ -5,4 +5,4 @@
  * @author kzliu
  *
  */
-package note;
+package edu.brown.cs.ebwhite.geo;

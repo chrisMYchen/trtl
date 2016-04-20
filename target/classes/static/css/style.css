@@ -1,15 +1,15 @@
 body {
     margin: 0;
-    font-family: 'Josefin Sans', sans-serif;
+    font-family: serif;
     background: #eee;
 }
 
 p{
-    font-family: 'Josefin Sans', sans-serif;
+    font-family: serif;
 }
 
 div{
-    font-family: 'Josefin Sans', sans-serif;
+    font-family: serif;
 }
 
 /* Header */
@@ -30,6 +30,14 @@ div#nav {
   align-content:center;
   flex-direction:row;
   padding: 0px 15px;
+}
+
+.menu-item{
+  display: flex;
+  justify-content:center;
+  align-content:center;
+  flex-direction:column;
+  padding: 0px 10px;
 }
 
 #branding{
@@ -131,6 +139,8 @@ input[type=submit].input-submit{
     border:none;
     color: white;
     cursor: pointer;
+    font-size: 12pt;
+    text-transform: uppercase;
 }
 
 input[type=submit].input-submit:hover{
@@ -142,7 +152,6 @@ input[type=submit].input-submit:hover{
     width: calc(100% - 20px);
     vertical-align: middle;
     padding: 10px;
-    font-family: 'Josefin Sans', sans-serif;
     font-size: 12pt;
     resize:none;
     border:none;
@@ -158,36 +167,57 @@ input[type=submit].input-submit:hover{
 }
 
 /* LOGIN */
-#modal-wrapper{
+.overlay-wrapper{
     position: fixed;
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.4);
 }
 
-#modal{
+.overlay{
     position: relative;
     top: 20%;
     max-width: 500px;
     margin: auto;
     background: #fff;
     text-align: center;
-    padding: 20px;
     border-radius: 5px;
+    overflow: hidden;
 }
 
-#modal input{
+.overlay .close{
+  text-align: left;
+}
+
+.overlay .close p{
+  display: inline-block;
+  text-align: left;
+  font-family: sans-serif;
+  cursor:pointer;
+  padding: 10px;
+  margin: 0;
+}
+
+.overlay .close p:hover{
+  background: #aaa;
+}
+
+.overlay form{
+  padding: 20px;
+}
+
+.overlay input{
     padding: 10px;
-    margin: 10px;
+    margin: 10px 0px;
 }
 
-#modal input[type=submit]{
+.overlay input[type=submit]{
     background: #ddd;
     border: none;
     padding: 10px 15px;
     cursor: pointer;
 }
 
-#modal input[type=submit]:hover{
+.overlay input[type=submit]:hover{
     background: #aaa;
 }

@@ -1,4 +1,4 @@
-package geo;
+package edu.brown.cs.ebwhite.geo;
 
 
 /**

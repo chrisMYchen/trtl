@@ -1,7 +1,4 @@
-package database;
-
-import edu.brown.cs.ebwhite.database.Db;
-import geo.LatLong;
+package edu.brown.cs.ebwhite.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,12 +7,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import note.Note;
+import edu.brown.cs.ebwhite.geo.LatLong;
+import edu.brown.cs.ebwhite.note.Note;
 
 public class TurtleQuery {
   // how to do radius distance with lat /lon
   // calc this out later
-  public static List<Note> getNotesAnonymous(LatLong loc, double radius, int minPost, int maxPost, int timeStamp) throws SQLException {
+  public static List<Note> getNotesAnonymous(LatLong loc, double radius,
+      int minPost, int maxPost, int timeStamp) throws SQLException {
     double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
                                                             // meters
     double inputLat = loc.getLat();
@@ -61,8 +60,10 @@ public class TurtleQuery {
     }
 
   }
-  
-  public static List<Note> getNotesLoggedIn(int userID, LatLong loc, double radius, int minPost, int maxPost, int timeStamp) throws SQLException {
+
+  public static List<Note> getNotesLoggedIn(int userID, LatLong loc,
+      double radius, int minPost, int maxPost, int timeStamp)
+      throws SQLException {
     double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
                                                             // meters
     double inputLat = loc.getLat();
@@ -109,7 +110,8 @@ public class TurtleQuery {
 
   }
 
-  public static List<Note> updateNotes(LatLong loc, double radius, int minPost, int maxPost, int timeStamp) throws SQLException {
+  public static List<Note> updateNotes(LatLong loc, double radius, int minPost,
+      int maxPost, int timeStamp) throws SQLException {
     double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
                                                             // meters
     double inputLat = loc.getLat();
@@ -153,10 +155,11 @@ public class TurtleQuery {
         }
       }
     }
-
   }
-  public static void postNote(int userID, int time, double lat, double lng, String text, int privacy)
-      throws SQLException {
+
+  public static void postNote(int userID, int time, double lat, double lng,
+      String text, int privacy) throws SQLException {
+
     // ask rohan or look up autoincrement and how it works with.
 
     // - CHECK TO MAKE SURE AUTOINCREMENT WORKS PROPERLY
@@ -165,7 +168,7 @@ public class TurtleQuery {
     // double lat;
     // double lng;
     // String text;
- 
+
     double coslat = Math.cos(deg2rad(lat));
     double sinlat = Math.sin(deg2rad(lat));
     double coslng = Math.cos(deg2rad(lng));
@@ -189,8 +192,9 @@ public class TurtleQuery {
       }
     }
   }
-  
-  public static int addUser(String username, String password, String firstname, String lastname, String email, int phone) throws SQLException {
+
+  public static int addUser(String username, String password, String firstname,
+      String lastname, String email, int phone) throws SQLException {
     String post = "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?);";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
@@ -205,22 +209,23 @@ public class TurtleQuery {
     }
     return getUserID(username);
   }
-  
+
   public static int getUserID(String username) throws SQLException {
-	try (Connection conn = Db.getConnection()) {
-	  try (PreparedStatement prep = conn.prepareStatement("SELECT id FROM user WHERE username=?;")) {
-		prep.setString(1, username);
-		try (ResultSet rs = prep.executeQuery()) {
-			int uID = -1;
-	        if (rs.next()) {
-	        	uID = rs.getInt(1);
-	        }
-	        return uID;
-		}
-	  }
-	}
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn
+          .prepareStatement("SELECT id FROM user WHERE username=?;")) {
+        prep.setString(1, username);
+        try (ResultSet rs = prep.executeQuery()) {
+          int uID = -1;
+          if (rs.next()) {
+            uID = rs.getInt(1);
+          }
+          return uID;
+        }
+      }
+    }
   }
-  
+
   public static double deg2rad(double deg) {
     return (deg * Math.PI / 180.0);
   }
