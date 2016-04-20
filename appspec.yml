@@ -15,7 +15,7 @@ hooks:
 permissions:
   - object: /var/trtl/
     owner: ec2-user
-    mode: 777
+    mode: 755
     acls:
       - "d:u::rwx"
       - "d:g::rwx"
@@ -25,7 +25,6 @@ permissions:
   - object: /var/trtl/
     pattern: "**"
     owner: ec2-user
-    mode: 777
+    mode: 755
     type:
-      - directory
       - file
