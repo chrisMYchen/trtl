@@ -8,7 +8,8 @@ var posts = [
 
 $(function(){
     createPosts();
-    modal();
+    login();
+    signup();
     locationStart();
 
 });
@@ -22,7 +23,7 @@ function locationStart(){
     var url = "https://www.googleapis.com/geolocation/v1/geolocate";
     var key = "AIzaSyBAAQ3e48GdAUahvhMjG5XZ8Idw9Adbgjs";
     $.post(url, {key:key}, function(data){
-      locationHandler(data.position)
+      locationHandler(data.position);
     });
   }
 }
@@ -57,22 +58,44 @@ function createPosts(){
    }
 }
 
-function modal(){
+function login(){
   $(document).keydown(function(e){
     if(e.which == 27){
-      $("#modal-wrapper").hide();
+      $("#login-wrapper").hide();
     }
   });
 
-  $("#modal-close").click(function(){
-    $("#modal-wrapper").hide();
+  $("#login-close").click(function(){
+    $("#login-wrapper").hide();
   });
 
-  $("#login").click(function(){
-      $("#modal-wrapper").show();
+  $("#login-button").click(function(){
+      $("#signup-wrapper").hide();
+      $("#login-wrapper").show();
   });
 
-  $("#modal input[type=submit]").click(function(){
-      $("#modal-wrapper").hide();
-  })
+  $("#login input[type=submit]").click(function(){
+      $("#login-wrapper").hide();
+  });
+}
+
+function signup(){
+  $(document).keydown(function(e){
+    if(e.which == 27){
+      $("#signup-wrapper").hide();
+    }
+  });
+
+  $("#signup-close").click(function(){
+    $("#signup-wrapper").hide();
+  });
+
+  $("#signup-button").click(function(){
+    $("#login-wrapper").hide();
+    $("#signup-wrapper").show();
+  });
+
+  $("#signup input[type=submit]").click(function(){
+      $("#signup-wrapper").hide();
+  });
 }
