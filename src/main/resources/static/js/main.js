@@ -57,7 +57,7 @@ function createPosts(){
    }
 }
 
-function modal(){
+function login(){
   $(document).keydown(function(e){
     if(e.which == 27){
       $("#modal-wrapper").hide();

@@ -19,6 +19,8 @@
         <input type="submit">
       </form>
     </div>
+  </div>
+  <div id="signup-wrapper" style="display:none">
     <div id="signup">
       <div id="signup-close"><p>X</p></div>
       <form>
