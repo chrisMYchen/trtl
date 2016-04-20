@@ -12,9 +12,9 @@ function displayNotes(){
 }
 
 function notesDOM(notes){
-   for(var i = 0; i < posts.length; i++){
-       var post = posts[i];
-       var dom = formatPost(post);
+   for(var i = 0; i < notes.length; i++){
+       var note = notes[i];
+       var dom = formatNote(note);
        $("#posts").append(dom);
    }
 }
@@ -24,16 +24,16 @@ function formatNote(note){
 
   /* User */
   var user = $("<div></div>").attr("class","post-user");
-  var userrn = $("<div></div>").attr("class","post-realname").append(post.userreal);
-  var handle = $("<a></a>").attr("class","post-handle").attr("href","/user/" + post.handle).append("@" + post.handle);;
+  var userrn = $("<div></div>").attr("class","post-realname").append(note.userreal);
+  var handle = $("<a></a>").attr("class","post-handle").attr("href","/user/" + note.handle).append("@" + note.handle);;
   user.append(userrn).append(handle);
 
   /* Content */
-  var content = $("<div></div>").attr("class","post-content").append(post.content);
+  var content = $("<div></div>").attr("class","post-content").append(note.content);
 
   /* Meta */
   var meta = $("<div></div>").attr("class","post-meta");
-  var time = $("<div></div>").attr("class","post-time").append(post.time);
+  var time = $("<div></div>").attr("class","post-time").append(note.time);
   var share = $("<a></a>").attr("class","post-share").append("Share");
   meta.append(time).append(share);
 

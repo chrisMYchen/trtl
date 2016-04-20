@@ -1,22 +1,16 @@
 package edu.brown.cs.ebwhite.scavenger;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.Map;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
+import edu.brown.cs.ebwhite.database.Db;
+import edu.brown.cs.ebwhite.database.TurtleQuery;
+import edu.brown.cs.ebwhite.geo.LatLong;
+import edu.brown.cs.ebwhite.note.Note;
 
 public class Main {
   private Integer port;
@@ -28,6 +22,31 @@ public class Main {
   private String[] args;
   private Main(String[] args) {
     this.args = args;
+
+    try {
+      Db.database("turtlDB.sqlite3");
+    } catch (ClassNotFoundException e1) {
+      System.out.println("ERROR: could not connect to DB");
+      e1.printStackTrace();
+    }
+
+    try {
+//      TurtleQuery.postNote(1, 10101010, 71, -41, "This is the first note we ever posted");
+      TurtleQuery.postNote(2, 101010, 71, -41, "This is the third note.");
+      List<Note> notes = new ArrayList<>();
+
+      notes = TurtleQuery.getNotes(new LatLong(71, -41), 500, 0, 100, 10101011);
+      for (Note n: notes){
+        System.out.println(String.format("user %d says, %s", n.getId(), n.getText()));
+      }
+      notes = TurtleQuery.getNotes(new LatLong(71, -41), 500, 4, 12, 10101010);
+      if (notes.isEmpty()) {
+        System.out.println("No notes from this timestamp.");
+      }
+    } catch (SQLException e) {
+      System.out.println("Error posting note.");
+      e.printStackTrace();
+    }
   }
 
   private void run() {
