@@ -14,17 +14,9 @@ hooks:
       runas: root
 permissions:
   - object: /var/trtl/
-    owner: ec2-user
-    mode: 775
-    acls:
-      - "d:u::rwx"
-      - "d:g::rwx"
-      - "d:o::rwx"
-    type:
-      - directory
-  - object: /var/trtl/
     pattern: "**"
     owner: ec2-user
     mode: 775
     type:
+      - directory
       - file
