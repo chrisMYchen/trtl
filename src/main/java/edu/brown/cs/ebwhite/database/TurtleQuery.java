@@ -11,6 +11,13 @@ import edu.brown.cs.ebwhite.geo.LatLong;
 import edu.brown.cs.ebwhite.note.Note;
 
 public class TurtleQuery {
+  private final static int NIDCOL = 1;
+  private final static int UIDCOL = 2;
+  private final static int TIMECOL = 3;
+  private final static int LATCOL = 4;
+  private final static int LNGCOL = 5;
+  private final static int TXTCOL = 10;
+
   // how to do radius distance with lat /lon
   // calc this out later
   public static List<Note> getNotesAnonymous(LatLong loc, double radius,
@@ -23,12 +30,6 @@ public class TurtleQuery {
     double CUR_cos_lat = Math.cos(deg2rad(inputLat));
     double CUR_sin_lng = Math.sin(deg2rad(inputLng));
     double CUR_cos_lng = Math.cos(deg2rad(inputLng));
-    final int NIDCOL = 1;
-    final int UIDCOL = 2;
-    final int TIMECOL = 3;
-    final int LATCOL = 4;
-    final int LNGCOL = 5;
-    final int TXTCOL = 10;
 
     String getNotes = "SELECT * FROM notes WHERE (? * sinlat + ? * coslat * (coslong* ? + sinlong * ?) > ?) AND (timestamp < ?) AND (private = 0) ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
@@ -72,14 +73,11 @@ public class TurtleQuery {
     double CUR_cos_lat = Math.cos(deg2rad(inputLat));
     double CUR_sin_lng = Math.sin(deg2rad(inputLng));
     double CUR_cos_lng = Math.cos(deg2rad(inputLng));
-    final int NIDCOL = 1;
-    final int UIDCOL = 2;
-    final int TIMECOL = 3;
-    final int LATCOL = 4;
-    final int LNGCOL = 5;
-    final int TXTCOL = 10;
 
-    String getNotes = "SELECT * FROM notes WHERE (? * sinlat + ? * coslat * (coslong* ? + sinlong * ?) > ?) AND (timestamp < ?) ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
+    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_friend as uf WHERE "
+        + " (? * sinlat + ? * coslat * (coslong* ? + sinlong * ?) > ?) AND (timestamp < ?) AND "
+        + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.userid = ? AND uf.friendid = n.userid)) "
+        + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
         prep.setDouble(1, CUR_sin_lat);
@@ -88,8 +86,55 @@ public class TurtleQuery {
         prep.setDouble(4, CUR_sin_lng);
         prep.setDouble(5, cos_allowed_distance);
         prep.setInt(6, timeStamp);
-        prep.setInt(7, maxPost - minPost);
-        prep.setInt(8, minPost);
+        prep.setInt(7, userID);
+        prep.setInt(8, userID);
+        prep.setInt(9, maxPost - minPost);
+        prep.setInt(10, minPost);
+        try (ResultSet rs = prep.executeQuery()) {
+          List<Note> allNotes = new ArrayList<>();
+          while (rs.next()) {
+            int noteID = rs.getInt(1);
+            int uID = rs.getInt(2);
+            int time = rs.getInt(3);
+            double lat = rs.getDouble(4);
+            double lng = rs.getDouble(5);
+            String txt = rs.getString(6);
+            int priv = rs.getInt(7);
+            Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
+                .setContent(txt).setLat(lat).setLng(lng).setPrivate(priv)
+                .build();
+            allNotes.add(n);
+          }
+          return allNotes;
+        }
+      }
+    }
+
+  }
+
+  public static List<Note> updateNotesAnonymous(LatLong loc, double radius,
+      int minPost, int maxPost, int timeStamp) throws SQLException {
+    double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
+                                                            // meters
+    double inputLat = loc.getLat();
+    double inputLng = loc.getLng();
+    double CUR_sin_lat = Math.sin(deg2rad(inputLat));
+    double CUR_cos_lat = Math.cos(deg2rad(inputLat));
+    double CUR_sin_lng = Math.sin(deg2rad(inputLng));
+    double CUR_cos_lng = Math.cos(deg2rad(inputLng));
+
+    String getNotes = "SELECT * FROM notes WHERE ? * sinlat + ? * coslat * (coslong* ? + sinlong * ?) > ? AND "
+        + "timestamp >= ? AND (private = 0) limit (? , ?) ORDER BY timestamp ASC;";
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
+        prep.setDouble(1, CUR_sin_lat);
+        prep.setDouble(2, CUR_cos_lat);
+        prep.setDouble(3, CUR_cos_lng);
+        prep.setDouble(4, CUR_sin_lng);
+        prep.setDouble(5, cos_allowed_distance);
+        prep.setInt(6, timeStamp);
+        prep.setInt(7, minPost);
+        prep.setInt(8, maxPost);
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
@@ -107,27 +152,24 @@ public class TurtleQuery {
         }
       }
     }
-
   }
 
-  public static List<Note> updateNotes(LatLong loc, double radius, int minPost,
-      int maxPost, int timeStamp) throws SQLException {
+  public static List<Note> updateNotesLoggedIn(int userID, LatLong loc,
+      double radius, int minPost, int maxPost, int timeStamp)
+      throws SQLException {
     double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
-                                                            // meters
+    // meters
     double inputLat = loc.getLat();
     double inputLng = loc.getLng();
     double CUR_sin_lat = Math.sin(deg2rad(inputLat));
     double CUR_cos_lat = Math.cos(deg2rad(inputLat));
     double CUR_sin_lng = Math.sin(deg2rad(inputLng));
     double CUR_cos_lng = Math.cos(deg2rad(inputLng));
-    final int NIDCOL = 1;
-    final int UIDCOL = 2;
-    final int TIMECOL = 3;
-    final int LATCOL = 4;
-    final int LNGCOL = 5;
-    final int TXTCOL = 10;
 
-    String getNotes = "SELECT * FROM notes WHERE ? * sinlat + ? * coslat * (coslong* ? + sinlong * ?) > ? AND timestamp >= ? limit (? , ?) ORDER BY timestamp ASC;";
+    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_friend as uf WHERE "
+        + "(? * sinlat + ? * coslat * (coslong* ? + sinlong * ?) > ?) AND (timestamp >= ?) AND "
+        + "(private = 0 OR n.userid = ? OR (n.private = 1 AND uf.userid = ? AND uf.friendid = n.userid) "
+        + "ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
         prep.setDouble(1, CUR_sin_lat);
@@ -136,8 +178,10 @@ public class TurtleQuery {
         prep.setDouble(4, CUR_sin_lng);
         prep.setDouble(5, cos_allowed_distance);
         prep.setInt(6, timeStamp);
-        prep.setInt(7, minPost);
-        prep.setInt(8, maxPost);
+        prep.setInt(7, userID);
+        prep.setInt(8, userID);
+        prep.setInt(9, maxPost - minPost);
+        prep.setInt(10, minPost);
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
@@ -174,7 +218,7 @@ public class TurtleQuery {
     double coslng = Math.cos(deg2rad(lng));
     double sinlng = Math.sin(deg2rad(lng));
 
-    String post = "INSERT INTO notes VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    String post = "INSERT INTO notes VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     // - UserID, TIMESTAMP, Lat, Lon, coslat, sinlat, coslng, sinlng, Text
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {

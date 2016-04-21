@@ -19,7 +19,6 @@ public class Friend {
 
   /**
    * add a friend for to a user's list of friends.
-   *
    * @param userID
    *          the ID of the user
    * @param friendID
@@ -44,7 +43,6 @@ public class Friend {
 
   /**
    * remove a friend from a user's list of friends.
-   *
    * @param userID
    *          the ID of the user
    * @param friendID
@@ -68,7 +66,6 @@ public class Friend {
 
   /**
    * get a list of user's friends.
-   *
    * @param userID
    *          the ID of the user
    * @return a list of IDs of the user's friends

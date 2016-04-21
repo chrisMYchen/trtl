@@ -9,13 +9,16 @@ public class Note {
   private int userid;
   private LatLong latlng;
   private String displayName;
+  private int privacy;
 
-  public Note(int time, String content, int ID, int uID, double lat, double lng, String ownerName) {
+  public Note(int time, String content, int ID, int uID, double lat,
+      double lng, String ownerName, int priv) {
     this.timestamp = time;
     this.text = content;
     this.id = ID;
     this.userid = uID;
     this.latlng = new LatLong(lat, lng);
+    this.privacy = priv;
   }
 
   public Note(NoteBuilder b){
@@ -25,6 +28,7 @@ public class Note {
     this.userid = b.uid;
     this.latlng = new LatLong(b.lat, b.lng);
     this.displayName = b.displayName;
+    this.privacy = b.privacy;
   }
 
 
@@ -60,6 +64,7 @@ public class Note {
     private double lat;
     private double lng;
     private String displayName;
+    private int privacy;
 
     public NoteBuilder(int myId, int time){
       this.timestamp = time;
@@ -88,6 +93,11 @@ public class Note {
 
     public NoteBuilder setName(String name){
       this.displayName = name;
+      return this;
+    }
+
+    public NoteBuilder setPrivate(int priv) {
+      this.privacy = priv;
       return this;
     }
 

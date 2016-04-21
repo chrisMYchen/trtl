@@ -112,8 +112,8 @@ public class SparkServer {
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
-        notes = TurtleQuery.updateNotes(new LatLong(lat, lon), radius, minPost,
-            maxPost, timestamp);
+        notes = TurtleQuery.updateNotesAnonymous(new LatLong(lat, lon), radius,
+            minPost, maxPost, timestamp);
 
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
