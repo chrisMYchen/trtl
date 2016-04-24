@@ -30,6 +30,7 @@ div#nav {
   align-content:center;
   flex-direction:row;
   padding: 0px 15px;
+<<<<<<< HEAD
 }
 
 .menu-item{
@@ -38,6 +39,8 @@ div#nav {
   align-content:center;
   flex-direction:column;
   padding: 0px 10px;
+=======
+>>>>>>> chriskatie
 }
 
 #branding{
