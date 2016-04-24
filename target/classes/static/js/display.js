@@ -15,10 +15,16 @@ function displayCallback(data){
   getNotes(range, locationInfo.pos, Date.now(), 10);
 }
 
+<<<<<<< HEAD
 function notesDOM(notes, start){
    for(var i = 0; i < notes.length; i++){
        var note = notes[i];
        note.order = start + i;
+=======
+function notesDOM(notes){
+   for(var i = 0; i < notes.length; i++){
+       var note = notes[i];
+>>>>>>> chriskatie
        var dom = formatNote(note);
        $("#posts").append(dom);
    }

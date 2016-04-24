@@ -1,11 +1,3 @@
-var notes = [
-    {"content": "First post. Hope you like it!", "handle": "cpax", "userreal": "Christina Paxson", "time": "April 8th"},
-    {"content": "Hey! Hope you are enjoying the library! It seems like I spend all my time here sometimes.", "handle": "josiah", "userreal": "Josiah Carberry", "time": "April 9th"},
-    {"content": "All nighter, yet again!", "handle": "kliu", "userreal": "Kate Liu", "time": "April 10th"},
-    {"content": "You should check out the northeast corner of the fifth floor!", "handle": "cchen", "userreal": "Chris Chen", "time": "April 11th"},
-    {"content": "I hate this place! You should go to the rock instead", "handle": "hkaul", "userreal": "Hemang Kaul", "time": "April 11th"}
-];
-
 function displayNotes(){
   window.setTimeout(displayCallback, 1000);
 }

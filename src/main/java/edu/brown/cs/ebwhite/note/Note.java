@@ -1,6 +1,6 @@
-package note;
+package edu.brown.cs.ebwhite.note;
 
-import geo.LatLong;
+import edu.brown.cs.ebwhite.geo.LatLong;
 
 public class Note {
   private long timestamp;
@@ -8,13 +8,17 @@ public class Note {
   private int id;
   private int userid;
   private LatLong latlng;
+  private String displayName;
+  private int privacy;
 
-  public Note(long time, String content, int ID, int uID, double lat, double lng) {
+  public Note(long time, String content, int ID, int uID, double lat,
+      double lng, String ownerName, int priv) {
     this.timestamp = time;
     this.text = content;
     this.id = ID;
     this.userid = uID;
     this.latlng = new LatLong(lat, lng);
+    this.privacy = priv;
   }
 
   public Note(NoteBuilder b){
@@ -23,8 +27,9 @@ public class Note {
     this.text = b.text;
     this.userid = b.uid;
     this.latlng = new LatLong(b.lat, b.lng);
+    this.displayName = b.displayName;
+    this.privacy = b.privacy;
   }
-
 
   public long getTimestamp() {
     return timestamp;
@@ -57,8 +62,10 @@ public class Note {
     private int uid;
     private double lat;
     private double lng;
+    private String displayName;
+    private int privacy;
 
-    public NoteBuilder(int myId, long time){
+    public NoteBuilder(long myId, int time){
       this.timestamp = time;
       this.id = myId;
     }
@@ -83,9 +90,18 @@ public class Note {
       return this;
     }
 
-   public Note build(){
-     return new Note(this);
-   }
+    public NoteBuilder setName(String name){
+      this.displayName = name;
+      return this;
+    }
 
+    public NoteBuilder setPrivate(int priv) {
+      this.privacy = priv;
+      return this;
+    }
+
+    public Note build(){
+      return new Note(this);
+    }
   }
 }

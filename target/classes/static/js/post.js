@@ -1,4 +1,5 @@
 function postNotes(){
+<<<<<<< HEAD
   $(".input-submit").click(postHandler);
 }
 
@@ -29,6 +30,12 @@ function postNote(post){
       $(".input-content").val("");
     }
   })
+=======
+  $(".input").submit(function(data){
+    data.preventDefault();
+    console.log(data);
+  });
+>>>>>>> chriskatie
 }
 
 function postError(message){

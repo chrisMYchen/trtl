@@ -48,6 +48,9 @@ public final class Db {
    */
   public static synchronized Connection getConnection() throws SQLException {
     // make this work with threadlocal
+    // if (conn.get() != null) {
+    // return conn.get();
+    // }
     String urlToDB = "jdbc:sqlite:" + mFile;
     conn.set(DriverManager.getConnection(urlToDB));
     if (conn.get() == null) {
