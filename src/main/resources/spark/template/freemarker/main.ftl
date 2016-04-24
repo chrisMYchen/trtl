@@ -9,6 +9,7 @@
   <script src="/js/location.js"></script>
   <script src="/js/display.js"></script>
   <script src="/js/post.js"></script>
+  <script src="/js/user.js"></script>
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
