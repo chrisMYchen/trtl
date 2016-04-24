@@ -65,7 +65,7 @@ public class Note {
     private String displayName;
     private int privacy;
 
-    public NoteBuilder(long myId, int time){
+    public NoteBuilder(int myId, long time){
       this.timestamp = time;
       this.id = myId;
     }

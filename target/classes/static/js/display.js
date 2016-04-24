@@ -1,11 +1,3 @@
-var notes = [
-    {"content": "First post. Hope you like it!", "handle": "cpax", "userreal": "Christina Paxson", "time": "April 8th"},
-    {"content": "Hey! Hope you are enjoying the library! It seems like I spend all my time here sometimes.", "handle": "josiah", "userreal": "Josiah Carberry", "time": "April 9th"},
-    {"content": "All nighter, yet again!", "handle": "kliu", "userreal": "Kate Liu", "time": "April 10th"},
-    {"content": "You should check out the northeast corner of the fifth floor!", "handle": "cchen", "userreal": "Chris Chen", "time": "April 11th"},
-    {"content": "I hate this place! You should go to the rock instead", "handle": "hkaul", "userreal": "Hemang Kaul", "time": "April 11th"}
-];
-
 function displayNotes(){
   window.setTimeout(displayCallback, 1000);
 }
@@ -15,19 +7,27 @@ function displayCallback(data){
   getNotes(range, locationInfo.pos, Date.now(), 10);
 }
 
-<<<<<<< HEAD
 function notesDOM(notes, start){
+  console.log(notes);
    for(var i = 0; i < notes.length; i++){
        var note = notes[i];
        note.order = start + i;
-=======
-function notesDOM(notes){
-   for(var i = 0; i < notes.length; i++){
-       var note = notes[i];
->>>>>>> chriskatie
-       var dom = formatNote(note);
+       var compiledNote = processNote(note);
+       var dom = formatNote(compiledNote);
        $("#posts").append(dom);
    }
+}
+
+function processNote(note){
+  var user = {userid: note.userid}
+
+  var compiledNote = {
+    content:note.text,
+    user:user,
+    time: new Date(note.timestamp),
+    order: note.order
+  };
+  return compiledNote;
 }
 
 function formatNote(note){
@@ -35,7 +35,7 @@ function formatNote(note){
 
   /* User */
   var user = $("<div></div>").attr("class","post-user");
-  var userrn = $("<div></div>").attr("class","post-realname").append(note.userreal);
+  var userrn = $("<div></div>").attr("class","post-realname").append(note.fullname);
   var handle = $("<a></a>").attr("class","post-handle").attr("href","/user/" + note.handle).append("@" + note.handle);;
   user.append(userrn).append(handle);
 
@@ -67,7 +67,7 @@ function getNotes(range, location, timestamp, radius){
   $.post("/getNotes", req, function(data){
     var res = JSON.parse(data);
     if(res.error == "no-error"){
-      notesDom(res.notes, range.min);
+      notesDOM(res.notes, range.min);
     }
     else{
       displayError(res.error);
