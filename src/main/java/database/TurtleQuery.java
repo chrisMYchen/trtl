@@ -15,7 +15,7 @@ import note.Note;
 public class TurtleQuery {
   // how to do radius distance with lat /lon
   // calc this out later
-  public static List<Note> getNotes(LatLong loc, double radius, int minPost, int maxPost, int timeStamp) throws SQLException {
+  public static List<Note> getNotes(LatLong loc, double radius, int minPost, int maxPost, long timeStamp) throws SQLException {
     double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
                                                             // meters
     double inputLat = loc.getLat();
@@ -39,7 +39,7 @@ public class TurtleQuery {
         prep.setDouble(3, CUR_cos_lng);
         prep.setDouble(4, CUR_sin_lng);
         prep.setDouble(5, cos_allowed_distance);
-        prep.setInt(6, timeStamp);
+        prep.setLong(6, timeStamp);
         prep.setInt(7, maxPost - minPost);
         prep.setInt(8, minPost);
         try (ResultSet rs = prep.executeQuery()) {
@@ -47,7 +47,7 @@ public class TurtleQuery {
           while (rs.next()) {
             int noteID = rs.getInt(NIDCOL);
             int uID = rs.getInt(UIDCOL);
-            int time = rs.getInt(TIMECOL);
+            long time = rs.getLong(TIMECOL);
             double lat = rs.getDouble(LATCOL);
             double lng = rs.getDouble(LNGCOL);
             String txt = rs.getString(TXTCOL);
@@ -62,7 +62,7 @@ public class TurtleQuery {
 
   }
 
-  public static List<Note> updateNotes(LatLong loc, double radius, int minPost, int maxPost, int timeStamp) throws SQLException {
+  public static List<Note> updateNotes(LatLong loc, double radius, int minPost, int maxPost, long timeStamp) throws SQLException {
     double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
                                                             // meters
     double inputLat = loc.getLat();
@@ -86,7 +86,7 @@ public class TurtleQuery {
         prep.setDouble(3, CUR_cos_lng);
         prep.setDouble(4, CUR_sin_lng);
         prep.setDouble(5, cos_allowed_distance);
-        prep.setInt(6, timeStamp);
+        prep.setLong(6, timeStamp);
         prep.setInt(7, minPost);
         prep.setInt(8, maxPost);
         try (ResultSet rs = prep.executeQuery()) {
@@ -94,7 +94,7 @@ public class TurtleQuery {
           while (rs.next()) {
             int noteID = rs.getInt(NIDCOL);
             int uID = rs.getInt(UIDCOL);
-            int time = rs.getInt(TIMECOL);
+            long time = rs.getLong(TIMECOL);
             double lat = rs.getDouble(LATCOL);
             double lng = rs.getDouble(LNGCOL);
             String txt = rs.getString(TXTCOL);
@@ -108,7 +108,7 @@ public class TurtleQuery {
     }
 
   }
-  public static void postNote(int userID, int time, double lat, double lng, String text)
+  public static void postNote(int userID, long timestamp, double lat, double lng, String text)
       throws SQLException {
     // ask rohan or look up autoincrement and how it works with.
 
@@ -128,7 +128,7 @@ public class TurtleQuery {
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
         prep.setInt(1, userID);
-        prep.setInt(2, time);
+        prep.setLong(2, timestamp);
         prep.setDouble(3, lat);
         prep.setDouble(4, lng);
         prep.setDouble(5, coslat);

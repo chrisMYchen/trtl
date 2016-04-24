@@ -133,7 +133,7 @@ div.post-content{
     margin: 20px;
 }
 
-input[type=submit].input-submit{
+div.input-submit{
     padding: 10px;
     background: none;
     border:none;
@@ -143,7 +143,7 @@ input[type=submit].input-submit{
     text-transform: uppercase;
 }
 
-input[type=submit].input-submit:hover{
+div.input-submit:hover{
     background: rgba(255,255,255,0.2);
 }
 

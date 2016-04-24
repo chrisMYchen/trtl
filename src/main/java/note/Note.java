@@ -3,20 +3,20 @@ package note;
 import geo.LatLong;
 
 public class Note {
-  private int timestamp;
+  private long timestamp;
   private String text;
   private int id;
   private int userid;
   private LatLong latlng;
 
-  public Note(int time, String content, int ID, int uID, double lat, double lng) {
+  public Note(long time, String content, int ID, int uID, double lat, double lng) {
     this.timestamp = time;
     this.text = content;
     this.id = ID;
     this.userid = uID;
     this.latlng = new LatLong(lat, lng);
   }
-  
+
   public Note(NoteBuilder b){
     this.timestamp = b.timestamp;
     this.id = b.id;
@@ -24,9 +24,9 @@ public class Note {
     this.userid = b.uid;
     this.latlng = new LatLong(b.lat, b.lng);
   }
- 
 
-  public int getTimestamp() {
+
+  public long getTimestamp() {
     return timestamp;
   }
 
@@ -41,7 +41,7 @@ public class Note {
   public int getId() {
     return id;
   }
-  
+
   public int getUserId() {
     return userid;
   }
@@ -51,23 +51,23 @@ public class Note {
   }
 
   public static class NoteBuilder {
-    private int timestamp;
+    private long timestamp;
     private String text;
     private int id;
     private int uid;
     private double lat;
     private double lng;
-    
-    public NoteBuilder(int myId, int time){
+
+    public NoteBuilder(int myId, long time){
       this.timestamp = time;
       this.id = myId;
     }
-    
+
     public NoteBuilder setContent(String content){
       this.text = content;
       return this;
     }
-    
+
     public NoteBuilder setUser(int uId) {
       this.uid = uId;
       return this;
@@ -86,8 +86,6 @@ public class Note {
    public Note build(){
      return new Note(this);
    }
-    
+
   }
 }
-
-

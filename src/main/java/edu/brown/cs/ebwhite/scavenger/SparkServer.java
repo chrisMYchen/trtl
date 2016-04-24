@@ -44,7 +44,7 @@ public class SparkServer {
     @Override
     public ModelAndView handle(Request req, Response res) {
       Map<String, Object> variables = ImmutableMap
-          .of("title", "trtl");
+      .of("title", "trtl");
       return new ModelAndView(variables, "home.ftl");
     }
   }
@@ -60,29 +60,29 @@ public class SparkServer {
       String minPostString = qm.value("minPost");
       String maxPostString = qm.value("maxPost");
       String radiusString = qm.value("radius");
-      String message = "";
+      String message = "no-error";
       List<Note> notes = new ArrayList<>();
       try {
         int uID = Integer.parseInt(uIDstring);
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
-        int timestamp = Integer.parseInt(timeString);
+        long timestamp = Long.parseLong(timeString);
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
         notes = TurtleQuery.getNotes(new LatLong(lat, lon), radius, minPost,
-            maxPost, timestamp);
+        maxPost, timestamp);
 
       } catch (NullPointerException np) {
-        message = "Fields not filled. smtn null.";
+        message = "Fields not filled. Something is null: " + np.getMessage();
       } catch (NumberFormatException nfe) {
-        message = "number format exception.";
+        message = "Number Format Exception: " + nfe.getMessage();
       } catch (SQLException e) {
         // TODO Auto-generated catch block
-        message = "SQL error.";
+        message = "SQL error when posting note: " + e.getMessage();
       }
       Map<String, Object> variables = new ImmutableMap.Builder().put(
-          "notes", notes).put("error", message).build();
+      "notes", notes).put("error", message).build();
       return GSON.toJson(variables);
     }
   }
@@ -104,12 +104,12 @@ public class SparkServer {
         int uID = Integer.parseInt(uIDstring);
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
-        int timestamp = Integer.parseInt(timeString);
+        long timestamp = Long.parseLong(timeString);
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
         notes = TurtleQuery.updateNotes(new LatLong(lat, lon), radius, minPost,
-            maxPost, timestamp);
+        maxPost, timestamp);
 
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -120,7 +120,7 @@ public class SparkServer {
         message = "SQL error.";
       }
       Map<String, Object> variables = new ImmutableMap.Builder().put(
-          "notes", notes).put("error", message).build();
+      "notes", notes).put("error", message).build();
       return GSON.toJson(variables);
     }
   }
@@ -134,23 +134,23 @@ public class SparkServer {
       String lonString = qm.value("lon");
       String timeString = qm.value("timestamp");
       String content = qm.value("text");
-      String message = "";
+      String message = "no-error";
 
       try {
         int uID = Integer.parseInt(uIDstring);
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
-        int timestamp = Integer.parseInt(timeString);
+        long timestamp = Long.parseLong(timeString);
 
         TurtleQuery.postNote(uID, timestamp, lat, lon, content);
 
       } catch (NullPointerException np) {
-        message = "Fields not filled. smtn null.";
+        message = "Fields not filled. Something is null: " + np.getMessage();
       } catch (NumberFormatException nfe) {
-        message = "number format exception.";
+        message = "Number Format Exception: " + nfe.getMessage();
       } catch (SQLException e) {
         // TODO Auto-generated catch block
-        message = "SQL error when posting note.";
+        message = "SQL error when posting note: " + e.getMessage();
       }
       Map<String, Object> variables = new ImmutableMap.Builder().put("error", message).build();
       return GSON.toJson(variables);

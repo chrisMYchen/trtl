@@ -7,24 +7,43 @@ var notes = [
 ];
 
 function displayNotes(){
-  notesDOM(notes);
-
+  window.setTimeout(displayCallback, 1000);
 }
 
-function notesDOM(notes){
+function displayCallback(data){
+  var range = {min: 0, max: 10};
+  getNotes(range, locationInfo.pos, Date.now(), 10);
+}
+
+function notesDOM(notes, start){
+  console.log(notes);
    for(var i = 0; i < notes.length; i++){
        var note = notes[i];
-       var dom = formatNote(note);
+       note.order = start + i;
+       var compiledNote = processNote(note);
+       var dom = formatNote(compiledNote);
        $("#posts").append(dom);
    }
 }
 
+function processNote(note){
+  var user = {userid: note.userid}
+
+  var compiledNote = {
+    content:note.text,
+    user:user,
+    time: new Date(note.timestamp),
+    order: note.order
+  };
+  return compiledNote;
+}
+
 function formatNote(note){
-  var dom = $("<div></div>").attr("class","post");
+  var dom = $("<div></div>").attr("class","post").attr("data-order", note.order);
 
   /* User */
   var user = $("<div></div>").attr("class","post-user");
-  var userrn = $("<div></div>").attr("class","post-realname").append(note.userreal);
+  var userrn = $("<div></div>").attr("class","post-realname").append(note.fullname);
   var handle = $("<a></a>").attr("class","post-handle").attr("href","/user/" + note.handle).append("@" + note.handle);;
   user.append(userrn).append(handle);
 
@@ -42,26 +61,29 @@ function formatNote(note){
 }
 
 function getNotes(range, location, timestamp, radius){
-  var newMax = range.min;
   var req = {
-    userID: null,
-    lat: location.lat,
-    lon: location.lng,
+    userID: userInfo.id,
+    lat: locationInfo.pos.lat,
+    lon: locationInfo.pos.lon,
     timestamp: timestamp,
     minPost: range.min,
     maxPost: range.max,
     radius: radius
   }
+  console.log(req);
 
-  $.post("/getNotes", reg, function(data){
-    if(data.error == ""){
-      notesDom(data.notes);
-      newMax = range.max;
+  $.post("/getNotes", req, function(data){
+    var res = JSON.parse(data);
+    if(res.error == "no-error"){
+      notesDOM(res.notes, range.min);
     }
     else{
-      displayError(data.error);
-      newMax = range.min;
+      displayError(res.error);
     }
   });
-  return newMax;
+}
+
+function displayError(message){
+  var error = $("<div></div>").attr("class", "post error").html(message);
+  $("#posts").append(error);
 }

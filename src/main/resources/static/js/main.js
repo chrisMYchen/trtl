@@ -1,5 +1,5 @@
-var location;
-var userInfo;
+var locationInfo = {pos: {lat: null, lon: null}};
+var userInfo = {id: 1};
 
 $(function(){
     login();
@@ -7,5 +7,4 @@ $(function(){
     locationStart();
     displayNotes();
     postNotes();
-
 });
