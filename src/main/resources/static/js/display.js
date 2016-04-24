@@ -7,9 +7,14 @@ function displayNotes(){
       window.clearInterval(intervalID);
     }
   }, 1000);
+
+  $(window).scroll(displayCallback);
 }
 
 function displayCallback(data){
+  var scrollPos = $(window).scrollTop();
+  var pos = $(document).height() - $(window).height();
+
   var range = {min: 0, max: 10};
   getNotes(range, locationInfo.pos, Date.now(), 10);
 }
