@@ -9,4 +9,14 @@ public interface User extends Entity {
 
   Set<Integer> getFriends();
 
+  String getUsername();
+
+  String getFirstName();
+
+  String getLastName();
+
+  String getEmail();
+
+  int getPhone();
+
 }
