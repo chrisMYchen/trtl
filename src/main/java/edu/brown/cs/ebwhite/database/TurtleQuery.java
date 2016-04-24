@@ -95,7 +95,7 @@ public class TurtleQuery {
           while (rs.next()) {
             int noteID = rs.getInt(1);
             int uID = rs.getInt(2);
-            int long = rs.getLong(3);
+            long time = rs.getLong(3);
             double lat = rs.getDouble(4);
             double lng = rs.getDouble(5);
             String txt = rs.getString(6);

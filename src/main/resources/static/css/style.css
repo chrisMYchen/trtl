@@ -166,6 +166,13 @@ div.input-submit:hover{
     background: #778;
 }
 
+/* Errors */
+.error{
+  background: #ff9999;
+  padding: 15px;
+}
+
+
 /* LOGIN */
 .overlay-wrapper{
     position: fixed;

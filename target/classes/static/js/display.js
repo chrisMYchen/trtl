@@ -1,5 +1,5 @@
 function displayNotes(){
-  window.setTimeout(displayCallback, 1000);
+  $(window).scroll()
 }
 
 function displayCallback(data){
