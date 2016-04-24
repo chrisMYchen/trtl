@@ -24,8 +24,7 @@ function locationError(error, id){
 }
 
 function locationHandler(position){
-  locationInfo.pos.lat = position.lat;
-  locationInfo.pos.lon = position.lng;
+  locationInfo.pos = {lat: position.lat, lon: position.lng};
 
   $("#location").html("Your location is: " + position.lat + ", " + position.lng);
 }

@@ -1,5 +1,12 @@
 function displayNotes(){
-  window.setTimeout(displayCallback, 3000);
+  var intervalID = window.setInterval(function(){
+    if(locationInfo.pos == null){
+      $(".post").remove()
+      displayCallback(intervalID);
+    } else{
+      window.clearInterval(intervalID);
+    }
+  }, 1000);
 }
 
 function displayCallback(data){
@@ -43,13 +50,22 @@ function formatNote(note){
   var content = $("<div></div>").attr("class","post-content").append(note.content);
 
   /* Meta */
+  var timestring = formatTime(note.time);
   var meta = $("<div></div>").attr("class","post-meta");
-  var time = $("<div></div>").attr("class","post-time").append(note.time);
+  var time = $("<div></div>").attr("class","post-time").append(timestring);
   var share = $("<a></a>").attr("class","post-share").append("Share");
   meta.append(time).append(share);
 
   dom.append(user).append(content).append(meta);
   return dom;
+}
+
+function formatTime(time){
+  var date = time.toDateString();
+  var hours = time.getHours();
+  var minutes = time.getMinutes();
+  var timestring = hours + ":" + minutes + " " + date;
+  return timestring;
 }
 
 function getNotes(range, location, timestamp, radius){
