@@ -190,6 +190,7 @@ div.input-submit:hover{
     text-align: center;
     border-radius: 5px;
     overflow: hidden;
+    box-shadow: 0px 0px 5px 0px #000;
 }
 
 .overlay .close{
@@ -216,6 +217,8 @@ div.input-submit:hover{
 .overlay input{
     padding: 10px;
     margin: 10px 0px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
 }
 
 .overlay input[type=submit]{

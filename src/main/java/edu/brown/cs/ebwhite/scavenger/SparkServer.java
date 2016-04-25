@@ -105,7 +105,7 @@ public class SparkServer {
       String minPostString = qm.value("minPost");
       String maxPostString = qm.value("maxPost");
       String radiusString = qm.value("radius");
-      String message = "";
+      String message = "no-error";
       List<Note> notes = new ArrayList<>();
       try {
         int uID = Integer.parseInt(uIDstring);
@@ -175,7 +175,7 @@ public class SparkServer {
       QueryParamsMap qm = req.queryMap();
       String userIDstring = qm.value("userID");
       String friendIDstring = qm.value("friendID");
-      String message = "";
+      String message = "no-error";
 
       try {
         int userID = Integer.parseInt(userIDstring);
@@ -201,7 +201,7 @@ public class SparkServer {
       QueryParamsMap qm = req.queryMap();
       String userIDstring = qm.value("userID");
       String friendIDstring = qm.value("friendID");
-      String message = "";
+      String message = "no-error";
 
       try {
         int userID = Integer.parseInt(userIDstring);
@@ -227,7 +227,7 @@ public class SparkServer {
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String userIDstring = qm.value("userID");
-      String message = "";
+      String message = "no-error";
       List<Integer> friends = new ArrayList<>();
 
       try {
@@ -260,7 +260,7 @@ public class SparkServer {
       String email = qm.value("email");
       String phoneString = qm.value("phone");
 
-      String message = "";
+      String message = "no-error";
       int userID = -1;
       int phone = -1;
       try {
@@ -299,19 +299,20 @@ public class SparkServer {
       QueryParamsMap qm = req.queryMap();
       String username = qm.value("username");
 
-      String message = "";
+      String message = "no-error";
+      boolean exists = false;
 
       try {
         int userID = TurtleQuery.getUserID(username);
         if (userID != -1) {
-          message = "This username already exists.";
+          exists = true;
         }
       } catch (SQLException e) {
         message = "SQL error.";
       }
 
       Map<String, Object> variables = new ImmutableMap.Builder().put("error",
-          message).build();
+          message).put("exists", exists).build();
       return GSON.toJson(variables);
     }
   }

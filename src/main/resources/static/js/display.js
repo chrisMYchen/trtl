@@ -1,4 +1,15 @@
 function displayNotes(){
+  var time = Date.now();
+  initialLoad(time);
+
+  $(window).scroll(function(){
+    displayCallback(time);
+  });
+
+  update(time);
+}
+
+function initialLoad(time){
   var counter = 0;
   var intervalID = window.setInterval(function(){
     if(locationInfo.pos == null){
@@ -9,19 +20,21 @@ function displayNotes(){
     }
     else{
       window.clearInterval(intervalID);
-      displayCallback();
+      displayCallback(time);
     }
   }, 2000);
-
-  $(window).scroll(displayCallback);
 }
 
-function displayCallback(){
+function update(time){
+  /* Check for updates at interval, or use sockets */
+}
+
+function displayCallback(time){
   var scrollPos = $("#posts").height() - $(window).scrollTop();
   var threshold = $(window).height() + 50;
   if(scrollPos < threshold){
     var range = getRange();
-    getNotes(range, locationInfo.pos, Date.now(), 10);
+    getNotes(range, locationInfo.pos, time, 5000);
   }
 }
 

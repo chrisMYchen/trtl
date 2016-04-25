@@ -17,7 +17,7 @@
   <div id="login-wrapper" class="overlay-wrapper" style="display:none">
     <div id="login" class="overlay">
       <div id="login-close" class="close"><p>X</p></div>
-      <form>
+      <form id="login-form">
         <input type="text" name="uname" placeholder="USERNAME" size="40">
         <input type="password" name="pword" placeholder="PASSWORD" size="40">
         <input type="submit">
@@ -27,7 +27,7 @@
   <div id="signup-wrapper" class="overlay-wrapper" style="display:none">
     <div id="signup" class="overlay">
       <div id="signup-close" class="close"><p>X</p></div>
-      <form>
+      <form id="signup-form">
         <input type="text" name="name" placeholder="Full Name" size="40">
         <input type="text" name="email" placeholder="Email Address" size="40">
         <input type="text" name="uname" placeholder="username" size="40">
