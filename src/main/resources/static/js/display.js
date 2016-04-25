@@ -1,22 +1,54 @@
 function displayNotes(){
-  var intervalID = window.setInterval(function(){
-    if(locationInfo.pos == null){
-      $(".post").remove()
-      displayCallback(intervalID);
-    } else{
-      window.clearInterval(intervalID);
-    }
-  }, 1000);
+  var time = Date.now();
+  initialLoad(time);
 
-  $(window).scroll(displayCallback);
+  $(window).scroll(function(){
+    displayCallback(time);
+  });
+
+  update(time);
 }
 
-function displayCallback(data){
-  var scrollPos = $(window).scrollTop();
-  var pos = $(document).height() - $(window).height();
+function initialLoad(time){
+  var counter = 0;
+  var intervalID = window.setInterval(function(){
+    if(locationInfo.pos == null){
+      counter++;
+    }
+    else if(counter > 20){
+      window.clearInterval(intervalID);
+    }
+    else{
+      window.clearInterval(intervalID);
+      displayCallback(time);
+    }
+  }, 2000);
+}
 
-  var range = {min: 0, max: 10};
-  getNotes(range, locationInfo.pos, Date.now(), 10);
+function update(time){
+  /* Check for updates at interval, or use sockets */
+}
+
+function displayCallback(time){
+  var scrollPos = $("#posts").height() - $(window).scrollTop();
+  var threshold = $(window).height() + 50;
+  if(scrollPos < threshold){
+    var range = getRange();
+    getNotes(range, locationInfo.pos, time, 5000);
+  }
+}
+
+function getRange(){
+  var last = 0;
+  var post = $(".post").last();
+  if(post.length > 0){
+    last = parseInt(post.attr("data-order"), 10);
+    if(last === undefined){
+      last = 0;
+    }
+  }
+  var range = {min: last + 1, max: last + 11};
+  return range;
 }
 
 function notesDOM(notes, start){

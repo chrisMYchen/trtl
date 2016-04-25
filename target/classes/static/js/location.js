@@ -1,10 +1,10 @@
-var loc_options = {
-  enableHighAccuracy: true,
-  timeout: 27000,
-  maximumAge: 30000
-}
-
 function locationStart(){
+  var loc_options = {
+    enableHighAccuracy: true,
+    timeout: 27000,
+    maximumAge: 30000
+  }
+  
   if(navigator.geolocation){
     var id = navigator.geolocation.watchPosition(
       function(data){

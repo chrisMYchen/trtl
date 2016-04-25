@@ -1,5 +1,4 @@
 function postNotes(){
-<<<<<<< HEAD
   $(".input-submit").click(postHandler);
 }
 
@@ -17,6 +16,7 @@ function postNote(post){
     lon: locationInfo.pos.lon,
     timestamp: Date.now(),
     text: post,
+    private: 1
   }
 
   console.log(noteInfo);
@@ -30,12 +30,6 @@ function postNote(post){
       $(".input-content").val("");
     }
   })
-=======
-  $(".input").submit(function(data){
-    data.preventDefault();
-    console.log(data);
-  });
->>>>>>> chriskatie
 }
 
 function postError(message){

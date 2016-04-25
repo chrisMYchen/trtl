@@ -1,10 +1,14 @@
-var locationInfo = {pos: {lat: null, lon: null}};
+var locationInfo = {pos: null};
 var userInfo = {id: 1};
 
 $(function(){
-    login();
-    signup();
+    loginSetup();
+    signupSetup();
     locationStart();
     displayNotes();
     postNotes();
+
+    $("#branding").click(function(){
+        location.href="/";
+    });
 });

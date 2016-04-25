@@ -1,41 +1,141 @@
-function login(){
+/*************************/
+/** Login Functionality **/
+/*************************/
+function loginSetup(){
+  /* Allow escape */
   $(document).keydown(function(e){
     if(e.which == 27){
       $("#login-wrapper").hide();
     }
   });
 
-  $("#login-close").click(function(){
-    $("#login-wrapper").hide();
-  });
+  /* Close login dialog on "X click */
+  $("#login-close").click(closeLoginDialog);
 
+  /* Open login dialog on from nav */
   $("#login-button").click(function(){
-      $("#signup-wrapper").hide();
-      $("#login-wrapper").show();
+      closeSignupDialog();
+      openLoginDialog();
   });
 
-  $("#login input[type=submit]").click(function(){
-      $("#login-wrapper").hide();
+  /* Submit login info */
+  $("#login-form").submit(loginSubmit);
+}
+
+function openLoginDialog(){
+  $("#login-wrapper").show();
+}
+
+function closeLoginDialog(){
+  $("#login-wrapper").hide();
+  $("#login-form")[0].reset();
+}
+
+function loginSubmit(e){
+  e.preventDefault();
+}
+
+function login(userID){
+  userInfo.id = userID;
+  setLoginMode(true);
+}
+
+function setLoginMode(value){
+  if(value){
+    $("#account-links").hide();
+    $("#user-name").html("Welcome " + userInfo.id);
+    $("#user-info").show();
+  }
+  else{
+    $("#account-links").show();
+    $("#user-info").hide();
+    $("#user-name").html("");
+  }
+}
+
+/*********************************/
+/** Signup and Account Creation **/
+/*********************************/
+
+function signupSetup(){
+  $(document).keydown(function(e){
+    if(e.which == 27){
+      closeSignupDialog();
+    }
+  });
+
+  $("#signup-close").click(closeSignupDialog);
+
+  $("#signup-button").click(function(){
+    closeLoginDialog();
+    openSignupDialog();
+  });
+
+  $("#signup-form input[name=uname]").on("input", usernameCheck);
+
+  $("#signup-form").submit(signupSubmit);
+}
+
+function openSignupDialog(){
+  $("#signup-wrapper").show();
+}
+
+function closeSignupDialog(){
+  $("#signup-wrapper").hide();
+  $("#signup-form")[0].reset();
+  $("#signup-error").hide();
+  $("#signup-error").empty();
+
+}
+
+function signupSubmit(e){
+  e.preventDefault();
+  sendSignup();
+}
+
+function sendSignup(){
+  var data = $("#signup-form").serialize();
+  console.log(data);
+  $.post("/newUser", data, function(response){
+    var res = JSON.parse(response);
+    if(res.error == "no-error"){
+      login(res.userID);
+      closeSignupDialog();
+    }
+    else{
+      signupError(res.error);
+    }
   });
 }
 
-function signup(){
-  $(document).keydown(function(e){
-    if(e.which == 27){
-      $("#signup-wrapper").hide();
-    }
-  });
+function signupError(message){
+  var body = $("<p></p>").html(message);
+  var elem = $("#signup-error");
+  elem.empty();
+  elem.append(body);
+  elem.show();
+}
 
-  $("#signup-close").click(function(){
-    $("#signup-wrapper").hide();
-  });
+function usernameCheck(e){
+  var inputElem = $(this);
+  var uname = inputElem.val();
 
-  $("#signup-button").click(function(){
-    $("#login-wrapper").hide();
-    $("#signup-wrapper").show();
-  });
 
-  $("#signup input[type=submit]").click(function(){
-      $("#signup-wrapper").hide();
-  });
+  if(uname.length > 3){
+    $.post("/checkUsername", {username: uname}, function(response){
+      var res = JSON.parse(response);
+      console.log(res);
+      if(res.error == "no-error"){
+        if(res.exists){
+          inputElem.css("background", "#F99");
+        }
+        else{
+          inputElem.css("background", "#9F9");
+        }
+      }
+    });
+  }
+  else{
+    inputElem.css("background", "#fff");
+  }
 }
