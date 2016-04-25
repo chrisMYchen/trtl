@@ -19,6 +19,7 @@ public class Note {
     this.userid = uID;
     this.latlng = new LatLong(lat, lng);
     this.privacy = priv;
+    this.displayName = ownerName;
   }
 
   public Note(NoteBuilder b){
@@ -53,6 +54,10 @@ public class Note {
 
   public LatLong getLatLong() {
     return latlng;
+  }
+
+  public String getUsername() {
+    return displayName;
   }
 
   public static class NoteBuilder {

@@ -316,4 +316,12 @@ public class SparkServer {
     }
   }
 
+  private class ProfileInfo implements Route {
+    @Override
+    public Object handle(final Request req, final Respones res) {
+      QueryParamsMap qm = req.queryMap();
+
+    }
+  }
+
 }
