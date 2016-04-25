@@ -56,8 +56,11 @@ public class Main {
       // TurtleQuery.postNote(2, 101010, 71, -41,
       // "This is the third note.", 0);
       List<Note> notes = new ArrayList<>();
-      notes = TurtleQuery.getNotesLoggedIn(3, new LatLong(71, -41), 500, 0,
-          100, 10101011);
+      notes = TurtleQuery.getNotesLoggedIn(3, new LatLong(71.0005, -41.0005),
+          50, 0, 100, 10101011);
+      List<Note> notes2 = TurtleQuery.getNotesAnonymous(new LatLong(71.0001,
+          -41.0001),
+ 500, 0, 100, 10101011);
       notes.sort(noteRank);
       for (Note n : notes) {
         System.out.println(String.format("note id %d is, %s", n.getId(),
