@@ -1,10 +1,41 @@
 function displayNotes(){
-  $(window).scroll()
+  var counter = 0;
+  var intervalID = window.setInterval(function(){
+    if((locationInfo.pos == null) || (counter < 2)){
+      counter++;
+    }
+    else if(counter > 20){
+      window.clearInterval(intervalID);
+    }
+    else{
+      window.clearInterval(intervalID);
+      displayCallback();
+    }
+  }, 2000);
+
+  $(window).scroll(displayCallback);
 }
 
-function displayCallback(data){
-  var range = {min: 0, max: 10};
-  getNotes(range, locationInfo.pos, Date.now(), 10);
+function displayCallback(){
+  var scrollPos = #("#posts").height() - $(window).scrollTop();
+  var threshold = $(window).height() + 50;
+  if(scrollPos < threshold){
+    var range = getRange();
+    getNotes(range, locationInfo.pos, Date.now(), 10);
+  }
+}
+
+function getRange(){
+  var last = 0;
+  var post = $(".post").last();
+  if(post.length > 0){
+    last = parseInt(post.attr("data-order"), 10);
+    if(last === undefined){
+      last = 0;
+    }
+  }
+  var range = {min: last + 1, max: last + 11};
+  return range;
 }
 
 function notesDOM(notes, start){
@@ -43,13 +74,22 @@ function formatNote(note){
   var content = $("<div></div>").attr("class","post-content").append(note.content);
 
   /* Meta */
+  var timestring = formatTime(note.time);
   var meta = $("<div></div>").attr("class","post-meta");
-  var time = $("<div></div>").attr("class","post-time").append(note.time);
+  var time = $("<div></div>").attr("class","post-time").append(timestring);
   var share = $("<a></a>").attr("class","post-share").append("Share");
   meta.append(time).append(share);
 
   dom.append(user).append(content).append(meta);
   return dom;
+}
+
+function formatTime(time){
+  var date = time.toDateString();
+  var hours = time.getHours();
+  var minutes = time.getMinutes();
+  var timestring = hours + ":" + minutes + " " + date;
+  return timestring;
 }
 
 function getNotes(range, location, timestamp, radius){

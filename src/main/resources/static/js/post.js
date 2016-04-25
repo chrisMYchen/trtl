@@ -16,6 +16,7 @@ function postNote(post){
     lon: locationInfo.pos.lon,
     timestamp: Date.now(),
     text: post,
+    private: 1
   }
 
   console.log(noteInfo);
