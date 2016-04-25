@@ -38,6 +38,11 @@ div#nav {
   align-content:center;
   flex-direction:column;
   padding: 0px 10px;
+  cursor: pointer;
+}
+
+.menu-item:hover{
+    background: rgba(255,255,255,0.5);
 }
 
 #branding{
@@ -48,17 +53,9 @@ div#nav {
     font-size: 20pt
 }
 
-#links{
+#account-links{
     margin-right: 35px;
-}
-
-#links div{
-  cursor: pointer;
-  text-transform: uppercase;
-}
-
-#links div:hover{
-    background: rgba(255,255,255,0.5);
+    text-transform: uppercase;
 }
 
 /* posts */
@@ -170,6 +167,10 @@ div.input-submit:hover{
 .error{
   background: #ff9999;
   padding: 15px;
+}
+
+.error p{
+  margin:0;
 }
 
 

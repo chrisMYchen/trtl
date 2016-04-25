@@ -1,10 +1,10 @@
-var loc_options = {
-  enableHighAccuracy: true,
-  timeout: 27000,
-  maximumAge: 30000
-}
-
 function locationStart(){
+  var loc_options = {
+    enableHighAccuracy: true,
+    timeout: 27000,
+    maximumAge: 30000
+  }
+  
   if(navigator.geolocation){
     var id = navigator.geolocation.watchPosition(
       function(data){
@@ -24,8 +24,7 @@ function locationError(error, id){
 }
 
 function locationHandler(position){
-  locationInfo.pos.lat = position.lat;
-  locationInfo.pos.lon = position.lng;
+  locationInfo.pos = {lat: position.lat, lon: position.lng};
 
   $("#location").html("Your location is: " + position.lat + ", " + position.lng);
 }

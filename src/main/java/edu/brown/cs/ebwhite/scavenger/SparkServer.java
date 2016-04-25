@@ -265,11 +265,8 @@ public class SparkServer {
       int phone = -1;
       try {
         phone = Integer.parseInt(phoneString);
-
-      } catch (NullPointerException np) {
-        message = "Fields not filled. smtn null.";
-      } catch (NumberFormatException nfe) {
-        message = "number format exception for phone.";
+      } catch (NullPointerException | NumberFormatException e) {
+        phone = -1;
       }
       if (firstname != null && username != null && password != null
           && email != null) {
@@ -284,7 +281,7 @@ public class SparkServer {
           message = "SQL error.";
         }
       } else {
-        message = "there is a null field being sent.";
+        message = "Please fill all required fields";
       }
 
       Map<String, Object> variables = new ImmutableMap.Builder()

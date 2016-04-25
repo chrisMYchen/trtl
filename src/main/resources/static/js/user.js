@@ -1,4 +1,7 @@
-function login(){
+/*************************/
+/** Login Functionality **/
+/*************************/
+function loginSetup(){
   /* Allow escape */
   $(document).keydown(function(e){
     if(e.which == 27){
@@ -6,19 +9,21 @@ function login(){
     }
   });
 
+  /* Close login dialog on "X click */
   $("#login-close").click(closeLoginDialog);
 
+  /* Open login dialog on from nav */
   $("#login-button").click(function(){
       closeSignupDialog();
       openLoginDialog();
   });
 
+  /* Submit login info */
   $("#login-form").submit(loginSubmit);
 }
 
 function openLoginDialog(){
   $("#login-wrapper").show();
-
 }
 
 function closeLoginDialog(){
@@ -28,10 +33,31 @@ function closeLoginDialog(){
 
 function loginSubmit(e){
   e.preventDefault();
-  console.log(e);
 }
 
-function signup(){
+function login(userID){
+  userInfo.id = userID;
+  setLoginMode(true);
+}
+
+function setLoginMode(value){
+  if(value){
+    $("#account-links").hide();
+    $("#user-name").html("Welcome " + userInfo.id);
+    $("#user-info").show();
+  }
+  else{
+    $("#account-links").show();
+    $("#user-info").hide();
+    $("#user-name").html("");
+  }
+}
+
+/*********************************/
+/** Signup and Account Creation **/
+/*********************************/
+
+function signupSetup(){
   $(document).keydown(function(e){
     if(e.which == 27){
       closeSignupDialog();
@@ -57,10 +83,37 @@ function openSignupDialog(){
 function closeSignupDialog(){
   $("#signup-wrapper").hide();
   $("#signup-form")[0].reset();
+  $("#signup-error").hide();
+  $("#signup-error").empty();
+
 }
 
 function signupSubmit(e){
   e.preventDefault();
+  sendSignup();
+}
+
+function sendSignup(){
+  var data = $("#signup-form").serialize();
+  console.log(data);
+  $.post("/newUser", data, function(response){
+    var res = JSON.parse(response);
+    if(res.error == "no-error"){
+      login(res.userID);
+      closeSignupDialog();
+    }
+    else{
+      signupError(res.error);
+    }
+  });
+}
+
+function signupError(message){
+  var body = $("<p></p>").html(message);
+  var elem = $("#signup-error");
+  elem.empty();
+  elem.append(body);
+  elem.show();
 }
 
 function usernameCheck(e){
