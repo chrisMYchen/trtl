@@ -33,12 +33,7 @@ function displayCallback(time){
   var scrollPos = $("#posts").height() - $(window).scrollTop();
   var threshold = $(window).height() + 50;
   if(scrollPos < threshold){
-<<<<<<< HEAD
-    var range = getRange();
-    getNotes(range, locationInfo.pos, time, 5000);
-=======
     getNotes(locationInfo.pos, time, 100);
->>>>>>> d0c4e3bd2c1ef6797af3754772a42fa5c5061832
   }
 }
 
@@ -51,7 +46,7 @@ function getRange(){
       last = 0;
     }
   }
-  var range = {min: last, max: last + 10};
+  var range = {min: last + 1, max: last + 11};
   return range;
 }
 

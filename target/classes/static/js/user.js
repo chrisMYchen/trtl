@@ -52,11 +52,7 @@ function sendLogin(){
   $.post("/login", data, function(response){
     var res = JSON.parse(response);
     console.log(res);
-<<<<<<< HEAD
-    if(res.error = "no-error"){
-=======
     if((res.error == "no-error") && (res.userID != -1)){
->>>>>>> d0c4e3bd2c1ef6797af3754772a42fa5c5061832
       login(res.userID);
       closeLoginDialog();
     }
