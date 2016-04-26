@@ -34,7 +34,7 @@ function displayCallback(time){
   var threshold = $(window).height() + 50;
   if(scrollPos < threshold){
     var range = getRange();
-    getNotes(range, locationInfo.pos, time, 50000);
+    getNotes(range, locationInfo.pos, time, 5000);
   }
 }
 
@@ -47,7 +47,7 @@ function getRange(){
       last = 0;
     }
   }
-  var range = {min: last + 1, max: last + 11};
+  var range = {min: last, max: last + 10};
   return range;
 }
 

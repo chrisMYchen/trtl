@@ -101,6 +101,9 @@ public class SparkServer {
         message = "SQL error when posting note: " + e.getMessage();
       }
 
+      for (Note n : notes) {
+        System.out.println(n);
+      }
       Map<String, Object> variables = new ImmutableMap.Builder()
           .put("notes", notes).put("error", message).build();
 
