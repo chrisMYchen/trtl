@@ -103,9 +103,9 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = "SQL error when posting note: " + e.getMessage();
       }
-      // for (Note n : notes) {
-      // System.out.println(n)
-      // }
+//      for (Note n : notes) {
+//        System.out.println(n)
+//      }
       Map<String, Object> variables = new ImmutableMap.Builder().put(
           "notes", notes).put("error", message).build();
 
@@ -307,8 +307,13 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = e.getMessage();
       }
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-          "error", message).put("userID", uID).build();
+      if (uID == -1) {
+        message = "Login failed : Invalid username password combination.";
+      }
+
+      Map<String, Object> variables = new ImmutableMap.Builder()
+          .put("error", message).put("userID", uID).build();
+
       return GSON.toJson(variables);
     }
   }
