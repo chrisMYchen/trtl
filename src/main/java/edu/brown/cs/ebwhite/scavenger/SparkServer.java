@@ -178,7 +178,7 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = "SQL error when posting note: " + e.getMessage();
       }
-      Map<String, Object> variables = new userIDImmutableMap.Builder().put("error",
+      Map<String, Object> variables = new ImmutableMap.Builder().put("error",
           message).build();
       return GSON.toJson(variables);
     }
@@ -207,7 +207,7 @@ public class SparkServer {
       Map<String, Object> variables = new ImmutableMap.Builder().put("error",
           message).build();
       return GSON.toJson(variables);
-    }userID
+    }
   }
 
   private class RemoveFriend implements Route {
