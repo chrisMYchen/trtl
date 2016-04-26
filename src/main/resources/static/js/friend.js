@@ -31,7 +31,7 @@ function friendSetup(){
 
 function openFriendDialog(){
   $("#friend-wrapper").show();
-  console.log("Friend open");
+  refreshFriendList();
 }
 
 function closeFriendDialog(){
@@ -89,5 +89,30 @@ function friendMsg(message, error){
 }
 
 function getFriendList(){
+  var user = {username: userInfo.username};
+  $.post("/userInfo", user, function(data){
+    var res = JSON.parse(data);
+    console.log(res);
+    if(res.error == "no-error"){
+      fillFriendList(res.friends);
+    }
+    else{
+      $("#friend-list").html(res.error);
+    }
 
+  })
+}
+
+function fillFriendList(friends){
+  var dom = $("#friend-list");
+  for(var i = 0; i < friends.length; i++){
+    var friend = friendDOM(friends[i]);
+    dom.append(friend)
+  }
+}
+
+function friendDOM(friend){
+  var div = $("<div></div>").addClass("friend-item");
+  div.html(friend);
+  return div;
 }

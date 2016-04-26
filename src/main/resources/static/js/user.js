@@ -156,6 +156,11 @@ function signupSetup(){
     openSignupDialog();
   });
 
+  /* Reset form*/
+  $("#signup-form").on("reset", function(){
+    $("#friend-form input[name=username]").css("background", "#FFF");
+  });
+
   $("#signup-form input[name=username]").on("input", function(){
     usernameCheck($(this), "#FAA", "#AFA");
   });
