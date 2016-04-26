@@ -101,9 +101,6 @@ public class SparkServer {
         message = "SQL error when posting note: " + e.getMessage();
       }
 
-      for (Note n : notes) {
-        System.out.println(n);
-      }
       Map<String, Object> variables = new ImmutableMap.Builder()
           .put("notes", notes).put("error", message).build();
 
@@ -164,22 +161,25 @@ public class SparkServer {
       String content = qm.value("text");
       String privacy = qm.value("private");
       String message = "no-error";
-
+      if (content.equals("")) {
       try {
-        int uID = Integer.parseInt(uIDstring);
-        double lat = Double.parseDouble(latString);
-        double lon = Double.parseDouble(lonString);
-        long timestamp = Long.parseLong(timeString);
-        int privacyVal = Integer.parseInt(privacy);
-        TurtleQuery.postNote(uID, timestamp, lat, lon, content, privacyVal);
+          int uID = Integer.parseInt(uIDstring);
+          double lat = Double.parseDouble(latString);
+          double lon = Double.parseDouble(lonString);
+          long timestamp = Long.parseLong(timeString);
+          int privacyVal = Integer.parseInt(privacy);
+          TurtleQuery.postNote(uID, timestamp, lat, lon, content, privacyVal);
 
-      } catch (NullPointerException np) {
-        message = "Fields not filled. Something is null: " + np.getMessage();
-      } catch (NumberFormatException nfe) {
-        message = "Number Format Exception: " + nfe.getMessage();
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        message = "SQL error when posting note: " + e.getMessage();
+        } catch (NullPointerException np) {
+          message = "Fields not filled. Something is null: " + np.getMessage();
+        } catch (NumberFormatException nfe) {
+          message = "Number Format Exception: " + nfe.getMessage();
+        } catch (SQLException e) {
+          // TODO Auto-generated catch block
+          message = "SQL error when posting note: " + e.getMessage();
+        }
+      } else {
+        message = "content is empty";
       }
       Map<String, Object> variables = new ImmutableMap.Builder().put("error",
           message).build();
