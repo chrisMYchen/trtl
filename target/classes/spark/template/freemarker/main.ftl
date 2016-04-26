@@ -48,13 +48,11 @@
     <div id="nav-meta">
       <div id="location" class="menu-item"></div>
     </div>
-    <div id="user-info" class="loggedin" style="display:none">
-      <div id="user-name" class="menu-item"></div>
-    </div>
     <div id="account-links">
       <div id="signup-button" class="menu-item account loggedout">Sign-Up</div>
       <div id="login-button" class="menu-item account loggedout">Login</div>
-      <div id="logout-button" class="menu-item account loggedin" style="display:none;">Logout</div>
+      <div id="user-name" class="menu-item account loggedin hidden"></div>
+      <div id="logout-button" class="menu-item account loggedin hidden">Logout</div>
     </div>
   </div>
   <div id="wrapper">

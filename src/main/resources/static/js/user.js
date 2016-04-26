@@ -79,13 +79,13 @@ function loginError(message){
 function setLoginMode(value){
   if(value){
     $("#user-name").html("Welcome " + userInfo.id);
-    $(".loggedin").show();
-    $('.loggedout').hide();
+    $(".loggedin").toggleClass("hidden", false);
+    $(".loggedout").toggleClass("hidden", true);
   }
   else{
     $("#user-name").html("");
-    $(".loggedin").hide();
-    $('.loggedout').show();
+    $(".loggedin").toggleClass("hidden", true);
+    $(".loggedout").toggleClass("hidden", false);
   }
 }
 

@@ -28,10 +28,6 @@ function loginSetup(){
   $("#logout-button").click(logout)
 }
 
-function testLogin(){
-  $("")
-}
-
 function openLoginDialog(){
   $("#login-wrapper").show();
 }
@@ -57,7 +53,7 @@ function sendLogin(){
     var res = JSON.parse(response);
     console.log(res);
     if(res.error = "no-error"){
-      login(res.userID);
+      login(res.userID, res.username);
       closeLoginDialog();
     }
     else{
@@ -66,7 +62,7 @@ function sendLogin(){
   });
 }
 
-function login(userID){
+function login(userID, username){
   userInfo = {id: userID};
   setLoginMode(true);
   setLoginCookie(userID);
@@ -82,15 +78,14 @@ function loginError(message){
 
 function setLoginMode(value){
   if(value){
-    $("#account-links").hide();
     $("#user-name").html("Welcome " + userInfo.id);
-    $(".loggedin").show();
-    $('.loggedout').hide();
+    $(".loggedin").toggleClass("hidden", false);
+    $(".loggedout").toggleClass("hidden", true);
   }
   else{
     $("#user-name").html("");
-    $(".loggedin").hide();
-    $('.loggedout').show();
+    $(".loggedin").toggleClass("hidden", true);
+    $(".loggedout").toggleClass("hidden", false);
   }
 }
 

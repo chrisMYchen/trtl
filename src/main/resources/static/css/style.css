@@ -58,6 +58,10 @@ div#nav {
     text-transform: uppercase;
 }
 
+.hidden{
+    display:none;
+}
+
 /* posts */
 
 #wrapper{
