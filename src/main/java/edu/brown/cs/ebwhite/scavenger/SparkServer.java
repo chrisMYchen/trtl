@@ -103,7 +103,9 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = "SQL error when posting note: " + e.getMessage();
       }
-
+//      for (Note n : notes) {
+//        System.out.println(n)
+//      }
       Map<String, Object> variables = new ImmutableMap.Builder().put(
           "notes", notes).put("error", message).build();
 
@@ -136,6 +138,11 @@ public class SparkServer {
 
         notes = TurtleQuery.updateNotes(uID, new LatLong(lat, lon),
             radius, minPost, maxPost, timestamp);
+        if (uID != -1) {
+          NoteRanker noteRank = new NoteRanker();
+          noteRank.setCurrentUser(uID);
+          Collections.sort(notes, noteRank);
+        }
 
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -300,8 +307,13 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = e.getMessage();
       }
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-          "error", message).put("userID", uID).build();
+      if (uID == -1) {
+        message = "Login failed : Invalid username password combination.";
+      }
+
+      Map<String, Object> variables = new ImmutableMap.Builder()
+          .put("error", message).put("userID", uID).build();
+
       return GSON.toJson(variables);
     }
   }
