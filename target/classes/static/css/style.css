@@ -335,6 +335,7 @@ div.input-submit:hover{
 }
 
 .friend-item{
+  position: relative;
   padding: 10px;
   text-align: left;
   margin: 3px;
@@ -343,4 +344,24 @@ div.input-submit:hover{
 
 .friend-item:hover{
   background: #aaa;
+}
+
+.friend-remove{
+  position: absolute;
+  right: 0;
+  top:0;
+  padding: 0px 10px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.friend-remove i{
+  display: inline-block;
+}
+
+.friend-remove:hover{
+  background: #f93131;
 }

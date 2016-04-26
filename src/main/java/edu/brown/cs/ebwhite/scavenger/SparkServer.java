@@ -231,7 +231,7 @@ public class SparkServer {
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String userIDstring = qm.value("userID");
-      String friendUsername = qm.value("friendID");
+      String friendUsername = qm.value("friendUsername");
       String message = "no-error";
       try {
         int userID = Integer.parseInt(userIDstring);

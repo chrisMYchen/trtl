@@ -67,6 +67,23 @@ function addFriend(){
   });
 }
 
+function removeFriend(elem){
+  var friendname = elem.parent().val();
+  var req = {friendUsername: friendname, userID: userInfo.id};
+  console.log(req);
+  $.post("/removeFriend", req, function(data){
+    var res = JSON.parse(data);
+    if(res.error = "no-error"){
+      console.log(req);
+      console.log(res);
+      refreshFriendList();
+    }
+    else{
+      friendMsg(res.error, true);
+    }
+  });
+}
+
 function refreshFriendList(){
   $("#friend-list").empty();
   getFriendList();
@@ -113,6 +130,10 @@ function fillFriendList(friends){
 
 function friendDOM(friend){
   var div = $("<div></div>").addClass("friend-item");
+  var remove = $("<div></div>").addClass("friend-remove");
+  var xicon = $("<i></i>").addClass("material-icons").html("close");
+  remove.append(xicon);
   div.html(friend);
+  div.append(remove);
   return div;
 }
