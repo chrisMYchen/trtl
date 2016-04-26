@@ -2,8 +2,11 @@ package edu.brown.cs.ebwhite.scavenger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import spark.ModelAndView;
 import spark.QueryParamsMap;
@@ -15,12 +18,16 @@ import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
 
 import edu.brown.cs.ebwhite.database.TurtleQuery;
 import edu.brown.cs.ebwhite.friends.Friend;
 import edu.brown.cs.ebwhite.geo.LatLong;
 import edu.brown.cs.ebwhite.note.Note;
+import edu.brown.cs.ebwhite.note.NoteRanker;
+import edu.brown.cs.ebwhite.user.User;
+import edu.brown.cs.ebwhite.user.UserProxy;
 
 public class SparkServer {
   Gson GSON;
@@ -39,6 +46,7 @@ public class SparkServer {
     Spark.post("/updateNotes", new UpdateNotes());
     Spark.post("/postNote", new PostNote());
     Spark.post("/newUser", new NewUser());
+    Spark.post("/login", new Login());
     Spark.post("/checkUsername", new CheckUsername());
     Spark.post("/addFriend", new AddFriend());
     Spark.post("/removeFriend", new RemoveFriend());
@@ -68,6 +76,7 @@ public class SparkServer {
       String message = "no-error";
       List<Note> notes = new ArrayList<>();
       try {
+        // userID is -1 when anonymous
         int uID = Integer.parseInt(uIDstring);
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
@@ -75,8 +84,13 @@ public class SparkServer {
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
-        notes = TurtleQuery.getNotesAnonymous(new LatLong(lat, lon), radius,
+        notes = TurtleQuery.getNotes(uID, new LatLong(lat, lon), radius,
             minPost, maxPost, timestamp);
+        if (uID != -1) {
+          NoteRanker noteRank = new NoteRanker();
+          noteRank.setCurrentUser(uID);
+          Collections.sort(notes, noteRank);
+        }
 
       } catch (NullPointerException np) {
         message = "Fields not filled. Something is null: " + np.getMessage();
@@ -108,6 +122,7 @@ public class SparkServer {
       String message = "no-error";
       List<Note> notes = new ArrayList<>();
       try {
+        // uID is -1 if not logged in
         int uID = Integer.parseInt(uIDstring);
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
@@ -116,7 +131,7 @@ public class SparkServer {
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
 
-        notes = TurtleQuery.updateNotesAnonymous(new LatLong(lat, lon), radius,
+        notes = TurtleQuery.updateNotes(uID, new LatLong(lat, lon), radius,
             minPost, maxPost, timestamp);
 
       } catch (NullPointerException np) {
@@ -290,6 +305,25 @@ public class SparkServer {
     }
   }
 
+  private class Login implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String username = qm.value("username");
+      String password = qm.value("password");
+      String message = "no-error";
+      int uID = -1;
+      try {
+        uID = TurtleQuery.loginValid(username, password);
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        message = e.getMessage();
+      }
+      Map<String, Object> variables = new ImmutableMap.Builder()
+          .put("error", message).put("userid", uID).build();
+      return GSON.toJson(variables);
+    }
+  }
   private class CheckUsername implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -318,7 +352,35 @@ public class SparkServer {
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
-      return null;
+      String username = qm.value("username");
+
+      String message = "no-error";
+      User user = null;
+
+      try {
+        user = UserProxy.ofName(username);
+      } catch (SQLException e) {
+        message = "SQL error, username might be MIA in DB.";
+        message += e.getMessage();
+      }
+
+      Builder variables = new ImmutableMap.Builder().put("error", message);
+
+      if (user != null) {
+        variables.put("firstname", user.getFirstName())
+            .put("lastname", user.getLastName()).put("email", user.getEmail());
+
+        Set<String> friends = new HashSet<>();
+        for (int f : user.getFriends()) {
+          User friend = new UserProxy(f);
+          friends.add(friend.getUsername());
+        }
+        variables.put("friends", friends);
+      }
+
+      variables.build();
+
+      return GSON.toJson(variables);
     }
   }
 

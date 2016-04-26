@@ -26,10 +26,10 @@ public class NoteRanker implements Comparator<Note> {
     double timeSinceNote1 = currentTime - o1.getTimestamp();
     double timeSinceNote2 = currentTime - o2.getTimestamp();
     if (currentUser != null) {
-      if (currentUser.getFriends().contains(o1.getUserId())) {
+      if (currentUser.getFriends().contains(o1.getUser().getId())) {
         timeSinceNote1 = Math.log(timeSinceNote1);
       }
-      if (currentUser.getFriends().contains(o2.getUserId())) {
+      if (currentUser.getFriends().contains(o2.getUser().getId())) {
         timeSinceNote2 = Math.log(timeSinceNote2);
       }
     }

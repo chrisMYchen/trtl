@@ -20,17 +20,9 @@ public class TurtleQuery {
 
   public static List<Note> getNotes(int userID, LatLong loc, double radius,
       int minPost, int maxPost, long timeStamp) throws SQLException {
-    if (userID != -1) {
-      return getNotesLoggedIn(userID, loc, radius, minPost, maxPost, timeStamp);
-    } else {
-      return getNotesAnonymous(loc, radius, minPost, maxPost, timeStamp);
-    }
-  }
-  public static List<Note> getNotesAnonymous(LatLong loc, double radius,
-      int minPost, int maxPost, long timeStamp) throws SQLException {
     double allowed_distance_latitude = radius / 110575; // this is in
-                                              // meters
-   
+    // meters
+
     double inputLat = loc.getLat();
     double inputLng = loc.getLng();
     double allowed_distance_longitude = Math.abs(radius
@@ -39,8 +31,21 @@ public class TurtleQuery {
     double top_lat = inputLat + allowed_distance_latitude;
     double left_lng = inputLng - allowed_distance_longitude;
     double right_lng = inputLng + allowed_distance_longitude;
+    if (userID != -1) {
+      return getNotesLoggedIn(userID, bottom_lat, top_lat, left_lng, right_lng,
+          minPost, maxPost, timeStamp);
+    } else {
+      return getNotesAnonymous(bottom_lat, top_lat, left_lng, right_lng,
+          minPost, maxPost, timeStamp);
+    }
+  }
 
-    String getNotes = "SELECT * FROM notes WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp < ?) AND (private = 0) ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
+  public static List<Note> getNotesAnonymous(double bottom_lat, double top_lat,
+      double left_lng, double right_lng, int minPost, int maxPost,
+      long timeStamp) throws SQLException {
+
+    String getNotes = "SELECT * FROM notes WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+        + " AND (timestamp < ?) AND (private = 0) ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
         prep.setDouble(1, left_lng);
@@ -60,8 +65,8 @@ public class TurtleQuery {
             double lng = rs.getDouble(LNGCOL);
             String txt = rs.getString(TXTCOL);
             // uID just not placed in note if not logged in
-            Note n = new Note.NoteBuilder(noteID, time)
-                .setContent(txt).setLat(lat).setLng(lng).build();
+            Note n = new Note.NoteBuilder(noteID, time).setContent(txt)
+                .setLat(lat).setLng(lng).build();
             allNotes.add(n);
           }
           return allNotes;
@@ -71,64 +76,9 @@ public class TurtleQuery {
 
   }
 
-  // how to do radius distance with lat /lon
-  // calc this out later
-//  public static List<Note> getNotesAnonymous(LatLong loc, double radius,
-//      int minPost, int maxPost, long timeStamp) throws SQLException {
-//    double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
-//                                                            // meters
-//    double inputLat = loc.getLat();
-//    double inputLng = loc.getLng();
-//    double CUR_sin_lat = Math.sin(deg2rad(inputLat));
-//    double CUR_cos_lat = Math.cos(deg2rad(inputLat));
-//    double CUR_sin_lng = Math.sin(deg2rad(inputLng));
-//    double CUR_cos_lng = Math.cos(deg2rad(inputLng));
-//
-//    String getNotes = "SELECT * FROM notes WHERE (? * sinlat + ? * coslat * (coslong* ? + sinlong * ?) > ?) AND (timestamp < ?) AND (private = 0) ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
-//    try (Connection conn = Db.getConnection()) {
-//      try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
-//        prep.setDouble(1, CUR_sin_lat);
-//        prep.setDouble(2, CUR_cos_lat);
-//        prep.setDouble(3, CUR_cos_lng);
-//        prep.setDouble(4, CUR_sin_lng);
-//        prep.setDouble(5, cos_allowed_distance);
-//        prep.setLong(6, timeStamp);
-//        prep.setInt(7, maxPost - minPost);
-//        prep.setInt(8, minPost);
-//        try (ResultSet rs = prep.executeQuery()) {
-//          List<Note> allNotes = new ArrayList<>();
-//          while (rs.next()) {
-//            int noteID = rs.getInt(NIDCOL);
-//            int uID = rs.getInt(UIDCOL);
-//            long time = rs.getLong(TIMECOL);
-//            double lat = rs.getDouble(LATCOL);
-//            double lng = rs.getDouble(LNGCOL);
-//            String txt = rs.getString(TXTCOL);
-//            Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
-//                .setContent(txt).setLat(lat).setLng(lng).build();
-//            allNotes.add(n);
-//          }
-//          return allNotes;
-//        }
-//      }
-//    }
-//
-//  }
-
-  public static List<Note> getNotesLoggedIn(int userID, LatLong loc,
-      double radius, int minPost, int maxPost, long timeStamp)
-      throws SQLException {
-    double allowed_distance_latitude = radius / 110575; // this is in
-    // meters
-
-    double inputLat = loc.getLat();
-    double inputLng = loc.getLng();
-    double allowed_distance_longitude = Math.abs(radius
-        / (111320 * Math.cos(inputLat)));
-    double bottom_lat = inputLat - allowed_distance_latitude;
-    double top_lat = inputLat + allowed_distance_latitude;
-    double left_lng = inputLng - allowed_distance_longitude;
-    double right_lng = inputLng + allowed_distance_longitude;
+  public static List<Note> getNotesLoggedIn(int userID, double bottom_lat,
+      double top_lat, double left_lng, double right_lng, int minPost,
+      int maxPost, long timeStamp) throws SQLException {
 
     String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_friend as uf WHERE "
         + " (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp < ?) AND "
@@ -164,32 +114,44 @@ public class TurtleQuery {
         }
       }
     }
-
   }
 
-  public static List<Note> updateNotesAnonymous(LatLong loc, double radius,
+  public static List<Note> updateNotes(int userID, LatLong loc, double radius,
       int minPost, int maxPost, long timeStamp) throws SQLException {
-    double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
-                                                            // meters
+    double allowed_distance_latitude = radius / 110575; // this is in
+    // meters
+
     double inputLat = loc.getLat();
     double inputLng = loc.getLng();
-    double CUR_sin_lat = Math.sin(deg2rad(inputLat));
-    double CUR_cos_lat = Math.cos(deg2rad(inputLat));
-    double CUR_sin_lng = Math.sin(deg2rad(inputLng));
-    double CUR_cos_lng = Math.cos(deg2rad(inputLng));
+    double allowed_distance_longitude = Math.abs(radius
+        / (111320 * Math.cos(inputLat)));
+    double bottom_lat = inputLat - allowed_distance_latitude;
+    double top_lat = inputLat + allowed_distance_latitude;
+    double left_lng = inputLng - allowed_distance_longitude;
+    double right_lng = inputLng + allowed_distance_longitude;
+    if (userID != -1) {
+      return updateNotesLoggedIn(userID, bottom_lat, top_lat, left_lng,
+          right_lng, minPost, maxPost, timeStamp);
+    } else {
+      return updateNotesAnonymous(bottom_lat, top_lat, left_lng, right_lng,
+          minPost, maxPost, timeStamp);
+    }
+  }
 
-    String getNotes = "SELECT * FROM notes WHERE ? * sinlat + ? * coslat * (coslong* ? + sinlong * ?) > ? AND "
-        + "timestamp >= ? AND (private = 0) limit (? , ?) ORDER BY timestamp ASC;";
+  public static List<Note> updateNotesAnonymous(double bottom_lat,
+      double top_lat, double left_lng, double right_lng, int minPost,
+      int maxPost, long timeStamp) throws SQLException {
+    String getNotes = "SELECT * FROM notes WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+        + " AND (timestamp >= ?) AND (private = 0) ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
-        prep.setDouble(1, CUR_sin_lat);
-        prep.setDouble(2, CUR_cos_lat);
-        prep.setDouble(3, CUR_cos_lng);
-        prep.setDouble(4, CUR_sin_lng);
-        prep.setDouble(5, cos_allowed_distance);
-        prep.setLong(6, timeStamp);
+        prep.setDouble(1, left_lng);
+        prep.setDouble(2, right_lng);
+        prep.setDouble(3, bottom_lat);
+        prep.setDouble(4, top_lat);
+        prep.setLong(5, timeStamp);
+        prep.setInt(6, maxPost - minPost);
         prep.setInt(7, minPost);
-        prep.setInt(8, maxPost);
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
@@ -199,8 +161,9 @@ public class TurtleQuery {
             double lat = rs.getDouble(LATCOL);
             double lng = rs.getDouble(LNGCOL);
             String txt = rs.getString(TXTCOL);
-            Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
-                .setContent(txt).setLat(lat).setLng(lng).build();
+            // uID just not placed in note if not logged in
+            Note n = new Note.NoteBuilder(noteID, time).setContent(txt)
+                .setLat(lat).setLng(lng).build();
             allNotes.add(n);
           }
           return allNotes;
@@ -209,48 +172,58 @@ public class TurtleQuery {
     }
   }
 
-  public static List<Note> updateNotesLoggedIn(int userID, LatLong loc,
-      double radius, int minPost, int maxPost, long timeStamp)
-      throws SQLException {
-    double cos_allowed_distance = Math.cos(radius / 6.371); // this is in
-    // meters
-    double inputLat = loc.getLat();
-    double inputLng = loc.getLng();
-    double CUR_sin_lat = Math.sin(deg2rad(inputLat));
-    double CUR_cos_lat = Math.cos(deg2rad(inputLat));
-    double CUR_sin_lng = Math.sin(deg2rad(inputLng));
-    double CUR_cos_lng = Math.cos(deg2rad(inputLng));
-
+  public static List<Note> updateNotesLoggedIn(int userID, double bottom_lat,
+      double top_lat, double left_lng, double right_lng, int minPost,
+      int maxPost, long timeStamp) throws SQLException {
     String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_friend as uf WHERE "
-        + "(? * sinlat + ? * coslat * (coslong* ? + sinlong * ?) > ?) AND (timestamp >= ?) AND "
-        + "(private = 0 OR n.userid = ? OR (n.private = 1 AND uf.userid = ? AND uf.friendid = n.userid) "
-        + "ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
+        + " (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp >= ?) AND "
+        + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.userid = ? AND uf.friendid = n.userid)) "
+        + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
-        prep.setDouble(1, CUR_sin_lat);
-        prep.setDouble(2, CUR_cos_lat);
-        prep.setDouble(3, CUR_cos_lng);
-        prep.setDouble(4, CUR_sin_lng);
-        prep.setDouble(5, cos_allowed_distance);
-        prep.setLong(6, timeStamp);
+        prep.setDouble(1, left_lng);
+        prep.setDouble(2, right_lng);
+        prep.setDouble(3, bottom_lat);
+        prep.setDouble(4, top_lat);
+        prep.setLong(5, timeStamp);
+        prep.setInt(6, userID);
         prep.setInt(7, userID);
-        prep.setInt(8, userID);
-        prep.setInt(9, maxPost - minPost);
-        prep.setInt(10, minPost);
+        prep.setInt(8, maxPost - minPost);
+        prep.setInt(9, minPost);
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
-            int noteID = rs.getInt(NIDCOL);
-            int uID = rs.getInt(UIDCOL);
-            long time = rs.getLong(TIMECOL);
-            double lat = rs.getDouble(LATCOL);
-            double lng = rs.getDouble(LNGCOL);
-            String txt = rs.getString(TXTCOL);
+            int noteID = rs.getInt(1);
+            int uID = rs.getInt(2);
+            long time = rs.getLong(3);
+            double lat = rs.getDouble(4);
+            double lng = rs.getDouble(5);
+            String txt = rs.getString(6);
+            int priv = rs.getInt(7);
             Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
-                .setContent(txt).setLat(lat).setLng(lng).build();
+                .setContent(txt).setLat(lat).setLng(lng).setPrivate(priv)
+                .build();
             allNotes.add(n);
           }
           return allNotes;
+        }
+      }
+    }
+  }
+
+  public static int loginValid(String username, String password)
+      throws SQLException {
+    String query = "SELECT id from user WHERE username = ? AND password = ? LIMIT 1";
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn.prepareStatement(query)) {
+        prep.setString(1, username);
+        prep.setString(2, password);
+        try (ResultSet rs = prep.executeQuery()) {
+          if (rs.next()) {
+            return rs.getInt(1);
+          } else {
+            return -1;
+          }
         }
       }
     }
@@ -267,7 +240,6 @@ public class TurtleQuery {
     // double lat;
     // double lng;
     // String text;
-
 
     double coslat = Math.cos(deg2rad(lat));
     double sinlat = Math.sin(deg2rad(lat));
@@ -313,7 +285,7 @@ public class TurtleQuery {
   public static int getUserID(String username) throws SQLException {
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn
-          .prepareStatement("SELECT id FROM user WHERE username=?;")) {
+          .prepareStatement("SELECT id FROM user WHERE username=? LIMIT 1;")) {
         prep.setString(1, username);
         try (ResultSet rs = prep.executeQuery()) {
           int uID = -1;
