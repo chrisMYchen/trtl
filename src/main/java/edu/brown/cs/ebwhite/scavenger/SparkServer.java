@@ -362,9 +362,9 @@ public class SparkServer {
         variables.put("friends", friends);
       }
 
-      variables.build();
+      Map<String, Object> map = variables.build();
 
-      return GSON.toJson(variables);
+      return GSON.toJson(map);
     }
   }
 
@@ -387,8 +387,10 @@ public class SparkServer {
       if (user != null) {
         variables.put("username", user.getUsername());
       }
-      variables.build();
-      return GSON.toJson(variables);
+
+      Map<String, Object> map = variables.build();
+      
+      return GSON.toJson(map);
     }
   }
 

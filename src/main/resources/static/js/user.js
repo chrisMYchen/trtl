@@ -52,20 +52,28 @@ function sendLogin(){
   $.post("/login", data, function(response){
     var res = JSON.parse(response);
     console.log(res);
-    if(res.error = "no-error"){
-      login(res.userID, res.username);
+    if((res.error == "no-error") && (res.userID != -1)){
+      login(res.userID);
       closeLoginDialog();
     }
     else{
+      $("#login-form")[0].reset();
       loginError(res.error);
     }
   });
 }
 
-function login(userID, username){
-  userInfo = {id: userID};
-  setLoginMode(true);
-  setLoginCookie(userID);
+function login(userID){
+  var req = {userID: userID};
+  
+  $.post("/getUser", req, function(data){
+    console.log(data);
+    var res = JSON.parse(data);
+    console.log(res);
+    userInfo = {id: userID, username: res.username};
+    setLoginMode(true);
+    setLoginCookie(userID);
+  });
 }
 
 function loginError(message){
@@ -78,7 +86,7 @@ function loginError(message){
 
 function setLoginMode(value){
   if(value){
-    $("#user-name").html("Welcome " + userInfo.id);
+    $("#user-name").html("Welcome " + userInfo.username);
     $(".loggedin").toggleClass("hidden", false);
     $(".loggedout").toggleClass("hidden", true);
   }
@@ -87,10 +95,6 @@ function setLoginMode(value){
     $(".loggedin").toggleClass("hidden", true);
     $(".loggedout").toggleClass("hidden", false);
   }
-}
-
-function getUserInfo(userID){
-
 }
 
 function logout(){
