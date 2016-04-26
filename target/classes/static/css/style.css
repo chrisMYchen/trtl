@@ -156,11 +156,15 @@ div.input-submit:hover{
 
 .input-controls{
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     color: #fff;
     text-transform: uppercase;
     font-size: 10pt;
     background: #778;
+}
+
+.input-controls select{
+    color: black;
 }
 
 /* Errors */

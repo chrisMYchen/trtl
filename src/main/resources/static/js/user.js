@@ -33,6 +33,22 @@ function closeLoginDialog(){
 
 function loginSubmit(e){
   e.preventDefault();
+  $("#login-error").hide();
+  $("#login-error").empty();
+}
+
+function sendLogin(){
+  var data = $("#login-form").serialize();
+  $.post("/login", data, function(response){
+    var res = JSON.parse(response);
+    if(res.error = "no-error"){
+      login(res.userID);
+      closeLoginDialog();
+    }
+    else{
+      loginError(res.error);
+    }
+  });
 }
 
 function login(userID){
@@ -40,16 +56,26 @@ function login(userID){
   setLoginMode(true);
 }
 
+function loginError(message){
+  var body = $("<p></p>").html(message);
+  var elem = $("#login-error");
+  elem.empty();
+  elem.append(body);
+  elem.show();
+}
+
 function setLoginMode(value){
   if(value){
     $("#account-links").hide();
     $("#user-name").html("Welcome " + userInfo.id);
     $("#user-info").show();
+    $('#privacy').show();
   }
   else{
     $("#account-links").show();
     $("#user-info").hide();
     $("#user-name").html("");
+    $('#privacy').show();
   }
 }
 
