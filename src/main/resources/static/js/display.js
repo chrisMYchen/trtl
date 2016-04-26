@@ -33,7 +33,7 @@ function displayCallback(time){
   var scrollPos = $("#posts").height() - $(window).scrollTop();
   var threshold = $(window).height() + 50;
   if(scrollPos < threshold){
-    getNotes(locationInfo.pos, time, 10000);
+    getNotes(locationInfo.pos, time, 100);
   }
 }
 
