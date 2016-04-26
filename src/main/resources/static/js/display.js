@@ -34,7 +34,7 @@ function displayCallback(time){
   var threshold = $(window).height() + 50;
   if(scrollPos < threshold){
     var range = getRange();
-    getNotes(range, locationInfo.pos, time, 5000);
+    getNotes(range, locationInfo.pos, time, 50000);
   }
 }
 
@@ -115,10 +115,14 @@ function getNotes(range, location, timestamp, radius){
     maxPost: range.max,
     radius: radius
   }
+  if(userInfo != null){
+    req.userID = userInfo.id;
+  }
   console.log(req);
 
   $.post("/getNotes", req, function(data){
     var res = JSON.parse(data);
+    console.log(res);
     if(res.error == "no-error"){
       notesDOM(res.notes, range.min);
     }
