@@ -51,6 +51,7 @@ public class SparkServer {
     Spark.post("/addFriend", new AddFriend());
     Spark.post("/removeFriend", new RemoveFriend());
     Spark.post("/userInfo", new ProfileInfo());
+    Spark.post("/getUser", new getUserInfoFromId());
 
   }
 
@@ -357,6 +358,30 @@ public class SparkServer {
 
       variables.build();
 
+      return GSON.toJson(variables);
+    }
+  }
+
+  private class getUserInfoFromId implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String userIDString = qm.value("userID");
+      String message = "no-error";
+      User user = null;
+      try {
+        int userID = Integer.parseInt(userIDString);
+        user = new UserProxy(userID);
+      }
+      catch (NumberFormatException nfe){
+        message = "userID not a number";
+      }
+
+      Builder variables = new ImmutableMap.Builder().put("error", message);
+      if (user != null){
+        variables.put("username", user.getUsername());
+      }
+      variables.build();
       return GSON.toJson(variables);
     }
   }
