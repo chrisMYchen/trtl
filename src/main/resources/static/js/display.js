@@ -33,13 +33,12 @@ function displayCallback(time){
   var scrollPos = $("#posts").height() - $(window).scrollTop();
   var threshold = $(window).height() + 50;
   if(scrollPos < threshold){
-    var range = getRange();
-    getNotes(range, locationInfo.pos, time, 5000);
+    getNotes(locationInfo.pos, time, 5000);
   }
 }
 
 function getRange(){
-  var last = 0;
+  var last = -1;
   var post = $(".post").last();
   if(post.length > 0){
     last = parseInt(post.attr("data-order"), 10);
@@ -47,12 +46,12 @@ function getRange(){
       last = 0;
     }
   }
-  var range = {min: last, max: last + 10};
+  var range = {min: last + 1, max: last + 11};
+  console.log(range);
   return range;
 }
 
 function notesDOM(notes, start){
-  console.log(notes);
    for(var i = 0; i < notes.length; i++){
        var note = notes[i];
        note.order = start + i;
@@ -105,7 +104,8 @@ function formatTime(time){
   return timestring;
 }
 
-function getNotes(range, location, timestamp, radius){
+function getNotes(location, timestamp, radius){
+  var range = getRange();
   var req = {
     userID: userInfo.id,
     lat: locationInfo.pos.lat,
@@ -115,10 +115,10 @@ function getNotes(range, location, timestamp, radius){
     maxPost: range.max,
     radius: radius
   }
+  console.log(req);
   if(userInfo != null){
     req.userID = userInfo.id;
   }
-  console.log(req);
 
   $.post("/getNotes", req, function(data){
     var res = JSON.parse(data);

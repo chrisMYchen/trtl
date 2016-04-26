@@ -20,6 +20,12 @@ function loginSetup(){
 
   /* Submit login info */
   $("#login-form").submit(loginSubmit);
+
+  /* Cookies! */
+  checkLoginCookie();
+
+  /* Logout*/
+  $("#logout-button").click(logout)
 }
 
 function openLoginDialog(){
@@ -47,7 +53,7 @@ function sendLogin(){
     var res = JSON.parse(response);
     console.log(res);
     if(res.error = "no-error"){
-      login(res.userID);
+      login(res.userID, res.username);
       closeLoginDialog();
     }
     else{
@@ -56,9 +62,10 @@ function sendLogin(){
   });
 }
 
-function login(userID){
+function login(userID, username){
   userInfo = {id: userID};
   setLoginMode(true);
+  setLoginCookie(userID);
 }
 
 function loginError(message){
@@ -71,17 +78,61 @@ function loginError(message){
 
 function setLoginMode(value){
   if(value){
-    $("#account-links").hide();
     $("#user-name").html("Welcome " + userInfo.id);
-    $("#user-info").show();
-    $('#privacy').show();
+    $(".loggedin").show();
+    $('.loggedout').hide();
   }
   else{
-    $("#account-links").show();
-    $("#user-info").hide();
     $("#user-name").html("");
-    $('#privacy').show();
+    $(".loggedin").hide();
+    $('.loggedout').show();
   }
+}
+
+function getUserInfo(userID){
+
+}
+
+function logout(){
+  removeLoginCookie();
+  setLoginMode(false);
+}
+
+
+/***********************/
+/** Cookie Management **/
+/***********************/
+function checkLoginCookie(){
+  var cookie = getCookie("userid");
+  console.log(cookie);
+  if (cookie != null){
+    login(parseInt(cookie));
+  }
+}
+
+function setLoginCookie(userID){
+  var cookie = "userid=" + userID + ";";
+  console.log(cookie);
+  document.cookie = cookie;
+}
+
+function removeLoginCookie(){
+  document.cookie = "userid=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+}
+
+function getCookie(name){
+  var cname = name +"=";
+  var cookie = document.cookie.split(";");
+  for( var i = 0; i < cookie.length; i++){
+    var c = cookie[i];
+    while (c.charAt(0)==' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(cname) == 0) {
+      return c.substring(cname.length,c.length);
+    }
+  }
+    return null;
 }
 
 /*********************************/

@@ -19,6 +19,7 @@ function postNote(post, privacy){
     private: privacy
   }
 
+  console.log(noteInfo);
   $.post("/postNote", noteInfo, function(res){
     var response = JSON.parse(res);
     if(response.error != "no-error"){

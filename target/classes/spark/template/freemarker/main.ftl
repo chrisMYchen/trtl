@@ -2,6 +2,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FFBB8B">
   <title>${title}</title>
   <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:400,600,300' rel='stylesheet' type='text/css'>
   <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
@@ -47,12 +48,13 @@
     <div id="nav-meta">
       <div id="location" class="menu-item"></div>
     </div>
-    <div id="account-links">
-      <div id="signup-button" class="menu-item account">Sign-Up</div>
-      <div id="login-button" class="menu-item account">Login</div>
-    </div>
-    <div id="user-info" style="display:none">
+    <div id="user-info" class="loggedin" style="display:none">
       <div id="user-name" class="menu-item"></div>
+    </div>
+    <div id="account-links">
+      <div id="signup-button" class="menu-item account loggedout">Sign-Up</div>
+      <div id="login-button" class="menu-item account loggedout">Login</div>
+      <div id="logout-button" class="menu-item account loggedin" style="display:none;">Logout</div>
     </div>
   </div>
   <div id="wrapper">
