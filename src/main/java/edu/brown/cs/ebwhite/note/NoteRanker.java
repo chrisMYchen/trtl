@@ -35,5 +35,4 @@ public class NoteRanker implements Comparator<Note> {
     }
     return Double.compare(timeSinceNote1, timeSinceNote2);
   }
-
 }

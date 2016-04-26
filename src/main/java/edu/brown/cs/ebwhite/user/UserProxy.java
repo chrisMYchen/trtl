@@ -12,7 +12,9 @@ import edu.brown.cs.ebwhite.database.Db;
 public class UserProxy extends EntityProxy<User> implements User {
   /**
    * Constructor for ActorProxy.
-   * @param id unique id representing actor
+   *
+   * @param id
+   *          unique id representing actor
    */
   public UserProxy(int id) {
     super(id);
@@ -74,10 +76,8 @@ public class UserProxy extends EntityProxy<User> implements User {
           }
         }
       }
-
     }
     return null;
-
   }
 
   @Override
@@ -110,4 +110,3 @@ public class UserProxy extends EntityProxy<User> implements User {
     return getInternal().getPhone();
   }
 }
-

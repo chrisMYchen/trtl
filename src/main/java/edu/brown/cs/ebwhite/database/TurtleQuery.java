@@ -240,7 +240,6 @@ public class TurtleQuery {
     // double lat;
     // double lng;
     // String text;
-
     double coslat = Math.cos(deg2rad(lat));
     double sinlat = Math.sin(deg2rad(lat));
     double coslng = Math.cos(deg2rad(lng));
@@ -267,7 +266,7 @@ public class TurtleQuery {
 
   public static int addUser(String username, String password, String firstname,
       String lastname, String email, int phone) throws SQLException {
-    String post = "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?);";
+    String post = "INSERT INTO usergedInTest VALUES (NULL, ?, ?, ?, ?, ?, ?);";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
         prep.setString(1, username);
