@@ -156,7 +156,9 @@ function signupSetup(){
     openSignupDialog();
   });
 
-  $("#signup-form input[name=uname]").on("input", usernameCheck);
+  $("#signup-form input[name=username]").on("input", function(){
+    usernameCheck($(this), "#FAA", "#AFA");
+  });
 
   $("#signup-form").submit(signupSubmit);
 }
@@ -202,26 +204,24 @@ function signupError(message){
   elem.show();
 }
 
-function usernameCheck(e){
-  var inputElem = $(this);
-  var uname = inputElem.val();
+function usernameCheck(elem, exists, notexists){
+  var uname = elem.val();
 
-
-  if(uname.length > 3){
+  if(uname.length > 2){
     $.post("/checkUsername", {username: uname}, function(response){
       var res = JSON.parse(response);
       console.log(res);
       if(res.error == "no-error"){
         if(res.exists){
-          inputElem.css("background", "#F99");
+          elem.css("background", exists);
         }
         else{
-          inputElem.css("background", "#9F9");
+          elem.css("background", notexists);
         }
       }
     });
   }
   else{
-    inputElem.css("background", "#fff");
+    elem.css("background", "#fff");
   }
 }

@@ -210,8 +210,8 @@ public class SparkServer {
 
       try {
         int userID = Integer.parseInt(userIDstring);
-        if (Friend.addFriend(userID, friendUsername)) {
-          message = "User with username doesn't exist";
+        if (!Friend.addFriend(userID, friendUsername)) {
+          message = "User with username " + friendUsername + " doesn't exist";
         }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -401,7 +401,7 @@ public class SparkServer {
       }
 
       Map<String, Object> map = variables.build();
-      
+
       return GSON.toJson(map);
     }
   }

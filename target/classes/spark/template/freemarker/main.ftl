@@ -12,6 +12,7 @@
   <script src="/js/display.js"></script>
   <script src="/js/post.js"></script>
   <script src="/js/user.js"></script>
+  <script src="/js/friend.js"></script>
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -21,8 +22,8 @@
       <div id="login-close" class="close"><p>X</p></div>
       <div id="login-error" class="error" style="display:none;"></div>
       <form id="login-form">
-        <input type="text" name="username" placeholder="USERNAME" size="40" required="required">
-        <input type="password" name="password" placeholder="PASSWORD" size="40" required="required">
+        <input type="text" name="username" placeholder="USERNAME" size="40" required="required"><br>
+        <input type="password" name="password" placeholder="PASSWORD" size="40" required="required"><br>
         <input type="submit">
       </form>
     </div>
@@ -32,14 +33,25 @@
       <div id="signup-close" class="close"><p>X</p></div>
       <div id="signup-error" class="error" style="display:none;"></div>
       <form id="signup-form">
-        <input type="text" name="firstname" placeholder="First Name" size="40" required="required">
-        <input type="text" name="lastname" placeholder="Last Name" size="40" required="required">
-        <input type="text" name="email" placeholder="Email Address" size="40" required="required">
-        <input type="text" name="phone" placeholder="Phone (optional)" size="40">
-        <input type="text" name="username" placeholder="Username" size="40" required="required">
-        <input type="password" name="password" placeholder="Password" size="40" required="required">
+        <input type="text" name="username" placeholder="Username" size="40" required="required"><br>
+        <input type="password" name="password" placeholder="Password" size="40" required="required"><br>
+        <input type="text" name="email" placeholder="Email Address" size="40" required="required"><br>
+        <input type="text" name="firstname" placeholder="First Name" size="40" required="required"><br>
+        <input type="text" name="lastname" placeholder="Last Name" size="40" required="required"><br>
+        <input type="text" name="phone" placeholder="Phone (optional)" size="40"><br>
         <input type="submit">
       </form>
+    </div>
+  </div>
+  <div id="friend-wrapper" class="overlay-wrapper" style="display:none">
+    <div id="friend" class="overlay">
+      <div id="friend-close" class="close"><p>X</p></div>
+      <div id="friend-msg" class="msg" style="display:none;"></div>
+      <form id="friend-form">
+        <input type="text" name="friendname" placeholder="Add Friend" size="30">
+        <input type="submit" value="Add">
+      </form>
+      <div id="friend-list"></div>
     </div>
   </div>
   <div id="nav">
@@ -48,12 +60,10 @@
     </div>
     <div id="account-links">
       <div id="user-name" class="menu-item account loggedin hidden"></div>
-      <div id="location" class="menu-item">
-        <div class="dropdown"></div>
-      </div>
+      <div id="location" class="menu-item"></div>
       <div id="signup-button" class="menu-item account loggedout">Sign-Up</div>
       <div id="login-button" class="menu-item account loggedout">Login</div>
-      <div id="friends-button" class="menu-item loggedin hidden">
+      <div id="friend-button" class="menu-item loggedin hidden">
         <i class="material-icons">people</i>
       </div>
       <div id="logout-button" class="menu-item account loggedin hidden">Logout</div>

@@ -22,7 +22,9 @@ function locationError(error, id){
     navigator.geolocation.clearWatch(id);
     var icon = $("<i></i>").addClass("material-icons").html("location_off");
     $("#location").empty().append(icon);
-    $("#location .dropdown").html(error.message);
+
+    var elem = $("<p></p>").html(error.message);
+    locationDropdown(elem);
 }
 
 function locationHandler(position){
@@ -31,22 +33,24 @@ function locationHandler(position){
 
   /* Create dropdown */
   locationInfo.pos = {lat: position.lat, lon: position.lng};
-  var div = $("#location .dropdown");
   var lat = $("<p></p>").html("<b>lat:</b> &nbsp;&nbsp;"+ position.lat.toFixed(4));
   var lng = $("<p></p>").html("<b>lng:</b> &nbsp;&nbsp;"+ position.lng.toFixed(4));
-  div.append(lat).append(lng);
+  var elems = [lat, lng];
+
+  locationDropdown(elems);
+}
+
+function locationDropdown(elem){
+  console.log(elem)
+  var div = $("<div></div>").addClass("dropdown");
+  div.append(elem);
 
   /* Get parent */
   var locDiv = $("#location");
-  var locOffset = locDiv.position();
-  var left = locOffset.left - Math.floor(div.width() / 2);
 
-  /*Position dropdown */
-  var position = {top: locOffset.top + locDiv.height(), left: left};
-  div.offset(position);
-
+  $("#location").append(div);
   div.toggle(false);
   locDiv.click(function(){
     div.toggle();
-  })
+  });
 }

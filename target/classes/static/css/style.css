@@ -33,9 +33,9 @@ div#nav {
 }
 
 .menu-item{
+  position: relative;
   display: flex;
   justify-content:center;
-  align-content:center;
   flex-direction:column;
   padding: 0px 10px;
   cursor: pointer;
@@ -68,14 +68,18 @@ div#nav {
 
 /* Nav dropdown */
 #nav .dropdown{
-  position:fixed;
+  position: absolute;
+  top: 50px;
+  left: 0;
   background: #fff;
   padding: 10px;
   box-shadow: 0px 0px 5px 0px #000;
+  text-transform: none;
 }
 
-.dropdown p{
+#nav .dropdown p{
   margin: 0px;
+  white-space: nowrap;
 }
 
 /* posts */
@@ -193,13 +197,20 @@ div.input-submit:hover{
 }
 
 /* Errors */
-.error{
-  background: #ff9999;
+.msg{
   padding: 15px;
 }
 
-.error p{
+.msg p{
   margin:0;
+}
+
+.msg.error{
+  background: #ff9999;
+}
+
+.msg.success{
+  background: #99ff99;
 }
 
 
@@ -242,9 +253,11 @@ div.input-submit:hover{
 
 .overlay form{
   padding: 20px;
+  position: relative;
 }
 
 .overlay input{
+    display: inline-block;
     padding: 10px;
     margin: 10px 0px;
     border: 1px solid #aaa;
