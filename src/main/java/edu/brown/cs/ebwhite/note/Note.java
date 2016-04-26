@@ -1,34 +1,38 @@
 package edu.brown.cs.ebwhite.note;
 
 import edu.brown.cs.ebwhite.geo.LatLong;
+import edu.brown.cs.ebwhite.user.User;
+import edu.brown.cs.ebwhite.user.UserProxy;
 
 public class Note {
   private long timestamp;
   private String text;
   private int id;
-  private int userid;
+  // private int userid;
   private LatLong latlng;
-  private String displayName;
+  // private String displayName;
+  private User user;
   private int privacy;
 
   public Note(long time, String content, int ID, int uID, double lat,
-      double lng, String ownerName, int priv) {
+      double lng, int priv) {
     this.timestamp = time;
     this.text = content;
     this.id = ID;
-    this.userid = uID;
+    this.user = new UserProxy(uID);
     this.latlng = new LatLong(lat, lng);
     this.privacy = priv;
-    this.displayName = ownerName;
+    // this.displayName = ownerName;
   }
 
   public Note(NoteBuilder b){
     this.timestamp = b.timestamp;
     this.id = b.id;
     this.text = b.text;
-    this.userid = b.uid;
+    this.user = b.user;
+    // this.userid = b.uid;
     this.latlng = new LatLong(b.lat, b.lng);
-    this.displayName = b.displayName;
+    // this.displayName = b.displayName;
     this.privacy = b.privacy;
   }
 
@@ -48,26 +52,31 @@ public class Note {
     return id;
   }
 
-  public int getUserId() {
-    return userid;
+  public User getUser() {
+    return user;
   }
+
+  // public int getUserId() {
+  // return userid;
+  // }
 
   public LatLong getLatLong() {
     return latlng;
   }
 
-  public String getUsername() {
-    return displayName;
-  }
+  // public String getUsername() {
+  // return displayName;
+  // }
 
   public static class NoteBuilder {
     private long timestamp;
     private String text;
     private int id;
-    private int uid;
+    private User user;
+    // private int uid;
     private double lat;
     private double lng;
-    private String displayName;
+    // private String displayName;
     private int privacy;
 
     public NoteBuilder(int myId, long time){
@@ -80,10 +89,11 @@ public class Note {
       return this;
     }
 
-    public NoteBuilder setUser(int uId) {
-      this.uid = uId;
-      return this;
-    }
+    //
+    // public NoteBuilder setUser(int uId) {
+    // this.uid = uId;
+    // return this;
+    // }
 
     public NoteBuilder setLat(double myLat) {
       this.lat = myLat;
@@ -95,8 +105,13 @@ public class Note {
       return this;
     }
 
-    public NoteBuilder setName(String name){
-      this.displayName = name;
+    // public NoteBuilder setName(String name){
+    // this.displayName = name;
+    // return this;
+    // }
+
+    public NoteBuilder setUser(int uId) {
+      this.user = new UserProxy(uId);
       return this;
     }
 
