@@ -25,7 +25,7 @@ public class Note {
     // this.displayName = ownerName;
   }
 
-  public Note(NoteBuilder b){
+  public Note(NoteBuilder b) {
     this.timestamp = b.timestamp;
     this.id = b.id;
     this.text = b.text;
@@ -34,6 +34,13 @@ public class Note {
     this.latlng = new LatLong(b.lat, b.lng);
     // this.displayName = b.displayName;
     this.privacy = b.privacy;
+  }
+
+  @Override
+  public String toString() {
+    return "Note [timestamp=" + timestamp + ", text=" + text + ", id=" + id
+        + ", latlng=" + latlng + ", user=" + user + ", privacy=" + privacy
+        + "]";
   }
 
   public long getTimestamp() {
@@ -54,6 +61,10 @@ public class Note {
 
   public User getUser() {
     return user;
+  }
+
+  public int getPrivacy() {
+    return privacy;
   }
 
   // public int getUserId() {
@@ -79,12 +90,12 @@ public class Note {
     // private String displayName;
     private int privacy;
 
-    public NoteBuilder(int myId, long time){
+    public NoteBuilder(int myId, long time) {
       this.timestamp = time;
       this.id = myId;
     }
 
-    public NoteBuilder setContent(String content){
+    public NoteBuilder setContent(String content) {
       this.text = content;
       return this;
     }
@@ -120,7 +131,7 @@ public class Note {
       return this;
     }
 
-    public Note build(){
+    public Note build() {
       return new Note(this);
     }
   }

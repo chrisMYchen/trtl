@@ -1,27 +1,28 @@
 body {
-    margin: 0;
-    font-family: serif;
-    background: #eee;
+  margin: 0;
+  font-family: serif;
+  background: #eee;
 }
 
 p{
-    font-family: serif;
+  font-family: serif;
 }
 
 div{
-    font-family: serif;
+  font-family: serif;
 }
 
 /* Header */
 div#nav {
-    height: 50px;
-    box-shadow: 0px 0px 5px 0px #000;
-    background: #FFBB8B;
-    display: flex;
-    justify-content: space-between;
-    align-content: center;
-    position: fixed;
-    width: 100%;
+  height: 50px;
+  box-shadow: 0px 0px 5px 0px #000;
+  background: #FFBB8B;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  position: fixed;
+  width: 100%;
+  z-index: 10;
 }
 
 #nav > div{
@@ -33,173 +34,267 @@ div#nav {
 }
 
 .menu-item{
+  position: relative;
   display: flex;
   justify-content:center;
-  align-content:center;
   flex-direction:column;
   padding: 0px 10px;
   cursor: pointer;
 }
 
 .menu-item:hover{
-    background: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.5);
 }
 
 #branding{
-    margin-left: 35px;
+  margin-left: 35px;
 }
 
 #title{
-    font-size: 20pt
+  font-size: 20pt
 }
 
 #account-links{
-    margin-right: 35px;
-    text-transform: uppercase;
+  margin-right: 35px;
+  text-transform: uppercase;
+}
+
+#user-name{
+  text-transform: none;
+}
+
+.hidden{
+  display:none;
+}
+
+/* Nav dropdown */
+#nav .dropdown{
+  z-index: 5;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0px 0px 5px 0px #000;
+  text-transform: none;
+  min-width: 100px;
+}
+
+#nav .dropdown p{
+  margin: 0px;
 }
 
 /* posts */
 
 #wrapper{
-    padding-top: 50px;
-    height: 100%;
+  padding-top: 50px;
+  height: 100%;
 }
 
 #posts{
-    max-width: 500px;
-    margin:auto;
-    height: 100%;
+  max-width: 500px;
+  margin:auto;
+  height: 100%;
 }
 
 .post{
-    background: #fff;
-    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 20px;
+  background: #fff;
+  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 20px;
 }
 
 .post > div{
-    padding: 10px;
+  padding: 10px;
 }
 
 .post-user{
-    background: #d9d9e0;
+  background: #d9d9e0;
 }
 
 .post-user > div{
-    display: inline-block;
-    margin: 5px;
+  display: inline-block;
+  margin: 5px;
+}
+
+.post-user .anon{
+  color: #777;
+  text-transform: uppercase;
 }
 
 a.post-handle{
-    color: #666;
+  color: #666;
 }
 
 div.post-content{
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    padding: 15px;
-    font-size: 13pt;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 15px;
+  font-size: 13pt;
 }
 
 .post-meta{
-    display: flex;
-    justify-content: space-between;
-    color: #fff;
-    text-transform: uppercase;
-    font-size: 10pt;
-    background: #778;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 10pt;
+  background: #778;
 }
 
 .post-meta a{
-    color:#fff;
-    text-decoration: none;
+  color:#fff;
+  text-decoration: none;
 }
 
 .post-meta a:hover{
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Posting abilities */
 .input{
-    background: #fff;
-    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 20px;
+  background: #fff;
+  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 20px;
 }
 
 div.input-submit{
-    padding: 10px;
-    background: none;
-    border:none;
-    color: white;
-    cursor: pointer;
-    font-size: 12pt;
-    text-transform: uppercase;
+  padding: 10px;
+  background: none;
+  border:none;
+  color: white;
+  cursor: pointer;
+  font-size: 12pt;
+  text-transform: uppercase;
 }
 
 div.input-submit:hover{
-    background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.2);
 }
 
 .input > textarea{
-    margin-top: 5px;
-    width: calc(100% - 20px);
-    vertical-align: middle;
-    padding: 10px;
-    font-size: 12pt;
-    resize:none;
-    border:none;
+  margin-top: 5px;
+  width: calc(100% - 20px);
+  vertical-align: middle;
+  padding: 10px;
+  font-size: 12pt;
+  resize:none;
+  border:none;
 }
 
 .input-controls{
-    display: flex;
-    justify-content: space-between;
-    color: #fff;
-    text-transform: uppercase;
-    font-size: 10pt;
-    background: #778;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 10pt;
+  background: #778;
 }
 
 .input-controls select{
-    color: black;
+  color: black;
 }
 
 /* Errors */
-.error{
-  background: #ff9999;
+.msg{
   padding: 15px;
 }
 
-.error p{
+.msg p{
   margin:0;
+}
+
+.msg.error{
+  background: #ff9999;
+}
+
+.msg.success{
+  background: #99ff99;
 }
 
 
 /* LOGIN */
 .overlay-wrapper{
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
 }
 
 .overlay{
+  position: relative;
+  top: 20%;
+  max-width: 500px;
+  margin: auto;
+  background: #fff;
+  text-align: center;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0px 0px 5px 0px #000;
+}
+
+.overlay form{
+  padding: 20px;
+  position: relative;
+}
+
+.overlay input{
+  display: inline-block;
+  padding: 10px;
+  margin: 10px 0px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+}
+
+@media screen and (max-width: 500px){
+  #user-name{
+    display: none;
+  }
+
+  .overlay-wrapper{
+    position: absolute;
+    background: none;
+  }
+
+  .overlay{
+    width: 100%;
+    top:50px;
+    border-radius: 0px;
+  }
+
+  .overlay form{
+    padding: 0px;
     position: relative;
-    top: 20%;
-    max-width: 500px;
-    margin: auto;
-    background: #fff;
-    text-align: center;
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0px 0px 5px 0px #000;
+  }
+
+  .overlay input{
+    width: calc(100% - 32px);
+    border-radius: 0px;
+    margin: 10px 5px;
+  }
+
+
+  #branding{
+    margin-left: 0px;
+  }
+
+  #title{
+    font-size: 20pt
+  }
+
+  #account-links{
+    margin-right: 0px;
+    text-transform: uppercase;
+  }
 }
 
 .overlay .close{
   text-align: left;
+  border-bottom: 1px solid black;
+  background: #ddd;
 }
 
 .overlay .close p{
@@ -209,30 +304,64 @@ div.input-submit:hover{
   cursor:pointer;
   padding: 10px;
   margin: 0;
+  color:#000;
+}
+
+.overlay .close p i {
+  font-size: 16px;
 }
 
 .overlay .close p:hover{
-  background: #aaa;
-}
-
-.overlay form{
-  padding: 20px;
-}
-
-.overlay input{
-    padding: 10px;
-    margin: 10px 0px;
-    border: 1px solid #aaa;
-    border-radius: 3px;
+  background: #f93131;
+  color:#fff;
 }
 
 .overlay input[type=submit]{
-    background: #ddd;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
+  background: #ddd;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
 }
 
 .overlay input[type=submit]:hover{
-    background: #aaa;
+  background: #aaa;
+}
+
+/* Friends */
+#friend-list{
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.friend-item{
+  position: relative;
+  padding: 10px;
+  text-align: left;
+  margin: 3px;
+  background: #ddd;
+}
+
+.friend-item:hover{
+  background: #aaa;
+}
+
+.friend-remove{
+  position: absolute;
+  right: 0;
+  top:0;
+  padding: 0px 10px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.friend-remove i{
+  display: inline-block;
+}
+
+.friend-remove:hover{
+  background: #f93131;
 }

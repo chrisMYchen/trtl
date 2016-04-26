@@ -5,8 +5,10 @@ function postNotes(){
 function postHandler(data){
   data.preventDefault();
   var post = $(".input-content").val();
-  var privacy = getPrivacy();
-  postNote(post, privacy);
+  if(post.length > 0){
+    var privacy = getPrivacy();
+    postNote(post, privacy); 
+  }
 }
 
 function postNote(post, privacy){
@@ -19,6 +21,7 @@ function postNote(post, privacy){
     private: privacy
   }
 
+  console.log(noteInfo);
   $.post("/postNote", noteInfo, function(res){
     var response = JSON.parse(res);
     if(response.error != "no-error"){

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /gpfs/main/home/hk125/course/cs032/trtl/scavenger/scavenger/src/main/java/edu/brown/cs/ebwhite/geo/package-info.java
 /gpfs/main/home/hk125/course/cs032/trtl/scavenger/scavenger/src/main/java/edu/brown/cs/ebwhite/note/package-info.java
 /gpfs/main/home/hk125/course/cs032/trtl/scavenger/scavenger/src/main/java/edu/brown/cs/ebwhite/database/Db.java
@@ -20,3 +21,27 @@
 /gpfs/main/home/hk125/course/cs032/trtl/scavenger/scavenger/src/main/java/edu/brown/cs/ebwhite/database/TurtleQuery.java
 /gpfs/main/home/hk125/course/cs032/trtl/scavenger/scavenger/src/main/java/edu/brown/cs/ebwhite/database/package-info.java
 /gpfs/main/home/hk125/course/cs032/trtl/scavenger/scavenger/src/main/java/edu/brown/cs/ebwhite/scavenger/Main.java
+=======
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/database/package-info.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/friends/Friend.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/note/package-info.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/database/EntityUpdater.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/geo/LatLong.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/user/package-info.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/note/NoteRanker.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/user/UserBean.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/database/CacheLayer.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/user/UserProxy.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/user/EntityProxy.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/database/EntityCreator.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/note/Note.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/entities/AbstractEntity.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/scavenger/Main.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/geo/package-info.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/database/Db.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/user/Entity.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/user/User.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/scavenger/SparkServer.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/entities/Entity.java
+/gpfs/main/home/kzliu/course/cs032/trtl/src/main/java/edu/brown/cs/ebwhite/database/TurtleQuery.java
+>>>>>>> d0c4e3bd2c1ef6797af3754772a42fa5c5061832

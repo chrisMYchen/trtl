@@ -20,6 +20,12 @@ function loginSetup(){
 
   /* Submit login info */
   $("#login-form").submit(loginSubmit);
+
+  /* Cookies! */
+  checkLoginCookie();
+
+  /* Logout*/
+  $("#logout-button").click(logout)
 }
 
 function openLoginDialog(){
@@ -46,19 +52,26 @@ function sendLogin(){
   $.post("/login", data, function(response){
     var res = JSON.parse(response);
     console.log(res);
-    if(res.error = "no-error"){
+    if((res.error == "no-error") && (res.userID != -1)){
       login(res.userID);
       closeLoginDialog();
     }
     else{
+      $("#login-form")[0].reset();
       loginError(res.error);
     }
   });
 }
 
 function login(userID){
-  userInfo = {id: userID};
-  setLoginMode(true);
+  var req = {userID: userID};
+
+  $.post("/getUser", req, function(data){
+    var res = JSON.parse(data);
+    userInfo = {id: userID, username: res.username};
+    setLoginMode(true);
+    setLoginCookie(userID);
+  });
 }
 
 function loginError(message){
@@ -71,17 +84,58 @@ function loginError(message){
 
 function setLoginMode(value){
   if(value){
-    $("#account-links").hide();
-    $("#user-name").html("Welcome " + userInfo.id);
-    $("#user-info").show();
-    $('#privacy').show();
+    $("#user-name").html("Welcome " + userInfo.username);
+    $(".loggedin").toggleClass("hidden", false);
+    $(".loggedout").toggleClass("hidden", true);
   }
   else{
-    $("#account-links").show();
-    $("#user-info").hide();
     $("#user-name").html("");
-    $('#privacy').show();
+    $(".loggedin").toggleClass("hidden", true);
+    $(".loggedout").toggleClass("hidden", false);
   }
+}
+
+function logout(){
+  removeLoginCookie();
+  setLoginMode(false);
+  window.location.reload();
+}
+
+
+/***********************/
+/** Cookie Management **/
+/***********************/
+function checkLoginCookie(){
+  var cookie = getCookie("userid");
+  console.log(cookie);
+  if (cookie != null){
+    login(parseInt(cookie));
+  }
+}
+
+function setLoginCookie(userID){
+  var cookie = "userid=" + userID + ";";
+  console.log(cookie);
+  document.cookie = cookie;
+}
+
+function removeLoginCookie(){
+  document.cookie = "userid=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+}
+
+function getCookie(name){
+  var cname = name +"=";
+  var cookie = document.cookie.split(";");
+  for( var i = 0; i < cookie.length; i++){
+    var c = cookie[i];
+    while (c.charAt(0)==' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(cname) == 0) {
+      return c.substring(cname.length,c.length);
+    }
+  }
+    return null;
 }
 
 /*********************************/
@@ -102,7 +156,14 @@ function signupSetup(){
     openSignupDialog();
   });
 
-  $("#signup-form input[name=uname]").on("input", usernameCheck);
+  /* Reset form*/
+  $("#signup-form").on("reset", function(){
+    $("#friend-form input[name=username]").css("background", "#FFF");
+  });
+
+  $("#signup-form input[name=username]").on("input", function(){
+    usernameCheck($(this), "#FAA", "#AFA");
+  });
 
   $("#signup-form").submit(signupSubmit);
 }
@@ -148,26 +209,24 @@ function signupError(message){
   elem.show();
 }
 
-function usernameCheck(e){
-  var inputElem = $(this);
-  var uname = inputElem.val();
+function usernameCheck(elem, exists, notexists){
+  var uname = elem.val();
 
-
-  if(uname.length > 3){
+  if(uname.length > 2){
     $.post("/checkUsername", {username: uname}, function(response){
       var res = JSON.parse(response);
       console.log(res);
       if(res.error == "no-error"){
         if(res.exists){
-          inputElem.css("background", "#F99");
+          elem.css("background", exists);
         }
         else{
-          inputElem.css("background", "#9F9");
+          elem.css("background", notexists);
         }
       }
     });
   }
   else{
-    inputElem.css("background", "#fff");
+    elem.css("background", "#fff");
   }
 }
