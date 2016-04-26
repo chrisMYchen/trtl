@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.brown.cs.ebwhite.database.Db;
+import edu.brown.cs.ebwhite.database.TurtleQuery;
 
 /**
  * Interact with the friend system.
@@ -26,16 +27,23 @@ public class Friend {
    * @throws SQLException
    *           if there is an error with the query
    */
-  public static void addFriend(int userID, int friendID) throws SQLException {
+  public static boolean addFriend(int userID, String friendUsername)
+      throws SQLException {
     String post = "INSERT INTO user_friend VALUES (?, ?), (?, ?)";
-
-    try (Connection conn = Db.getConnection()) {
-      try (PreparedStatement prep = conn.prepareStatement(post)) {
-        prep.setInt(1, userID);
-        prep.setInt(2, friendID);
-        prep.setInt(3, friendID);
-        prep.setInt(4, userID);
-        prep.executeUpdate();
+    int friendID = -1;
+    friendID = TurtleQuery.getUserID(friendUsername);
+    if (friendID == -1) {
+      return false;
+    } else {
+      try (Connection conn = Db.getConnection()) {
+        try (PreparedStatement prep = conn.prepareStatement(post)) {
+          prep.setInt(1, userID);
+          prep.setInt(2, friendID);
+          prep.setInt(3, friendID);
+          prep.setInt(4, userID);
+          prep.executeUpdate();
+          return true;
+        }
       }
     }
 
@@ -50,16 +58,23 @@ public class Friend {
    * @throws SQLException
    *           if there is an error with the query
    */
-  public static void removeFriend(int userID, int friendID) throws SQLException {
+  public static boolean removeFriend(int userID, String friendUsername)
+      throws SQLException {
     String post = "DELETE FROM user_friend WHERE (userid = ? AND friendid = ?) OR (userid = ? AND friendid = ?)";
-
-    try (Connection conn = Db.getConnection()) {
-      try (PreparedStatement prep = conn.prepareStatement(post)) {
-        prep.setInt(1, userID);
-        prep.setInt(2, friendID);
-        prep.setInt(3, friendID);
-        prep.setInt(4, userID);
-        prep.executeUpdate();
+    int friendID = -1;
+    friendID = TurtleQuery.getUserID(friendUsername);
+    if (friendID == -1) {
+      return false;
+    } else {
+      try (Connection conn = Db.getConnection()) {
+        try (PreparedStatement prep = conn.prepareStatement(post)) {
+          prep.setInt(1, userID);
+          prep.setInt(2, friendID);
+          prep.setInt(3, friendID);
+          prep.setInt(4, userID);
+          prep.executeUpdate();
+          return true;
+        }
       }
     }
   }

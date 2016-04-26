@@ -39,7 +39,7 @@ public class SparkServer {
 
   }
 
-  public void run(){
+  public void run() {
     Spark.get("/", new HomeHandler(), new FreeMarkerEngine());
     Spark.get("/home", new HomeHandler(), new FreeMarkerEngine());
     Spark.post("/getNotes", new GetNotes());
@@ -50,7 +50,7 @@ public class SparkServer {
     Spark.post("/checkUsername", new CheckUsername());
     Spark.post("/addFriend", new AddFriend());
     Spark.post("/removeFriend", new RemoveFriend());
-    Spark.post("/getFriends", new GetFriends());
+    Spark.post("/userInfo", new ProfileInfo());
 
   }
 
@@ -122,6 +122,7 @@ public class SparkServer {
       String message = "no-error";
       List<Note> notes = new ArrayList<>();
       try {
+        Spark.post("/getFriends", new GetFriends());
         // uID is -1 if not logged in
         int uID = Integer.parseInt(uIDstring);
         double lat = Double.parseDouble(latString);
@@ -189,14 +190,14 @@ public class SparkServer {
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String userIDstring = qm.value("userID");
-      String friendIDstring = qm.value("friendID");
+      String friendUsername = qm.value("friendUsername");
       String message = "no-error";
 
       try {
         int userID = Integer.parseInt(userIDstring);
-        int friendID = Integer.parseInt(friendIDstring);
-
-        Friend.addFriend(userID, friendID);
+        if (Friend.addFriend(userID, friendUsername)) {
+          message = "User with username doesn't exist";
+        }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
       } catch (NumberFormatException nfe) {
@@ -215,14 +216,13 @@ public class SparkServer {
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String userIDstring = qm.value("userID");
-      String friendIDstring = qm.value("friendID");
+      String friendUsername = qm.value("friendID");
       String message = "no-error";
-
       try {
         int userID = Integer.parseInt(userIDstring);
-        int friendID = Integer.parseInt(friendIDstring);
-
-        Friend.removeFriend(userID, friendID);
+        if (Friend.removeFriend(userID, friendUsername)) {
+          message = "Friend with username doesn't exist";
+        }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
       } catch (NumberFormatException nfe) {
@@ -237,32 +237,6 @@ public class SparkServer {
     }
   }
 
-  private class GetFriends implements Route {
-    @Override
-    public Object handle(final Request req, final Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String userIDstring = qm.value("userID");
-      String message = "no-error";
-      List<Integer> friends = new ArrayList<>();
-
-      try {
-        int userID = Integer.parseInt(userIDstring);
-
-        friends = Friend.getFriends(userID);
-
-      } catch (NullPointerException np) {
-        message = "Fields not filled. smtn null.";
-      } catch (NumberFormatException nfe) {
-        message = "number format exception.";
-      } catch (SQLException e) {
-        message = "SQL error when adding friend.";
-      }
-      Map<String, Object> variables = new ImmutableMap.Builder()
-          .put("friends", friends).put("error", message).build();
-
-      return GSON.toJson(variables);
-    }
-  }
 
   private class NewUser implements Route {
     @Override
@@ -320,10 +294,11 @@ public class SparkServer {
         message = e.getMessage();
       }
       Map<String, Object> variables = new ImmutableMap.Builder()
-          .put("error", message).put("userid", uID).build();
+          .put("error", message).put("userID", uID).build();
       return GSON.toJson(variables);
     }
   }
+
   private class CheckUsername implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -342,8 +317,8 @@ public class SparkServer {
         message = "SQL error.";
       }
 
-      Map<String, Object> variables = new ImmutableMap.Builder().put("error",
-          message).put("exists", exists).build();
+      Map<String, Object> variables = new ImmutableMap.Builder()
+          .put("error", message).put("exists", exists).build();
       return GSON.toJson(variables);
     }
   }
