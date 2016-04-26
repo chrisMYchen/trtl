@@ -161,8 +161,9 @@ public class SparkServer {
       String content = qm.value("text");
       String privacy = qm.value("private");
       String message = "no-error";
+
       if (content.equals("")) {
-      try {
+        try {
           int uID = Integer.parseInt(uIDstring);
           double lat = Double.parseDouble(latString);
           double lon = Double.parseDouble(lonString);
