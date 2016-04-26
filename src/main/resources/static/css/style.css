@@ -33,9 +33,9 @@ div#nav {
 }
 
 .menu-item{
+  position: relative;
   display: flex;
   justify-content:center;
-  align-content:center;
   flex-direction:column;
   padding: 0px 10px;
   cursor: pointer;
@@ -54,16 +54,32 @@ div#nav {
 }
 
 #account-links{
-    margin-right: 35px;
-    text-transform: uppercase;
+  margin-right: 35px;
+  text-transform: uppercase;
 }
 
 #user-name{
- text-transform: none;   
+  text-transform: none;
 }
 
 .hidden{
     display:none;
+}
+
+/* Nav dropdown */
+#nav .dropdown{
+  position: absolute;
+  top: 50px;
+  left: 0;
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0px 0px 5px 0px #000;
+  text-transform: none;
+}
+
+#nav .dropdown p{
+  margin: 0px;
+  white-space: nowrap;
 }
 
 /* posts */
@@ -98,6 +114,11 @@ div#nav {
 .post-user > div{
     display: inline-block;
     margin: 5px;
+}
+
+.post-user .anon{
+  color: #777;
+  text-transform: uppercase;
 }
 
 a.post-handle{

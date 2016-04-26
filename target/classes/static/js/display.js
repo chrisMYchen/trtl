@@ -33,7 +33,7 @@ function displayCallback(time){
   var scrollPos = $("#posts").height() - $(window).scrollTop();
   var threshold = $(window).height() + 50;
   if(scrollPos < threshold){
-    getNotes(locationInfo.pos, time, 5000);
+    getNotes(locationInfo.pos, time, 10000);
   }
 }
 
@@ -47,7 +47,6 @@ function getRange(){
     }
   }
   var range = {min: last + 1, max: last + 11};
-  console.log(range);
   return range;
 }
 
@@ -55,32 +54,52 @@ function notesDOM(notes, start){
    for(var i = 0; i < notes.length; i++){
        var note = notes[i];
        note.order = start + i;
-       var compiledNote = processNote(note);
-       var dom = formatNote(compiledNote);
+       var dom = $("<div></div>").attr("class","post").attr("data-order", note.order);
        $("#posts").append(dom);
+       note.dom = dom;
+       processNote(note);
    }
 }
 
 function processNote(note){
-  var user = {userid: note.userid}
-
   var compiledNote = {
-    content:note.text,
-    user:user,
+    content: note.text,
+    dom: note.dom,
     time: new Date(note.timestamp),
     order: note.order
   };
-  return compiledNote;
+
+  if((note.user) && (note.user.id) && (note.user.id != -1)){
+    var userReq = {userID: note.user.id};
+    $.post("/getUser", userReq, function(data){
+      var res = JSON.parse(data);
+      if(res.error == "no-error"){
+        compiledNote.user = {username: res.username};
+        formatNote(compiledNote);
+      }
+      else{
+        formatNote(compiledNote);
+      }
+    });
+  }
+  else{
+    formatNote(compiledNote);
+  }
 }
 
 function formatNote(note){
-  var dom = $("<div></div>").attr("class","post").attr("data-order", note.order);
-
+  var dom = note.dom;
   /* User */
   var user = $("<div></div>").attr("class","post-user");
-  var userrn = $("<div></div>").attr("class","post-realname").append(note.fullname);
-  var handle = $("<a></a>").attr("class","post-handle").attr("href","/user/" + note.handle).append("@" + note.handle);;
-  user.append(userrn).append(handle);
+  if(note.user){
+    /*var userrn = $("<div></div>").attr("class","post-realname").append(note.user.fullname);*/
+    var handle = $("<a></a>").attr("class","post-handle").attr("href","/user/" + note.user.username).append("@" + note.user.username);
+    user.append(handle);
+  }
+  else{
+    var anon = $("<div></div>").attr("class","anon").append("Anonymous");
+    user.append(anon);
+  }
 
   /* Content */
   var content = $("<div></div>").attr("class","post-content").append(note.content);
@@ -89,19 +108,24 @@ function formatNote(note){
   var timestring = formatTime(note.time);
   var meta = $("<div></div>").attr("class","post-meta");
   var time = $("<div></div>").attr("class","post-time").append(timestring);
-  var share = $("<a></a>").attr("class","post-share").append("Share");
-  meta.append(time).append(share);
+  meta.append(time);
 
   dom.append(user).append(content).append(meta);
-  return dom;
 }
 
 function formatTime(time){
-  var date = time.toDateString();
-  var hours = time.getHours();
-  var minutes = time.getMinutes();
-  var timestring = hours + ":" + minutes + " " + date;
-  return timestring;
+  var dateOptions = {
+      weekday: 'short',
+      day: "numeric",
+      month: "short",
+  }
+  var timeOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  var timestring = time.toLocaleTimeString('en-US', timeOptions);
+  var datestring = time.toLocaleDateString('en-US', dateOptions);
+  return timestring + " " + datestring;
 }
 
 function getNotes(location, timestamp, radius){
@@ -115,14 +139,12 @@ function getNotes(location, timestamp, radius){
     maxPost: range.max,
     radius: radius
   }
-  console.log(req);
   if(userInfo != null){
     req.userID = userInfo.id;
   }
 
   $.post("/getNotes", req, function(data){
     var res = JSON.parse(data);
-    console.log(res);
     if(res.error == "no-error"){
       notesDOM(res.notes, range.min);
     }

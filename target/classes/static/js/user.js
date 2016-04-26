@@ -52,11 +52,12 @@ function sendLogin(){
   $.post("/login", data, function(response){
     var res = JSON.parse(response);
     console.log(res);
-    if(res.error = "no-error"){
+    if((res.error == "no-error") && (res.userID != -1)){
       login(res.userID);
       closeLoginDialog();
     }
     else{
+      $("#login-form")[0].reset();
       loginError(res.error);
     }
   });
@@ -64,11 +65,9 @@ function sendLogin(){
 
 function login(userID){
   var req = {userID: userID};
-  
+
   $.post("/getUser", req, function(data){
-    console.log(data);
     var res = JSON.parse(data);
-    console.log(res);
     userInfo = {id: userID, username: res.username};
     setLoginMode(true);
     setLoginCookie(userID);
@@ -99,6 +98,7 @@ function setLoginMode(value){
 function logout(){
   removeLoginCookie();
   setLoginMode(false);
+  window.location.reload();
 }
 
 

@@ -65,11 +65,9 @@ function sendLogin(){
 
 function login(userID){
   var req = {userID: userID};
-  
+
   $.post("/getUser", req, function(data){
-    console.log(data);
     var res = JSON.parse(data);
-    console.log(res);
     userInfo = {id: userID, username: res.username};
     setLoginMode(true);
     setLoginCookie(userID);
@@ -100,6 +98,7 @@ function setLoginMode(value){
 function logout(){
   removeLoginCookie();
   setLoginMode(false);
+  window.location.reload();
 }
 
 

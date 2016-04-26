@@ -5,6 +5,7 @@
   <meta name="theme-color" content="#FFBB8B">
   <title>${title}</title>
   <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:400,600,300' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
   <script src="/js/main.js"></script>
   <script src="/js/location.js"></script>
@@ -45,13 +46,16 @@
     <div id="branding">
       <div id="title" class="menu-item">Trtl.</div>
     </div>
-    <div id="nav-meta">
-      <div id="location" class="menu-item"></div>
-    </div>
     <div id="account-links">
+      <div id="user-name" class="menu-item account loggedin hidden"></div>
+      <div id="location" class="menu-item">
+        <div class="dropdown"></div>
+      </div>
       <div id="signup-button" class="menu-item account loggedout">Sign-Up</div>
       <div id="login-button" class="menu-item account loggedout">Login</div>
-      <div id="user-name" class="menu-item account loggedin hidden"></div>
+      <div id="friends-button" class="menu-item loggedin hidden">
+        <i class="material-icons">people</i>
+      </div>
       <div id="logout-button" class="menu-item account loggedin hidden">Logout</div>
     </div>
   </div>
