@@ -1,5 +1,5 @@
 var locationInfo = {pos: null};
-var userInfo = {id: 1};
+var userInfo = null;
 
 $(function(){
     loginSetup();

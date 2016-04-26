@@ -29,18 +29,23 @@ function openLoginDialog(){
 function closeLoginDialog(){
   $("#login-wrapper").hide();
   $("#login-form")[0].reset();
+  $("#login-error").hide();
+  $("#login-error").empty();
 }
 
 function loginSubmit(e){
   e.preventDefault();
   $("#login-error").hide();
   $("#login-error").empty();
+  sendLogin();
 }
 
 function sendLogin(){
   var data = $("#login-form").serialize();
+  console.log(data);
   $.post("/login", data, function(response){
     var res = JSON.parse(response);
+    console.log(res);
     if(res.error = "no-error"){
       login(res.userID);
       closeLoginDialog();
@@ -52,7 +57,7 @@ function sendLogin(){
 }
 
 function login(userID){
-  userInfo.id = userID;
+  userInfo = {id: userID};
   setLoginMode(true);
 }
 
@@ -124,6 +129,7 @@ function sendSignup(){
   console.log(data);
   $.post("/newUser", data, function(response){
     var res = JSON.parse(response);
+    console.log(res);
     if(res.error == "no-error"){
       login(res.userID);
       closeSignupDialog();
