@@ -122,7 +122,6 @@ public class SparkServer {
       String message = "no-error";
       List<Note> notes = new ArrayList<>();
       try {
-        Spark.post("/getFriends", new GetFriends());
         // uID is -1 if not logged in
         int uID = Integer.parseInt(uIDstring);
         double lat = Double.parseDouble(latString);
@@ -179,7 +178,7 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = "SQL error when posting note: " + e.getMessage();
       }
-      Map<String, Object> variables = new ImmutableMap.Builder().put("error",
+      Map<String, Object> variables = new userIDImmutableMap.Builder().put("error",
           message).build();
       return GSON.toJson(variables);
     }
@@ -208,7 +207,7 @@ public class SparkServer {
       Map<String, Object> variables = new ImmutableMap.Builder().put("error",
           message).build();
       return GSON.toJson(variables);
-    }
+    }userID
   }
 
   private class RemoveFriend implements Route {
