@@ -101,7 +101,7 @@ public class SparkServer {
         message = "Number Format Exception: " + nfe.getMessage();
       } catch (SQLException e) {
         // TODO Auto-generated catch block
-        message = "SQL error when posting note: " + e.getMessage();
+        message = "SQL error when getting note: " + e.getMessage();
       }
 //      for (Note n : notes) {
 //        System.out.println(n)
