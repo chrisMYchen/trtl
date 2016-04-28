@@ -32,11 +32,17 @@ import edu.brown.cs.ebwhite.user.UserProxy;
 public class SparkServer {
   Gson GSON;
 
+  public SparkServer(int port, String keystore, String keypass) {
+    GSON = new Gson();
+    Spark.setPort(port);
+    Spark.externalStaticFileLocation("src/main/resources/static");
+    Spark.setSecure(keystore, keypass, null, null);
+  }
+
   public SparkServer(int port) {
     GSON = new Gson();
     Spark.setPort(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
-
   }
 
   public void run() {

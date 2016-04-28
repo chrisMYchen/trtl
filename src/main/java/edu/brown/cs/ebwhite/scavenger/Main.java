@@ -21,6 +21,8 @@ public class Main {
     parser.accepts("gui");
     parser.accepts("port").withRequiredArg().ofType(Integer.class);
     parser.accepts("database").withRequiredArg().ofType(String.class);
+    OptionSpec<String> secure = parser.accepts("keystore").withRequiredArg().ofType(String.class);
+    parser.accepts("keypass").requiredIf(secure).withRequiredArg().ofType(String.class);
     OptionSpec<String> stringSpec = parser.nonOptions().ofType(String.class);
     OptionSet options = parser.parse(args);
 
@@ -49,6 +51,11 @@ public class Main {
     }
 
     if (options.has("gui")) {
+      if(options.has(secure)){
+        String keystore = (String) options.valueOf(secure);
+        String keypass = (String) options.valueOf("keypass");
+        SparkServer s = new SparkServer(port, keystore, keypass);
+      }
       /* Start spark, etc. */
       SparkServer s = new SparkServer(port);
       s.run();
