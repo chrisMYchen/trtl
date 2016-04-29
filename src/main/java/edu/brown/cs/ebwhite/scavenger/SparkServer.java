@@ -34,7 +34,7 @@ public class SparkServer {
 
   public SparkServer(int port, String keystore, String keypass) {
     GSON = new Gson();
-    Spark.setPort(port);
+    Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.setSecure(keystore, keypass, null, null);
   }
