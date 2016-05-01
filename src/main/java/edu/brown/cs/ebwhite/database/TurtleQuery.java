@@ -80,9 +80,9 @@ public class TurtleQuery {
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp) throws SQLException {
 
-    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_friend as uf WHERE "
+    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_follower as uf WHERE "
         + " (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp < ?) AND "
-        + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.userid = ? AND uf.friendid = n.userid)) "
+        + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
         + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
@@ -175,9 +175,9 @@ public class TurtleQuery {
   public static List<Note> updateNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp) throws SQLException {
-    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_friend as uf WHERE "
+    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_follower as uf WHERE "
         + " (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp >= ?) AND "
-        + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.userid = ? AND uf.friendid = n.userid)) "
+        + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
         + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
@@ -213,7 +213,7 @@ public class TurtleQuery {
 
   public static int loginValid(String username, String password)
       throws SQLException {
-    String query = "SELECT id from user WHERE username = ? AND password = ? LIMIT 1";
+    String query = "SELECT id from user WHERE LOWER(username) = LOWER(?) AND password = ? LIMIT 1";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(query)) {
         prep.setString(1, username);
@@ -266,7 +266,7 @@ public class TurtleQuery {
 
   public static int addUser(String username, String password, String firstname,
       String lastname, String email, int phone) throws SQLException {
-    String post = "INSERT INTO usergedInTest VALUES (NULL, ?, ?, ?, ?, ?, ?);";
+    String post = "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?);";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
         prep.setString(1, username);
@@ -284,7 +284,7 @@ public class TurtleQuery {
   public static int getUserID(String username) throws SQLException {
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn
-          .prepareStatement("SELECT id FROM user WHERE username=? LIMIT 1;")) {
+          .prepareStatement("SELECT id FROM user WHERE LOWER(username)= LOWER(?) LIMIT 1;")) {
         prep.setString(1, username);
         try (ResultSet rs = prep.executeQuery()) {
           int uID = -1;
