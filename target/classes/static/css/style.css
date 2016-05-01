@@ -1,28 +1,29 @@
 body {
   margin: 0;
-  font-family: serif;
+  font-family: 'Raleway', serif;
   background: #eee;
 }
 
 p{
-  font-family: serif;
+  font-family: 'Raleway', serif;
 }
 
 div{
-  font-family: serif;
+  font-family: 'Raleway', serif;
 }
 
 /* Header */
 div#nav {
   height: 50px;
   box-shadow: 0px 0px 5px 0px #000;
-  background: #FFBB8B;
+  background: #41717B;
   display: flex;
   justify-content: space-between;
   align-content: center;
   position: fixed;
   width: 100%;
   z-index: 10;
+  color: white;
 }
 
 #nav > div{
@@ -51,7 +52,8 @@ div#nav {
 }
 
 #title{
-  font-size: 20pt
+  font-size: 20pt;
+  font-family: "TRTL-font";
 }
 
 #account-links{

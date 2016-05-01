@@ -1,28 +1,29 @@
 body {
   margin: 0;
-  font-family: serif;
+  font-family: 'Raleway', serif;
   background: #eee;
 }
 
 p{
-  font-family: serif;
+  font-family: 'Raleway', serif;
 }
 
 div{
-  font-family: serif;
+  font-family: 'Raleway', serif;
 }
 
 /* Header */
 div#nav {
   height: 50px;
   box-shadow: 0px 0px 5px 0px #000;
-  background: #FFBB8B;
+  background: #A2D85A;
   display: flex;
   justify-content: space-between;
   align-content: center;
   position: fixed;
   width: 100%;
   z-index: 10;
+  color: #325400;
 }
 
 #nav > div{
@@ -51,7 +52,8 @@ div#nav {
 }
 
 #title{
-  font-size: 20pt
+  font-size: 20pt;
+  font-family: "TRTL-font";
 }
 
 #account-links{
@@ -77,11 +79,21 @@ div#nav {
   padding: 10px;
   box-shadow: 0px 0px 5px 0px #000;
   text-transform: none;
-  min-width: 100px;
 }
 
 #nav .dropdown p{
-  margin: 0px;
+  margin: 2px;
+  color: black;
+  border-radius: 2px;
+  padding: 3px;
+  background: #EEE;
+  border: 1px dashed #41717B;
+  display: inline-block;
+}
+
+#nav .dropdown .label{
+  color: #666;
+  margin: 0px 3px;
 }
 
 /* posts */

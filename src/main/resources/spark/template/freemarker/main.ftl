@@ -5,6 +5,7 @@
   <meta name="theme-color" content="#FFBB8B">
   <title>${title}</title>
   <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:400,600,300' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,500,200,600' rel='stylesheet' type='text/css'>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
   <script src="/js/main.js"></script>
@@ -15,6 +16,7 @@
   <script src="/js/friend.js"></script>
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/font.css">
 </head>
 <body>
   <div id="login-wrapper" class="overlay-wrapper" style="display:none">
@@ -56,7 +58,7 @@
   </div>
   <div id="nav">
     <div id="branding">
-      <div id="title" class="menu-item">Trtl.</div>
+      <div id="title" class="menu-item">trtl</div>
     </div>
     <div id="account-links">
       <div id="user-name" class="menu-item account loggedin hidden"></div>

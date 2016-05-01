@@ -10,6 +10,14 @@ $(function(){
     postNotes();
 
     $("#branding").click(function(){
-        location.href="/";
+        location.reload();
+    });
+
+    $(".menu-item").on("click", ".dropdown", function(e){
+      e.stopPropagation();
+    });
+
+    $(".menu-item").on("click", function(e){
+      $(this).children(".dropdown").toggle();
     });
 });
