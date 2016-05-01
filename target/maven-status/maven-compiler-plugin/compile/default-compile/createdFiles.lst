@@ -22,8 +22,8 @@ edu/brown/cs/ebwhite/scavenger/SparkServer$getUserInfoFromId.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$CheckUsername.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$PostNote.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$ProfileInfo.class
-edu/brown/cs/ebwhite/scavenger/SparkServer$AddFriend.class
 edu/brown/cs/ebwhite/user/UserProxy.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$AddFriend.class
 edu/brown/cs/ebwhite/note/Note.class
 edu/brown/cs/ebwhite/scavenger/Main.class
 edu/brown/cs/ebwhite/user/User.class
