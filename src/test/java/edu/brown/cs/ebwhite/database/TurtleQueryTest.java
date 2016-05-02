@@ -21,54 +21,72 @@ public class TurtleQueryTest {
   public static void setUpClass() throws Exception {
     try {
       Db.database("testDB.sqlite3");
+
+      // String createUserTable = "CREATE TABLE user "
+      // +
+      // "(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, "
+      // + "firstname TEXT, lastname TEXT, email TEXT, phone INTEGER);";
+      // String createNotesTable = "CREATE TABLE notes "
+      // + "(id INTEGER PRIMARY KEY AUTOINCREMENT, userid INT, timestamp INT, "
+      // +
+      // "lat REAL, long REAL, coslat REAL, sinlat REAL, coslong REAL, sinlong REAL, "
+      // + "text TEXT, private INT, FOREIGN KEY (userid) "
+      // + "REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE);";
+      // String createFriendTable = "CREATE TABLE user_friend "
+      // + "(userid INTEGER, friendid INTEGER, FOREIGN KEY (friendid) "
+      // + "REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE);";
+      // try (Connection conn = Db.getConnection()) {
+      // try (PreparedStatement prep = conn.prepareStatement(createUserTable)) {
+      // prep.executeQuery();
+      // }
+      // try (PreparedStatement prep1 = conn.prepareStatement(createNotesTable))
+      // {
+      // prep1.executeQuery();
+      // }
+      // try (PreparedStatement prep2 =
+      // conn.prepareStatement(createFriendTable)) {
+      // prep2.executeQuery();
+      // }
+      // }
+
+      TurtleQuery.addUser("hk125", "hemang", "Hemang", "Kaul",
+          "hemangkaul@gmail.com", 1);
+      TurtleQuery.addUser("ebwhite", "eli", "Eli", "White",
+          "eliwhite@gmail.com", 2);
+      TurtleQuery.addUser("kzliu", "katie", "Katie", "Liu",
+          "katieliu@gmail.com", 3);
+      TurtleQuery.addUser("cchen", "chris", "Chris", "Chen",
+          "chrischen@gmail.com", 4);
+
+      Friend.addFriend(1, "ebwhite");
+
+      TurtleQuery.postNote(1, System.currentTimeMillis(), 41, -71,
+          "this is one note", 0);
+      TurtleQuery.postNote(1, System.currentTimeMillis(), 41, -71,
+          "this is another note", 0);
+      TurtleQuery.postNote(1, System.currentTimeMillis(), 41, -71,
+          "this is a private note", 1);
     } catch (ClassNotFoundException e1) {
       System.out.println("ERROR: could not connect to DB");
       e1.printStackTrace();
     }
 
-    // String createTables = "CREATE TABLE user "
-    // + "(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, "
-    // + "firstname TEXT, lastname TEXT, email TEXT, phone INTEGER);"
-    // + "CREATE TABLE notes "
-    // + "(id INTEGER PRIMARY KEY AUTOINCREMENT, userid INT, timestamp INT, "
-    // +
-    // "lat REAL, long REAL, coslat REAL, sinlat REAL, coslong REAL, sinlong REAL, "
-    // + "text TEXT, private INT, FOREIGN KEY (userid) "
-    // + "REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE);"
-    // + "CREATE TABLE user_friend "
-    // + "(userid INTEGER, friendid INTEGER, FOREIGN KEY (friendid) "
-    // + "REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE);";
-    // try (Connection conn = Db.getConnection()) {
-    // try (PreparedStatement prep = conn.prepareStatement(createTables)) {
-    // prep.execute();
-    // }
-    // }
-
-    TurtleQuery.addUser("hk125", "hemang", "Hemang", "Kaul",
-        "hemangkaul@gmail.com", 1);
-    TurtleQuery.addUser("ebwhite", "eli", "Eli", "White", "eliwhite@gmail.com",
-        2);
-    TurtleQuery.addUser("kzliu", "katie", "Katie", "Liu", "katieliu@gmail.com",
-        3);
-    TurtleQuery.addUser("cchen", "chris", "Chris", "Chen",
-        "chrischen@gmail.com", 4);
-
-    Friend.addFriend(1, "ebwhite");
-
-    TurtleQuery.postNote(1, System.currentTimeMillis(), 41, -71,
-        "this is one note", 0);
-    TurtleQuery.postNote(1, System.currentTimeMillis(), 41, -71,
-        "this is another note", 0);
-    TurtleQuery.postNote(1, System.currentTimeMillis(), 41, -71,
-        "this is a private note", 1);
   }
 
   @AfterClass
   public static void tearDownClass() throws Exception {
-    // String dropTables = "DROP TABLE user;" + "DROP TABLE notes;"
-    // + "DROP TABLE user_friend;";
+    // String dropUserTable = "DROP TABLE user;";
+    // String dropNotesTable = "DROP TABLE notes;";
+    // String dropFriendsTable = "DROP TABLE user_friend;";
     // try (Connection conn = Db.getConnection()) {
-    // try (PreparedStatement prep = conn.prepareStatement(dropTables)) {
+    // try (PreparedStatement prep = conn.prepareStatement(dropUserTable)) {
+    // prep.executeQuery();
+    // }
+    // try (PreparedStatement prep1 = conn.prepareStatement(dropNotesTable)) {
+    // prep1.executeQuery();
+    // }
+    // try (PreparedStatement prep2 = conn.prepareStatement(dropFriendsTable)) {
+    // prep2.executeQuery();
     // }
     // }
   }
@@ -94,9 +112,11 @@ public class TurtleQueryTest {
       List<Note> notFriendNotes = TurtleQuery.getNotes(3, here, 10, 0, 3,
           System.currentTimeMillis());
 
-      assertTrue(anonNotes.size() == 2);
+      // System.out.println(anonNotes.size());
+
+      assertTrue(anonNotes.size() == 3);
       assertTrue(loggedNotes.size() == 3);
-      assertTrue(notFriendNotes.size() == 2);
+      assertTrue(notFriendNotes.size() == 3);
       assertTrue(anonNotes.get(0).getText().equals("this is another note"));
       assertTrue(loggedNotes.get(0).getText().equals("this is a private note"));
       assertTrue(loggedNotes.get(1).getText().equals("this is another note"));
@@ -111,6 +131,8 @@ public class TurtleQueryTest {
   public void updateNotesTest() {
     LatLong here = new LatLong(41, -71);
     try {
+
+      Friend.removeFriend(4, "hk125");
       List<Note> beforeFriends = TurtleQuery.getNotes(4, here, 10, 0, 3,
           System.currentTimeMillis());
       Friend.addFriend(4, "hk125");

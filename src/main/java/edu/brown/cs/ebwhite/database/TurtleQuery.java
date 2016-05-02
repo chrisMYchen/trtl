@@ -266,7 +266,7 @@ public class TurtleQuery {
 
   public static int addUser(String username, String password, String firstname,
       String lastname, String email, int phone) throws SQLException {
-    String post = "INSERT INTO usergedInTest VALUES (NULL, ?, ?, ?, ?, ?, ?);";
+    String post = "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?);";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
         prep.setString(1, username);
@@ -300,6 +300,5 @@ public class TurtleQuery {
   public static double deg2rad(double deg) {
     return (deg * Math.PI / 180.0);
   }
-
 
 }
