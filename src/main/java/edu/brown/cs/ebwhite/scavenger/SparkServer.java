@@ -57,9 +57,9 @@ public class SparkServer {
     Spark.post("/accpetFollower", new AcceptFollower());
     Spark.post("/requestFollow", new RequestFollow());
     Spark.post("/unfollow", new Unfollow());
-    Spark.post("/userInfo", new ProfileInfo());
+    Spark.post("/userInfo", new UserInfo());
     Spark.post("/getUser", new getUserInfoFromId());
-
+    Spark.post("/myInfo", new MyInfo());
   }
 
   private class HomeHandler implements TemplateViewRoute {
@@ -389,7 +389,7 @@ public class SparkServer {
     }
   }
 
-  private class ProfileInfo implements Route {
+  private class UserInfo implements Route {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Object handle(final Request req, final Response res) {
@@ -411,8 +411,48 @@ public class SparkServer {
 
       if (user != null) {
         variables.put("firstname", user.getFirstName()).put(
-            "lastname", user.getLastName()).put("email",
-            user.getEmail());
+"lastname",
+            user.getLastName());
+
+        Set<String> followers = new HashSet<>();
+        for (int f : user.getFollowers()) {
+          User friend = new UserProxy(f);
+          followers.add(friend.getUsername());
+        }
+        variables.put("followers", followers);
+      }
+
+      Map<String, Object> map = variables.build();
+
+      return GSON.toJson(map);
+    }
+  }
+
+  private class MyInfo implements Route {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String userIDstring = qm.value("userID");
+
+      String message = "no-error";
+      User user = null;
+
+      try {
+        int userID = Integer.parseInt(userIDstring);
+        user = new UserProxy(userID);
+      } catch (NullPointerException np) {
+        message = "Fields not filled. smtn null.";
+      } catch (NumberFormatException nfe) {
+        message = "number format exception.";
+      }
+
+      Builder variables = new ImmutableMap.Builder().put("error", message);
+
+      if (user != null) {
+        variables.put("firstname", user.getFirstName())
+            .put("lastname", user.getLastName()).put("email", user.getEmail())
+            .put("username", user.getUsername());
 
         Set<String> followers = new HashSet<>();
         for (int f : user.getFollowers()) {
@@ -423,8 +463,8 @@ public class SparkServer {
 
         Set<String> pending = new HashSet<>();
         for (int f : user.getPending()) {
-          User friend = new UserProxy(f);
-          pending.add(friend.getUsername());
+          User pend = new UserProxy(f);
+          pending.add(pend.getUsername());
         }
         variables.put("pending", pending);
       }
