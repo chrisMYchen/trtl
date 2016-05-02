@@ -37,6 +37,7 @@ function closeLoginDialog(){
   $("#login-form")[0].reset();
   $("#login-error").hide();
   $("#login-error").empty();
+  $("#login-button").toggleClass("active", false);
 }
 
 function loginSubmit(e){
@@ -177,7 +178,7 @@ function closeSignupDialog(){
   $("#signup-form")[0].reset();
   $("#signup-error").hide();
   $("#signup-error").empty();
-
+  $("#signup-button").toggleClass("active", false);
 }
 
 function signupSubmit(e){

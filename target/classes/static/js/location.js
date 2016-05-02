@@ -33,11 +33,11 @@ function locationHandler(position){
 
   /* Create dropdown */
   locationInfo.pos = {lat: position.lat, lon: position.lng};
-  var lat = $("<p></p>").html("<b>lat:</b> &nbsp;&nbsp;"+ position.lat.toFixed(4));
-  var lng = $("<p></p>").html("<b>lng:</b> &nbsp;&nbsp;"+ position.lng.toFixed(4));
-  var elems = [lat, lng];
+  var lat = $("<p></p>").html("<span class='label'>lat:</span>"+ position.lat.toFixed(4));
+  var lng = $("<p></p>").html("<span class='label'>lng:</span>"+ position.lng.toFixed(4));
+  var wrapper = $("<p></p>").addClass("latlon").append(lat).append(lng);
 
-  locationDropdown(elems);
+  locationDropdown(wrapper);
 }
 
 function locationDropdown(elem){
@@ -50,7 +50,4 @@ function locationDropdown(elem){
 
   $("#location").append(div);
   div.toggle(false);
-  locDiv.click(function(){
-    div.toggle();
-  });
 }

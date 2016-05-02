@@ -1,15 +1,12 @@
 function displayNotes(){
   var time = Date.now();
-  initialLoad(time);
+  var radius = 100;
+  initialLoad(time, radius);
 
-  $(window).scroll(function(){
-    displayCallback(time);
-  });
-
-  update(time);
+  $(window).on("scroll", {time: time, radius: radius}, scrollCallback);
 }
 
-function initialLoad(time){
+function initialLoad(time, radius){
   var counter = 0;
   var intervalID = window.setInterval(function(){
     if(locationInfo.pos == null){
@@ -20,21 +17,55 @@ function initialLoad(time){
     }
     else{
       window.clearInterval(intervalID);
-      displayCallback(time);
+      getNotes(time, radius);
+      /*update(time, radius);*/
     }
   }, 2000);
 }
 
-function update(time){
-  /* Check for updates at interval, or use sockets */
-}
-
-function displayCallback(time){
+function scrollCallback(event){
+  var time = event.data.time;
+  var radius = event.data.radius;
   var scrollPos = $("#posts").height() - $(window).scrollTop();
   var threshold = $(window).height() + 50;
   if(scrollPos < threshold){
-    getNotes(locationInfo.pos, time, 100);
+    getNotes(time, radius);
   }
+}
+
+function getNotes(time, radius){
+  $(window).off("scroll", scrollCallback);
+  var range = getRange();
+  var req = {
+    userID: userInfo.id,
+    lat: locationInfo.pos.lat,
+    lon: locationInfo.pos.lon,
+    timestamp: time,
+    minPost: range.min,
+    maxPost: range.max,
+    radius: radius
+  }
+  if(userInfo != null){
+    req.userID = userInfo.id;
+  }
+
+  $.post("/getNotes", req, function(data){
+    var res = JSON.parse(data);
+    if(res.error == "no-error"){
+      notesDOM(res.notes, range.min);
+      setupScrollHandler(time, radius);
+    }
+    else{
+      displayError(res.error);
+      setupScrollHandler(time, radius);
+    }
+  }).fail(function(){
+    setupScrollHandler(time, radius);
+  });
+}
+
+function setupScrollHandler(time, radius){
+  $(window).on("scroll", {time: time, radius: radius}, scrollCallback);
 }
 
 function getRange(){
@@ -97,8 +128,9 @@ function formatNote(note){
     user.append(handle);
   }
   else{
+    var icon = $("<i></i>").addClass("material-icons").html("account_circle");
     var anon = $("<div></div>").attr("class","anon").append("Anonymous");
-    user.append(anon);
+    user.append(icon).append(anon);
   }
 
   /* Content */
@@ -126,32 +158,6 @@ function formatTime(time){
   var timestring = time.toLocaleTimeString('en-US', timeOptions);
   var datestring = time.toLocaleDateString('en-US', dateOptions);
   return timestring + " " + datestring;
-}
-
-function getNotes(location, timestamp, radius){
-  var range = getRange();
-  var req = {
-    userID: userInfo.id,
-    lat: locationInfo.pos.lat,
-    lon: locationInfo.pos.lon,
-    timestamp: timestamp,
-    minPost: range.min,
-    maxPost: range.max,
-    radius: radius
-  }
-  if(userInfo != null){
-    req.userID = userInfo.id;
-  }
-
-  $.post("/getNotes", req, function(data){
-    var res = JSON.parse(data);
-    if(res.error == "no-error"){
-      notesDOM(res.notes, range.min);
-    }
-    else{
-      displayError(res.error);
-    }
-  });
 }
 
 function displayError(message){

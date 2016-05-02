@@ -35,9 +35,9 @@ function locationHandler(position){
   locationInfo.pos = {lat: position.lat, lon: position.lng};
   var lat = $("<p></p>").html("<span class='label'>lat:</span>"+ position.lat.toFixed(4));
   var lng = $("<p></p>").html("<span class='label'>lng:</span>"+ position.lng.toFixed(4));
-  var elems = [lat, lng];
+  var wrapper = $("<p></p>").addClass("latlon").append(lat).append(lng);
 
-  locationDropdown(elems);
+  locationDropdown(wrapper);
 }
 
 function locationDropdown(elem){

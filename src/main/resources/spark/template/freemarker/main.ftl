@@ -14,9 +14,11 @@
   <script src="/js/post.js"></script>
   <script src="/js/user.js"></script>
   <script src="/js/friend.js"></script>
+  <script src="/js/update.js"></script>
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/font.css">
+  <link rel="stylesheet" href="/css/trtl-bold.css">
 </head>
 <body>
   <div id="login-wrapper" class="overlay-wrapper" style="display:none">

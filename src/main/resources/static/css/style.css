@@ -24,6 +24,7 @@ div#nav {
   width: 100%;
   z-index: 10;
   color: #325400;
+  font-size: 12pt;
 }
 
 #nav > div{
@@ -31,7 +32,7 @@ div#nav {
   justify-content:center;
   align-content:center;
   flex-direction:row;
-  padding: 0px 15px;
+  padding: 0px;
 }
 
 .menu-item{
@@ -39,11 +40,15 @@ div#nav {
   display: flex;
   justify-content:center;
   flex-direction:column;
-  padding: 0px 10px;
+  padding: 0px 5px;
   cursor: pointer;
 }
 
 .menu-item:hover{
+  background: rgba(255,255,255,0.5);
+}
+
+.menu-item.active{
   background: rgba(255,255,255,0.5);
 }
 
@@ -53,7 +58,7 @@ div#nav {
 
 #title{
   font-size: 20pt;
-  font-family: "TRTL-font";
+  font-family: "TRTL-bold";
 }
 
 #account-links{
@@ -86,9 +91,12 @@ div#nav {
   color: black;
   border-radius: 2px;
   padding: 3px;
+  display: inline-block;
+}
+
+.latlon{
   background: #EEE;
   border: 1px dashed #41717B;
-  display: inline-block;
 }
 
 #nav .dropdown .label{
@@ -112,7 +120,7 @@ div#nav {
 .post{
   background: #fff;
   box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
-  border-radius: 5px;
+  border-radius: 2px;
   overflow: hidden;
   margin: 20px;
 }
@@ -121,13 +129,20 @@ div#nav {
   padding: 10px;
 }
 
-.post-user{
-  background: #d9d9e0;
+div.post-user{
+  background: none;
+  padding-bottom: 0px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .post-user > div{
-  display: inline-block;
   margin: 5px;
+}
+
+.post-user > i{
+  color: #777;
 }
 
 .post-user .anon{
@@ -140,19 +155,20 @@ a.post-handle{
 }
 
 div.post-content{
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
   padding: 15px;
   font-size: 13pt;
+  white-space: pre-wrap;
 }
 
 .post-meta{
+  border-top: 1px solid #999;
   display: flex;
   justify-content: space-between;
-  color: #fff;
+  color: #555;
   text-transform: uppercase;
   font-size: 10pt;
-  background: #778;
+  font-weight: 400;
+  background: #ddd;
 }
 
 .post-meta a{
@@ -168,23 +184,9 @@ div.post-content{
 .input{
   background: #fff;
   box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
-  border-radius: 5px;
+  border-radius: 2px;
   overflow: hidden;
   margin: 20px;
-}
-
-div.input-submit{
-  padding: 10px;
-  background: none;
-  border:none;
-  color: white;
-  cursor: pointer;
-  font-size: 12pt;
-  text-transform: uppercase;
-}
-
-div.input-submit:hover{
-  background: rgba(255,255,255,0.2);
 }
 
 .input > textarea{
@@ -200,10 +202,25 @@ div.input-submit:hover{
 .input-controls{
   display: flex;
   justify-content: space-between;
-  color: #fff;
+  flex-direction: row-reverse;
+  color: #000;
   text-transform: uppercase;
   font-size: 10pt;
-  background: #778;
+  background: #ded;
+  border-top: 1px dashed #333;
+}
+
+div.input-submit{
+  right: 0;
+  padding: 10px;
+  background: none;
+  cursor: pointer;
+  font-size: 12pt;
+  text-transform: uppercase;
+}
+
+div.input-submit:hover{
+  background: rgba(0,0,0,0.2);
 }
 
 .input-controls select{
@@ -233,6 +250,7 @@ div.input-submit:hover{
   position: fixed;
   width: 100%;
   height: 100%;
+  overflow-y: auto;
   background: rgba(0,0,0,0.4);
 }
 
@@ -262,13 +280,11 @@ div.input-submit:hover{
 }
 
 @media screen and (max-width: 500px){
+  div#nav{
+    font-size: 11pt;
+  }
   #user-name{
     display: none;
-  }
-
-  .overlay-wrapper{
-    position: absolute;
-    background: none;
   }
 
   .overlay{
@@ -288,17 +304,27 @@ div.input-submit:hover{
     margin: 10px 5px;
   }
 
+  .input{
+    border-radius: 0px;
+    margin: 20px 0px;
+  }
+
+  .post{
+    border-radius: 0px;
+    overflow: hidden;
+    margin: 20px 0px;
+  }
 
   #branding{
     margin-left: 0px;
   }
 
   #title{
-    font-size: 20pt
+    font-size: 17pt;
   }
 
   #account-links{
-    margin-right: 0px;
+    margin-right: 5px;
     text-transform: uppercase;
   }
 }
