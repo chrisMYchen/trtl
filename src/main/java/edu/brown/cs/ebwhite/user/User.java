@@ -7,7 +7,7 @@ public interface User extends Entity {
   @Override
   int getId();
 
-  Set<Integer> getFriends();
+  Set<Integer> getFollowers();
 
   String getUsername();
 
@@ -16,6 +16,16 @@ public interface User extends Entity {
   String getLastName();
 
   String getEmail();
+
+  void addFollower(int f);
+
+  void removeFollower(int f);
+
+  Set<Integer> getPending();
+
+  void addPending(int f);
+
+  void removePending(int f);
 
   int getPhone();
 

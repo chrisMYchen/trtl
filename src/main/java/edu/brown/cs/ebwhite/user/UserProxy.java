@@ -12,35 +12,50 @@ import edu.brown.cs.ebwhite.database.Db;
 public class UserProxy extends EntityProxy<User> implements User {
   /**
    * Constructor for ActorProxy.
-   * @param id unique id representing actor
+   *
+   * @param id
+   *          unique id representing actor
    */
   public UserProxy(int id) {
     super(id);
   }
 
-  @Override
-  public Set<Integer> getFriends() {
-    fill();
-    return getInternal().getFriends();
-  }
+  // @Override
+  // public Set<Integer> getFriends() {
+  // fill();
+  // return getInternal().getFriends();
+  // }
 
   @Override
   protected void fillNew(Connection conn) throws SQLException {
-    Set<Integer> friends = new HashSet<>();
+    Set<Integer> followers = new HashSet<>();
+    Set<Integer> pending = new HashSet<>();
     String username = null;
     String firstname = null;
     String lastname = null;
     String email = null;
     int phone = -1;
 
-    String query = "SELECT friendid FROM user_friend WHERE userid=?;";
+    String query = "SELECT follower_id FROM user_follower WHERE userid=?;";
 
     try (PreparedStatement prep = conn.prepareStatement(query)) {
       prep.setInt(1, getId());
       try (ResultSet rs = prep.executeQuery()) {
         while (rs.next()) {
           int friendID = rs.getInt(1);
-          friends.add(friendID);
+          followers.add(friendID);
+        }
+      }
+    }
+
+    query = "SELECT pending_id FROM user_pending WHERE userid=?;";
+
+    try (PreparedStatement prep = conn.prepareStatement(query)) {
+      prep.setInt(1, getId());
+      try (ResultSet rs = prep.executeQuery()) {
+        while (rs.next()) {
+          int pendingID = rs.getInt(1);
+          pending.add(pendingID);
         }
       }
     }
@@ -59,8 +74,8 @@ public class UserProxy extends EntityProxy<User> implements User {
         }
       }
     }
-    setInternal(new UserBean(getId(), friends, username, firstname, lastname,
-        email, phone));
+    setInternal(new UserBean(getId(), followers, pending, username, firstname,
+        lastname, email, phone));
   }
 
   public static User ofName(String username) throws SQLException {
@@ -74,10 +89,8 @@ public class UserProxy extends EntityProxy<User> implements User {
           }
         }
       }
-
     }
     return null;
-
   }
 
   @Override
@@ -109,5 +122,52 @@ public class UserProxy extends EntityProxy<User> implements User {
     fill();
     return getInternal().getPhone();
   }
-}
 
+  // @Override
+  // public void addFriend(int f) {
+  // fill();
+  // getInternal().addFriend(f);
+  // }
+  //
+  // @Override
+  // public void removeFriend(int f) {
+  // fill();
+  // getInternal().removeFriend(f);
+  // }
+
+  @Override
+  public Set<Integer> getFollowers() {
+    fill();
+    return getInternal().getFollowers();
+  }
+
+  @Override
+  public void addFollower(int f) {
+    fill();
+    getInternal().addFollower(f);
+  }
+
+  @Override
+  public void removeFollower(int f) {
+    fill();
+    getInternal().removeFollower(f);
+  }
+
+  @Override
+  public Set<Integer> getPending() {
+    fill();
+    return getInternal().getPending();
+  }
+
+  @Override
+  public void addPending(int f) {
+    fill();
+    getInternal().addPending(f);
+  }
+
+  @Override
+  public void removePending(int f) {
+    fill();
+    getInternal().removePending(f);
+  }
+}
