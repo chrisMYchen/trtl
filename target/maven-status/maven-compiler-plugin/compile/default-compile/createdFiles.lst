@@ -1,1 +1,4 @@
 edu/brown/cs/ebwhite/scavenger/SparkServer$1.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$RequestFollow.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$Unfollow.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$AcceptFollower.class

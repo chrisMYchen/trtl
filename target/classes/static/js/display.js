@@ -18,7 +18,7 @@ function initialLoad(time, radius){
     else{
       window.clearInterval(intervalID);
       getNotes(time, radius);
-      update(time, radius);
+      /*update(time, radius);*/
     }
   }, 2000);
 }

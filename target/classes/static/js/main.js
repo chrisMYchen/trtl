@@ -4,7 +4,7 @@ var userInfo = {id: -1};
 $(function(){
     loginSetup();
     signupSetup();
-    friendSetup();
+    followSetup();
     locationStart();
     displayNotes();
     postNotes();
