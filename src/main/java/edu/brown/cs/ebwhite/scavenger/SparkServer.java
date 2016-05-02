@@ -410,8 +410,7 @@ public class SparkServer {
           message);
 
       if (user != null) {
-        variables.put("firstname", user.getFirstName()).put(
-"lastname",
+        variables.put("firstname", user.getFirstName()).put("lastname",
             user.getLastName());
 
         Set<String> followers = new HashSet<>();
