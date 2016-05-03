@@ -1,7 +1,7 @@
 /*************************/
 /** Friends Functionality **/
 /*************************/
-function friendSetup(){
+function followSetup(){
   /* Allow escape */
   $(document).keydown(function(e){
     if(e.which == 27){
@@ -51,7 +51,7 @@ function friendSubmit(e){
 function addFriend(){
   var friend = $("#friend-form input[name=friendname]").val();
   var data = {userID: userInfo.id, friendUsername: friend};
-  $.post("/addFriend", data, function(response){
+  $.post("/requestFollow", data, function(response){
     var res = JSON.parse(response);
     console.log(res);
     if((res.error == "no-error")){
@@ -111,7 +111,7 @@ function getFriendList(){
     var res = JSON.parse(data);
     console.log(res);
     if(res.error == "no-error"){
-      fillFriendList(res.friends);
+      fillFriendList(res.followers);
     }
     else{
       $("#friend-list").html(res.error);

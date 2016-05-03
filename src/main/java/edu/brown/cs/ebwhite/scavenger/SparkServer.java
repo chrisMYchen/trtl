@@ -54,8 +54,9 @@ public class SparkServer {
     Spark.post("/newUser", new NewUser());
     Spark.post("/login", new Login());
     Spark.post("/checkUsername", new CheckUsername());
-    Spark.post("/addFriend", new AddFriend());
-    Spark.post("/removeFriend", new RemoveFriend());
+    Spark.post("/accpetFollower", new AcceptFollower());
+    Spark.post("/requestFollow", new RequestFollow());
+    Spark.post("/unfollow", new Unfollow());
     Spark.post("/userInfo", new ProfileInfo());
     Spark.post("/getUser", new getUserInfoFromId());
 
@@ -206,7 +207,7 @@ public class SparkServer {
     }
   }
 
-  private class AddFriend implements Route {
+  private class RequestFollow implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -216,7 +217,7 @@ public class SparkServer {
 
       try {
         int userID = Integer.parseInt(userIDstring);
-        if (!Friend.addFriend(userID, friendUsername)) {
+        if (!Friend.requestFollow(userID, friendUsername)) {
           message = "User with username " + friendUsername + " doesn't exist";
         }
       } catch (NullPointerException np) {
@@ -225,6 +226,10 @@ public class SparkServer {
         message = "number format exception.";
       } catch (SQLException e) {
         message = "SQL error when adding friend.";
+        if (e.getErrorCode() == 19) {
+          message = "You're request to follow " + friendUsername
+              + " is already pending!";
+        }
       }
       Map<String, Object> variables = new ImmutableMap.Builder().put(
           "error", message).build();
@@ -232,7 +237,36 @@ public class SparkServer {
     }
   }
 
-  private class RemoveFriend implements Route {
+  private class AcceptFollower implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String userIDstring = qm.value("userID");
+      String friendUsername = qm.value("friendUsername");
+      String message = "no-error";
+
+      try {
+        int userID = Integer.parseInt(userIDstring);
+        if (!Friend.acceptPendingRequest(userID, friendUsername)) {
+          message = "User with username " + friendUsername + " doesn't exist";
+        }
+      } catch (NullPointerException np) {
+        message = "Fields not filled. smtn null.";
+      } catch (NumberFormatException nfe) {
+        message = "number format exception.";
+      } catch (SQLException e) {
+        message = "SQL error when adding friend.";
+        if (e.getErrorCode() == 19) {
+          message = "You're already follow " + friendUsername + "!";
+        }
+      }
+      Map<String, Object> variables = new ImmutableMap.Builder().put("error",
+          message).build();
+      return GSON.toJson(variables);
+    }
+  }
+
+  private class Unfollow implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -241,7 +275,7 @@ public class SparkServer {
       String message = "no-error";
       try {
         int userID = Integer.parseInt(userIDstring);
-        if (Friend.removeFriend(userID, friendUsername)) {
+        if (Friend.unfollow(userID, friendUsername)) {
           message = "Friend with username doesn't exist";
         }
       } catch (NullPointerException np) {
@@ -280,14 +314,20 @@ public class SparkServer {
       if (firstname != null && username != null && password != null
           && email != null) {
         try {
-          userID = TurtleQuery.addUser(username, password, firstname,
-              lastname, email, phone);
+          userID = TurtleQuery.getUserID(username);
+          if (userID == -1) {
+            userID = TurtleQuery.addUser(username, password, firstname,
+                lastname, email, phone);
+          } else {
+            message = "That username already exists. Cannot create account.";
+          }
           if (userID == -1) {
             message = "Failed to create new user.";
           }
         } catch (SQLException e) {
           // TODO Auto-generated catch block
           message = "SQL error.";
+          message += e.getMessage();
         }
       } else {
         message = "Please fill all required fields";
@@ -340,6 +380,7 @@ public class SparkServer {
         }
       } catch (SQLException e) {
         message = "SQL error.";
+        message += e.getMessage();
       }
 
       Map<String, Object> variables = new ImmutableMap.Builder().put(
@@ -349,6 +390,7 @@ public class SparkServer {
   }
 
   private class ProfileInfo implements Route {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -372,12 +414,19 @@ public class SparkServer {
             "lastname", user.getLastName()).put("email",
             user.getEmail());
 
-        Set<String> friends = new HashSet<>();
-        for (int f : user.getFriends()) {
+        Set<String> followers = new HashSet<>();
+        for (int f : user.getFollowers()) {
           User friend = new UserProxy(f);
-          friends.add(friend.getUsername());
+          followers.add(friend.getUsername());
         }
-        variables.put("friends", friends);
+        variables.put("followers", followers);
+
+        Set<String> pending = new HashSet<>();
+        for (int f : user.getPending()) {
+          User friend = new UserProxy(f);
+          pending.add(friend.getUsername());
+        }
+        variables.put("pending", pending);
       }
 
       Map<String, Object> map = variables.build();

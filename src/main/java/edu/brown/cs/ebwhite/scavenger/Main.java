@@ -1,17 +1,9 @@
 package edu.brown.cs.ebwhite.scavenger;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import edu.brown.cs.ebwhite.database.Db;
-import edu.brown.cs.ebwhite.database.TurtleQuery;
-import edu.brown.cs.ebwhite.geo.LatLong;
-import edu.brown.cs.ebwhite.note.Note;
-import edu.brown.cs.ebwhite.note.NoteRanker;
 
 public class Main {
 
@@ -32,7 +24,7 @@ public class Main {
       port = 2456;
     }
 
-    if(options.has("database")){
+    if (options.has("database")) {
       String path = (String) options.valueOf("database");
       try {
         Db.database(path);
@@ -40,8 +32,7 @@ public class Main {
         System.out.println("ERROR: could not connect to DB: " + path);
         e1.printStackTrace();
       }
-    }
-    else{
+    } else {
       try {
         Db.database("turtlDB.sqlite3");
       } catch (ClassNotFoundException e1) {
