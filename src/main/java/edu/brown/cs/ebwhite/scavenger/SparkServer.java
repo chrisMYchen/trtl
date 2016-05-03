@@ -54,11 +54,11 @@ public class SparkServer {
     Spark.post("/newUser", new NewUser());
     Spark.post("/login", new Login());
     Spark.post("/checkUsername", new CheckUsername());
-    Spark.post("/accpetFollower", new AcceptFollower());
+    Spark.post("/acceptFollower", new AcceptFollower());
     Spark.post("/requestFollow", new RequestFollow());
     Spark.post("/unfollow", new Unfollow());
     Spark.post("/userInfo", new ProfileInfo());
-    Spark.post("/getUser", new getUserInfoFromId());
+    Spark.post("/getUser", new GetUserInfoFromId());
 
   }
 
@@ -435,7 +435,7 @@ public class SparkServer {
     }
   }
 
-  private class getUserInfoFromId implements Route {
+  private class GetUserInfoFromId implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();

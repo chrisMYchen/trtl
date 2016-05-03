@@ -47,15 +47,17 @@
       </form>
     </div>
   </div>
-  <div id="friend-wrapper" class="overlay-wrapper" style="display:none">
-    <div id="friend" class="overlay">
-      <div id="friend-close" class="close"><p><i class="material-icons">close</i></p></div>
-      <div id="friend-msg" class="msg" style="display:none;"></div>
-      <form id="friend-form">
-        <input type="text" name="friendname" placeholder="Add Friend" size="30">
+  <div id="follow-wrapper" class="overlay-wrapper" style="display:none">
+    <div id="follow" class="overlay">
+      <div id="follow-close" class="close"><p><i class="material-icons">close</i></p></div>
+      <div id="follow-msg" class="msg" style="display:none;"></div>
+      <form id="follow-form">
+        <input type="text" name="followname" placeholder="Follow Another User" size="30">
         <input type="submit" value="Add">
       </form>
-      <div id="friend-list"></div>
+      <div id="pending-list"></div>
+      <div id="following-list"></div>
+      <div id="follower-list"></div>
     </div>
   </div>
   <div id="nav">

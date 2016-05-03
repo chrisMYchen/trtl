@@ -1,95 +1,138 @@
 /*************************/
-/** Friends Functionality **/
+/** Follower Functionality **/
 /*************************/
 function followSetup(){
   /* Allow escape */
   $(document).keydown(function(e){
     if(e.which == 27){
-      $("#friend-wrapper").hide();
+      $("#follow-wrapper").hide();
     }
   });
 
-  /* Close friend dialog on "X click */
-  $("#friend-close").click(closeFriendDialog);
+  /* Close follow dialog on "X click */
+  $("#follow-close").click(closeFollowDialog);
 
-  /* Open friend dialog on from nav */
-  $("#friend-button").click(openFriendDialog);
+  /* Open follow dialog on from nav */
+  $("#follow-button").click(openFollowDialog);
 
   /* Submit friend info */
-  $("#friend-form").submit(friendSubmit);
+  $("#follow-form").submit(followSubmit);
 
   /* Reset form*/
-  $("#friend-form").on("reset", function(){
-    $("#friend-form input[name=friendname]").css("background", "#FFF");
+  $("#follow-form").on("reset", function(){
+    $("#follow-form input[name=followname]").css("background", "#FFF");
   });
 
   /* check friend username */
-  $("#friend-form input[name=friendname]").on("input", function(){
+  $("#follow-form input[name=followname]").on("input", function(){
     usernameCheck($(this), "#AFA", "#FAA");
   });
 }
 
-function openFriendDialog(){
-  $("#friend-wrapper").show();
-  refreshFriendList();
+function openFollowDialog(){
+  $("#follow-wrapper").show();
+  refreshFollowList();
 }
 
-function closeFriendDialog(){
-  $("#friend-wrapper").hide();
-  $("#friend-form")[0].reset();
-  $("#friend-error").hide();
-  $("#friend-error").empty();
+function closeFollowDialog(){
+  $("#follow-wrapper").hide();
+  $("#follow-form")[0].reset();
+  $("#follow-msg").hide();
+  $("#follow-msg").empty();
 }
 
-function friendSubmit(e){
+function followSubmit(e){
   e.preventDefault();
-  $("#friend-error").hide();
-  $("#friend-error").empty();
-  addFriend();
+  $("#friend-msg").hide();
+  $("#friend-msg").empty();
+  addFollow();
 }
 
-function addFriend(){
-  var friend = $("#friend-form input[name=friendname]").val();
-  var data = {userID: userInfo.id, friendUsername: friend};
+function addFollow(){
+  var follow = $("#follow-form input[name=followname]").val();
+  var data = {userID: userInfo.id, friendUsername: follow};
   $.post("/requestFollow", data, function(response){
     var res = JSON.parse(response);
     console.log(res);
     if((res.error == "no-error")){
-      $("#friend-form")[0].reset();
-      refreshFriendList();
-      var msg = "User " + friend + " was added as a friend.";
-      friendMsg(msg, false);
+      $("#follow-form")[0].reset();
+      refreshFollowLists();
+      var msg = "Follow request for user " + follow + " was sent.";
+      followMsg(msg, false);
     }
     else{
-      $("#friend-form")[0].reset();
-      friendMsg(res.error, true);
+      $("#follow-form")[0].reset();
+      followMsg(res.error, true);
     }
   });
 }
 
-function removeFriend(elem){
-  var friendname = elem.parent().val();
-  var req = {friendUsername: friendname, userID: userInfo.id};
+function removeFollow(elem){
+  var followname = elem.parent().val();
+  var req = {friendUsername: followname, userID: userInfo.id};
   console.log(req);
-  $.post("/removeFriend", req, function(data){
+  $.post("/unfollow", req, function(data){
     var res = JSON.parse(data);
     if(res.error = "no-error"){
       console.log(req);
       console.log(res);
-      refreshFriendList();
+      refreshFollowList();
     }
     else{
-      friendMsg(res.error, true);
+      followMsg(res.error, true);
     }
   });
 }
 
-function refreshFriendList(){
-  $("#friend-list").empty();
-  getFriendList();
+/* <div id="pending-list"></div>
+   <div id="following-list"></div>
+   <div id="follower-list"></div> */
+
+function refreshFollowLists(){
+  $("#pending-list").empty();
+  getPending();
+
+  $("#following-list").empty();
+  getFollowingList();
+
+  $("#follower-list").empty();
+  getFollowerList();
 }
 
-function friendMsg(message, error){
+function getFollowList(){
+  var user = {username: userInfo.username};
+  $.post("/userInfo", user, function(data){
+    var res = JSON.parse(data);
+    console.log(res);
+    if(res.error == "no-error"){
+      var dom = $("#follow-list");
+      fillFollowList(res.followers, dom);
+    }
+    else{
+      $("#follow-list").html(res.error);
+    }
+
+  })
+}
+
+function fillFollowList(list, dom){
+  for(var i = 0; i < friends.length; i++){
+    var friend = friendDOM(friends[i]);
+    dom.append(friend)
+  }
+}
+
+function followDOM(follow){
+  var div = $("<div></div>").addClass("follow-item");
+  var remove = $("<div></div>").addClass("follow-remove");
+  var xicon = $("<i></i>").addClass("material-icons").html("close");
+  remove.append(xicon);
+  div.html(follow);
+  div.append(remove);
+  return div;
+}
+
+function followMsg(message, error){
   var body = $("<p></p>").html(message);
   var elem = $("#friend-msg");
   elem.empty();
@@ -103,37 +146,4 @@ function friendMsg(message, error){
     elem.toggleClass("success", true);
   }
   elem.show();
-}
-
-function getFriendList(){
-  var user = {username: userInfo.username};
-  $.post("/userInfo", user, function(data){
-    var res = JSON.parse(data);
-    console.log(res);
-    if(res.error == "no-error"){
-      fillFriendList(res.followers);
-    }
-    else{
-      $("#friend-list").html(res.error);
-    }
-
-  })
-}
-
-function fillFriendList(friends){
-  var dom = $("#friend-list");
-  for(var i = 0; i < friends.length; i++){
-    var friend = friendDOM(friends[i]);
-    dom.append(friend)
-  }
-}
-
-function friendDOM(friend){
-  var div = $("<div></div>").addClass("friend-item");
-  var remove = $("<div></div>").addClass("friend-remove");
-  var xicon = $("<i></i>").addClass("material-icons").html("close");
-  remove.append(xicon);
-  div.html(friend);
-  div.append(remove);
-  return div;
 }
