@@ -1,4 +1,8 @@
 edu/brown/cs/ebwhite/scavenger/SparkServer$1.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$RequestFollow.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$GetUserInfoFromId.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$Unfollow.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$UserInfo.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$AcceptFollower.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$PostNoteImage.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$MyInfo.class

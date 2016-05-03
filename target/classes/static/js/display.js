@@ -18,7 +18,7 @@ function initialLoad(time, radius){
     else{
       window.clearInterval(intervalID);
       getNotes(time, radius);
-      /*update(time, radius);*/
+      update(time, radius);
     }
   }, 2000);
 }
@@ -52,6 +52,7 @@ function getNotes(time, radius){
   $.post("/getNotes", req, function(data){
     var res = JSON.parse(data);
     if(res.error == "no-error"){
+      console.log(res.notes);
       notesDOM(res.notes, range.min);
       setupScrollHandler(time, radius);
     }
