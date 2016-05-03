@@ -1,6 +1,7 @@
 package edu.brown.cs.ebwhite.database;
 
 import java.sql.Connection;
+import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +18,7 @@ public class TurtleQuery {
   private final static int LATCOL = 4;
   private final static int LNGCOL = 5;
   private final static int TXTCOL = 10;
+  private final static int AUTOKEYS = Statement.RETURN_GENERATED_KEYS;
 
   public static List<Note> getNotes(int userID, LatLong loc,
       double radius, int minPost, int maxPost, long timeStamp)
@@ -233,19 +235,19 @@ public class TurtleQuery {
     }
   }
 
-  public static void postNote(int userID, long time, double lat,
-      double lng, String text, int privacy, int imageID)
+  public static int postNote(int userID, long time, double lat,
+      double lng, String text, int privacy)
       throws SQLException {
     double coslat = Math.cos(deg2rad(lat));
     double sinlat = Math.sin(deg2rad(lat));
     double coslng = Math.cos(deg2rad(lng));
     double sinlng = Math.sin(deg2rad(lng));
 
-    String post = "INSERT INTO notes VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    String post = "INSERT INTO notes VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     // - UserID, TIMESTAMP, Lat, Lon, coslat, sinlat, coslng, sinlng,
     // Text
     try (Connection conn = Db.getConnection()) {
-      try (PreparedStatement prep = conn.prepareStatement(post)) {
+      try (PreparedStatement prep = conn.prepareStatement(post, AUTOKEYS)) {
         prep.setInt(1, userID);
         prep.setLong(2, time);
         prep.setDouble(3, lat);
@@ -256,38 +258,25 @@ public class TurtleQuery {
         prep.setDouble(8, sinlng);
         prep.setString(9, text);
         prep.setInt(10, privacy);
-        prep.setInt(11, imageID);
         prep.executeUpdate();
+        ResultSet rs = prep.getGeneratedKeys();
+        rs.next();
+        return rs.getInt(1);
       }
     }
   }
 
-  public static int lastImageAddedID() throws SQLException {
-    String imageIDQuery = "SELECT seq from SQLITE_SEQUENCE WHERE name='images';";
-
-    int lastPicID = 0;
+  public static int addImage(int noteid) throws SQLException {
+    String query = "INSERT INTO image_note VALUES (NULL, ?);";
     try (Connection conn = Db.getConnection()) {
-      try (PreparedStatement prep = conn
-          .prepareStatement(imageIDQuery)) {
-        try (ResultSet rs = prep.executeQuery()) {
-
-          if (rs.next()) {
-            lastPicID = rs.getInt(1);
-          }
-        }
-      }
-    }
-    return lastPicID;
-  }
-
-  public static int addImage() throws SQLException {
-    int nextID = lastImageAddedID() + 1;
-    String query = "INSERT INTO images VALUES (NULL, ?);";
-    try (Connection conn = Db.getConnection()) {
-      try (PreparedStatement prep = conn.prepareStatement(query)) {
-        prep.setString(1, "images/" + nextID + ".jpg");
+      try (PreparedStatement prep = conn.prepareStatement(query, AUTOKEYS)) {
+        prep.setInt(1, noteid);
         prep.executeUpdate();
-        return nextID;
+
+        /* Get autoincrement key */
+        ResultSet rs = prep.getGeneratedKeys();
+        rs.next();
+        return rs.getInt(1);
       }
     }
   }

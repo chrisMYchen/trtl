@@ -197,7 +197,7 @@ public class SparkServer {
           long timestamp = Long.parseLong(timeString);
           int privacyVal = Integer.parseInt(privacy);
           TurtleQuery.postNote(uID, timestamp, lat, lon, content,
-              privacyVal, -1);
+              privacyVal);
 
         } catch (NullPointerException np) {
           message = "Fields not filled. Something is null: "
@@ -235,6 +235,8 @@ public class SparkServer {
           double lon = Double.parseDouble(lonString);
           long timestamp = Long.parseLong(timeString);
           int privacyVal = Integer.parseInt(privacy);
+          int noteid = TurtleQuery.postNote(uID, timestamp, lat, lon, content,
+              privacyVal);
 
           /////////////////////////////////////////////////////////
           ///////////////////
@@ -249,11 +251,9 @@ public class SparkServer {
             final String fileName = filePart.getName();
             InputStream is = filePart.getInputStream();
             BufferedImage image = ImageIO.read(is);
-            int newImageID = TurtleQuery.addImage();
+            int newImageID = TurtleQuery.addImage(noteid);
             ////////////
             ///////////////////////////////////////////////////////
-            TurtleQuery.postNote(uID, timestamp, lat, lon, content,
-                privacyVal, newImageID);
             File outputfile = new File("images/" + newImageID + ".jpg");
             ImageIO.write(image, "jpg", outputfile);
             System.out.println(fileName);
