@@ -1,5 +1,9 @@
 package edu.brown.cs.ebwhite.scavenger;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +11,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
+import javax.servlet.http.Part;
 
 import spark.ModelAndView;
 import spark.QueryParamsMap;
@@ -60,6 +69,7 @@ public class SparkServer {
     Spark.post("/userInfo", new UserInfo());
     Spark.post("/getUser", new getUserInfoFromId());
     Spark.post("/myInfo", new MyInfo());
+    Spark.post("/postNoteImage", new PostNoteImage());
   }
 
   private class HomeHandler implements TemplateViewRoute {
@@ -110,9 +120,9 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = "SQL error when getting note: " + e.getMessage();
       }
-//      for (Note n : notes) {
-//        System.out.println(n)
-//      }
+      // for (Note n : notes) {
+      // System.out.println(n)
+      // }
       Map<String, Object> variables = new ImmutableMap.Builder().put(
           "notes", notes).put("error", message).build();
 
@@ -179,7 +189,7 @@ public class SparkServer {
       String privacy = qm.value("private");
       String message = "no-error";
 
-      if (content != null &&  !content.equals("")) {
+      if (content != null && !content.equals("")) {
         try {
           int uID = Integer.parseInt(uIDstring);
           double lat = Double.parseDouble(latString);
@@ -187,7 +197,7 @@ public class SparkServer {
           long timestamp = Long.parseLong(timeString);
           int privacyVal = Integer.parseInt(privacy);
           TurtleQuery.postNote(uID, timestamp, lat, lon, content,
-              privacyVal);
+              privacyVal, -1);
 
         } catch (NullPointerException np) {
           message = "Fields not filled. Something is null: "
@@ -207,6 +217,70 @@ public class SparkServer {
     }
   }
 
+  private class PostNoteImage implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+
+      String uIDstring = req.queryParams("userID");
+      String latString = req.queryParams("lat");
+      String lonString = req.queryParams("lon");
+      String timeString = req.queryParams("timestamp");
+      String content = req.queryParams("text");
+      String privacy = req.queryParams("private");
+      String message = "no-error";
+      if (content != null && !content.equals("")) {
+        try {
+          int uID = Integer.parseInt(uIDstring);
+          double lat = Double.parseDouble(latString);
+          double lon = Double.parseDouble(lonString);
+          long timestamp = Long.parseLong(timeString);
+          int privacyVal = Integer.parseInt(privacy);
+
+          /////////////////////////////////////////////////////////
+          ///////////////////
+          //image handling
+          MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+              "/tmp");
+          req.raw().setAttribute("org.eclipse.multipartConfig",
+              multipartConfigElement);
+          Part filePart;
+          try {
+            filePart = req.raw().getPart("pic");
+            final String fileName = filePart.getName();
+            InputStream is = filePart.getInputStream();
+            BufferedImage image = ImageIO.read(is);
+            int newImageID = TurtleQuery.addImage();
+            ////////////
+            ///////////////////////////////////////////////////////
+            TurtleQuery.postNote(uID, timestamp, lat, lon, content,
+                privacyVal, newImageID);
+            File outputfile = new File("images/" + newImageID + ".jpg");
+            ImageIO.write(image, "jpg", outputfile);
+            System.out.println(fileName);
+          } catch (IOException | ServletException e) {
+            System.out.println("ERROR: WEIRD ERROR");
+            e.printStackTrace();
+          }
+
+        } catch (NullPointerException np) {
+          message = "Fields not filled. Something is null: "
+              + np.getMessage();
+        } catch (NumberFormatException nfe) {
+          message = "Number Format Exception: " + nfe.getMessage();
+        } catch (SQLException e) {
+          // TODO Auto-generated catch block
+          message = "SQL error when posting note: " + e.getMessage();
+        }
+      } else {
+        message = "content is empty or null";
+      }
+
+      Map<String, Object> variables = new ImmutableMap.Builder().put(
+          "error", message).build();
+      return GSON.toJson(variables);
+    }
+  }
+
   private class RequestFollow implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -218,7 +292,8 @@ public class SparkServer {
       try {
         int userID = Integer.parseInt(userIDstring);
         if (!Friend.requestFollow(userID, friendUsername)) {
-          message = "User with username " + friendUsername + " doesn't exist";
+          message = "User with username " + friendUsername
+              + " doesn't exist";
         }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -248,7 +323,8 @@ public class SparkServer {
       try {
         int userID = Integer.parseInt(userIDstring);
         if (!Friend.acceptPendingRequest(userID, friendUsername)) {
-          message = "User with username " + friendUsername + " doesn't exist";
+          message = "User with username " + friendUsername
+              + " doesn't exist";
         }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -260,8 +336,8 @@ public class SparkServer {
           message = "You're already follow " + friendUsername + "!";
         }
       }
-      Map<String, Object> variables = new ImmutableMap.Builder().put("error",
-          message).build();
+      Map<String, Object> variables = new ImmutableMap.Builder().put(
+          "error", message).build();
       return GSON.toJson(variables);
     }
   }
@@ -316,8 +392,8 @@ public class SparkServer {
         try {
           userID = TurtleQuery.getUserID(username);
           if (userID == -1) {
-            userID = TurtleQuery.addUser(username, password, firstname,
-                lastname, email, phone);
+            userID = TurtleQuery.addUser(username, password,
+                firstname, lastname, email, phone);
           } else {
             message = "That username already exists. Cannot create account.";
           }
@@ -357,8 +433,8 @@ public class SparkServer {
         message = "Login failed : Invalid username password combination.";
       }
 
-      Map<String, Object> variables = new ImmutableMap.Builder()
-          .put("error", message).put("userID", uID).build();
+      Map<String, Object> variables = new ImmutableMap.Builder().put(
+          "error", message).put("userID", uID).build();
 
       return GSON.toJson(variables);
     }
@@ -411,8 +487,7 @@ public class SparkServer {
 
       if (user != null) {
         variables.put("firstname", user.getFirstName()).put(
-"lastname",
-            user.getLastName());
+            "lastname", user.getLastName());
 
         Set<String> followers = new HashSet<>();
         for (int f : user.getFollowers()) {
@@ -447,12 +522,13 @@ public class SparkServer {
         message = "number format exception.";
       }
 
-      Builder variables = new ImmutableMap.Builder().put("error", message);
+      Builder variables = new ImmutableMap.Builder().put("error",
+          message);
 
       if (user != null) {
-        variables.put("firstname", user.getFirstName())
-            .put("lastname", user.getLastName()).put("email", user.getEmail())
-            .put("username", user.getUsername());
+        variables.put("firstname", user.getFirstName()).put(
+            "lastname", user.getLastName()).put("email",
+            user.getEmail()).put("username", user.getUsername());
 
         Set<String> followers = new HashSet<>();
         for (int f : user.getFollowers()) {
