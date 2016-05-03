@@ -366,13 +366,13 @@ div.input-submit:hover{
 }
 
 /* Friends */
-#friend-list{
+.follow-list{
   max-height: 200px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.friend-item{
+.follow-item{
   position: relative;
   padding: 10px;
   text-align: left;
@@ -380,11 +380,11 @@ div.input-submit:hover{
   background: #ddd;
 }
 
-.friend-item:hover{
+.follow-item:hover{
   background: #aaa;
 }
 
-.friend-remove{
+.follow-remove{
   position: absolute;
   right: 0;
   top:0;
@@ -396,10 +396,10 @@ div.input-submit:hover{
   cursor: pointer;
 }
 
-.friend-remove i{
+.follow-remove i{
   display: inline-block;
 }
 
-.friend-remove:hover{
+.follow-remove:hover{
   background: #f93131;
 }

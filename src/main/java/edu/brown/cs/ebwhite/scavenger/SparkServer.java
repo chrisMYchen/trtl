@@ -302,7 +302,7 @@ public class SparkServer {
       } catch (SQLException e) {
         message = "SQL error when adding friend.";
         if (e.getErrorCode() == 19) {
-          message = "You're request to follow " + friendUsername
+          message = "Your request to follow " + friendUsername
               + " is already pending!";
         }
       }

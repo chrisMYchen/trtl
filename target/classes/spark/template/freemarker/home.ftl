@@ -10,7 +10,7 @@
       </select>
     </div>
   </div>
-<div class = "testImageUpload">
+<!--<div class = "testImageUpload">
   	<form action = "/postNoteImage" method="post" enctype="multipart/form-data">
 	  	<textarea class="input-content" name="text" rows="4" placeholder="Post a note to this location"></textarea>
 	    <div class="input-controls">
@@ -23,7 +23,7 @@
 	      <input type="submit" value="Upload Image" name="submit">
 	    </div>
   	</form>
-  </div>
+  </div> -->
   <div id="updates"></div>
 </div>
 </#assign>

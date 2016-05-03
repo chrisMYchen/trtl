@@ -55,9 +55,9 @@
         <input type="text" name="followname" placeholder="Follow Another User" size="30">
         <input type="submit" value="Add">
       </form>
-      <div id="pending-list"></div>
-      <div id="following-list"></div>
-      <div id="follower-list"></div>
+      <div id="pending-list" class="follow-list"></div>
+      <div id="following-list" class="follow-list"></div>
+      <div id="follower-list" class="follow-list"></div>
     </div>
   </div>
   <div id="nav">
@@ -69,7 +69,7 @@
       <div id="location" class="menu-item"></div>
       <div id="signup-button" class="menu-item account loggedout">Signup</div>
       <div id="login-button" class="menu-item account loggedout">Login</div>
-      <div id="friend-button" class="menu-item loggedin hidden">
+      <div id="follow-button" class="menu-item loggedin hidden">
         <i class="material-icons">people</i>
       </div>
       <div id="logout-button" class="menu-item account loggedin hidden">Logout</div>

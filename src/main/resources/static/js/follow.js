@@ -31,7 +31,7 @@ function followSetup(){
 
 function openFollowDialog(){
   $("#follow-wrapper").show();
-  refreshFollowList();
+  refreshFollowLists();
 }
 
 function closeFollowDialog(){
@@ -74,9 +74,7 @@ function removeFollow(elem){
   $.post("/unfollow", req, function(data){
     var res = JSON.parse(data);
     if(res.error = "no-error"){
-      console.log(req);
-      console.log(res);
-      refreshFollowList();
+      refreshFollowLists();
     }
     else{
       followMsg(res.error, true);
@@ -90,35 +88,33 @@ function removeFollow(elem){
 
 function refreshFollowLists(){
   $("#pending-list").empty();
-  getPending();
-
   $("#following-list").empty();
-  getFollowingList();
-
   $("#follower-list").empty();
-  getFollowerList();
+  getFollowList();
 }
 
 function getFollowList(){
-  var user = {username: userInfo.username};
-  $.post("/userInfo", user, function(data){
+  var user = {userID: userInfo.id};
+  $.post("/myInfo", user, function(data){
     var res = JSON.parse(data);
     console.log(res);
     if(res.error == "no-error"){
-      var dom = $("#follow-list");
-      fillFollowList(res.followers, dom);
+      fillFollowList(res.followers, $("#follower-list"));
+      fillFollowList(res.pending, $("#pending-list"));
     }
     else{
-      $("#follow-list").html(res.error);
+      $("#pending-list").html(res.error);
+      $("#following-list").html(res.error);
+      $("#follower-list").html(res.error);
     }
 
   })
 }
 
 function fillFollowList(list, dom){
-  for(var i = 0; i < friends.length; i++){
-    var friend = friendDOM(friends[i]);
-    dom.append(friend)
+  for(var i = 0; i < list.length; i++){
+    var follow = followDOM(list[i]);
+    dom.append(follow)
   }
 }
 
@@ -134,7 +130,7 @@ function followDOM(follow){
 
 function followMsg(message, error){
   var body = $("<p></p>").html(message);
-  var elem = $("#friend-msg");
+  var elem = $("#follow-msg");
   elem.empty();
   elem.append(body);
   if(error){
