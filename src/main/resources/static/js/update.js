@@ -17,8 +17,7 @@ function updatesDOM(notes, start){
 }
 
 function updateNotes(time, radius){
-  var min = $("#updates .post").length;
-  var range = {min: min, max: min + 10};
+  var range = {min: 0, max: 10};
   var req = {
     userID: userInfo.id,
     lat: locationInfo.pos.lat,
@@ -36,11 +35,11 @@ function updateNotes(time, radius){
     var res = JSON.parse(data);
     if(res.error == "no-error"){
       updatesDOM(res.notes, range.min);
-      setupUpdateHandlers(time, radius);
+      setupUpdateHandlers(Date.now(), radius);
     }
     else{
       displayError(res.error);
-      setupUpdateHandlers(time, radius);
+      setupUpdateHandlers(Date.now(), radius);
     }
   });
 }
