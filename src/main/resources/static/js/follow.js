@@ -82,10 +82,6 @@ function removeFollow(elem){
   });
 }
 
-/* <div id="pending-list"></div>
-   <div id="following-list"></div>
-   <div id="follower-list"></div> */
-
 function refreshFollowLists(){
   $("#pending-list").empty();
   $("#following-list").empty();

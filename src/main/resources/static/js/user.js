@@ -160,7 +160,7 @@ function signupSetup(){
 
   /* Reset form*/
   $("#signup-form").on("reset", function(){
-    $("#friend-form input[name=username]").css("background", "#FFF");
+    $("#signup-form input[name=username]").css("background", "#FFF");
   });
 
   $("#signup-form input[name=username]").on("input", function(){

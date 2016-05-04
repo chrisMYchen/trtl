@@ -29,4 +29,12 @@ $(function(){
         $(".menu-item").toggleClass("active", false);
       }
     });
+
+    $("body").on("click", ".overlay-wrapper", function(){
+      $(this).hide();
+    });
+
+    $("body").on("click", ".overlay", function(e){
+      e.stopImmediatePropagation();
+    });
 });
