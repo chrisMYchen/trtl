@@ -1,7 +1,7 @@
 function update(time, radius){
   window.setTimeout(function(){
     updateNotes(time, radius);
-  }, 2000);
+  }, 3000);
 }
 
 function updatesDOM(notes, start){
@@ -54,5 +54,5 @@ function updateNotes(time, radius){
 function setupUpdateHandlers(time, radius){
   window.setTimeout(function(){
     updateNotes(time, radius);
-  }, 2000);
+  }, 3000);
 }
