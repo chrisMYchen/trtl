@@ -23,6 +23,13 @@ function initialLoad(time, radius){
   }, 2000);
 }
 
+function resetNotes(){
+  $(".post").remove();
+  $(window).scrollTop(0);
+  $(window).off("scroll", scrollCallback);
+  displayNotes();
+}
+
 function scrollCallback(event){
   var time = event.data.time;
   var radius = event.data.radius;

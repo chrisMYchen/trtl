@@ -15,6 +15,7 @@
   <script src="/js/user.js"></script>
   <script src="/js/follow.js"></script>
   <script src="/js/update.js"></script>
+  <script src="/js/image.js"></script>
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/font.css">

@@ -72,6 +72,7 @@ function login(userID){
     userInfo = {id: userID, username: res.username};
     setLoginMode(true);
     setLoginCookie(userID);
+    resetNotes();
   });
 }
 

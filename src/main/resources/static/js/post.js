@@ -5,9 +5,13 @@ function postNotes(){
 function postHandler(data){
   data.preventDefault();
   var post = $(".input-content").val();
-  if(post.length > 0){
-    var privacy = getPrivacy();
-    postNote(post, privacy); 
+  var privacy = getPrivacy();
+
+  if($("#image-input")[0].files.length > 0){
+    imageHandle(post, privacy);
+  }
+  else if (post.length > 0){
+    postNote(post, privacy);
   }
 }
 

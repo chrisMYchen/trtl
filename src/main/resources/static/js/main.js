@@ -8,6 +8,7 @@ $(function(){
     locationStart();
     displayNotes();
     postNotes();
+    imageSetup();
 
     $("#branding").click(function(){
         location.reload();

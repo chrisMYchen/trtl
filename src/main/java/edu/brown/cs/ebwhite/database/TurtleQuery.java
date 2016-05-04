@@ -84,9 +84,11 @@ public class TurtleQuery {
       double right_lng, int minPost, int maxPost, long timeStamp)
       throws SQLException {
 
-    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_follower as uf WHERE "
-        + " (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp < ?) AND "
-        + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
+    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
+        + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
+        + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+        + " AND (timestamp < ?) AND (n.private = 0 OR n.userid = ? OR"
+        + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
         + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
@@ -266,11 +268,12 @@ public class TurtleQuery {
     }
   }
 
-  public static int addImage(int noteid) throws SQLException {
-    String query = "INSERT INTO image_note VALUES (NULL, ?);";
+  public static int addImage(int noteid, String path) throws SQLException {
+    String query = "INSERT INTO image_note VALUES (NULL, ?, ?);";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(query, AUTOKEYS)) {
         prep.setInt(1, noteid);
+        prep.setString(2, path);
         prep.executeUpdate();
 
         /* Get autoincrement key */
@@ -280,6 +283,18 @@ public class TurtleQuery {
       }
     }
   }
+
+  public static void setImagePath(int imageid, String path) throws SQLException{
+    String query = "UPDATE image_note SET path=? WHERE id=?";
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn.prepareStatement(query)) {
+        prep.setString(1, path);
+        prep.setInt(2, imageid);
+        prep.executeUpdate();
+      }
+    }
+  }
+
 
   public static int addUser(String username, String password,
       String firstname, String lastname, String email, int phone)
