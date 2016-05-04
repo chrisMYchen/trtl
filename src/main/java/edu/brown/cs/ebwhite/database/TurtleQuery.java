@@ -84,9 +84,11 @@ public class TurtleQuery {
       double right_lng, int minPost, int maxPost, long timeStamp)
       throws SQLException {
 
-    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_follower as uf WHERE "
-        + " (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp < ?) AND "
-        + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
+    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
+        + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
+        + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+        + " AND (timestamp < ?) AND (n.private = 0 OR n.userid = ? OR"
+        + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
         + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {

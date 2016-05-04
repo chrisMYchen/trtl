@@ -71,7 +71,7 @@ div#nav {
 }
 
 .hidden{
-  display:none;
+  display:none !important;
 }
 
 /* Nav dropdown */
@@ -210,8 +210,7 @@ div.post-content{
   border-top: 1px dashed #333;
 }
 
-div.input-submit{
-  right: 0;
+.input-controls div{
   padding: 10px;
   background: none;
   cursor: pointer;
@@ -219,13 +218,59 @@ div.input-submit{
   text-transform: uppercase;
 }
 
-div.input-submit:hover{
-  background: rgba(0,0,0,0.2);
+.input-controls > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.input-controls > div:hover{
+    background: rgba(0,0,0,0.2);
 }
 
 .input-controls select{
   color: black;
 }
+
+/* Image handling */
+#image-input{
+  display: none;
+}
+
+#image-thumb{
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#image-thumb div{
+  border: 1px dashed #aaa;
+  background: #eee;
+  padding: 5px;
+  border-radius: 3px;
+  margin: 5px;
+  font-size: 10pt;
+  cursor: default;
+}
+
+#image-thumb div#clear{
+  background: none;
+  border: none;
+  height: 100%;
+  left: 0px;
+  margin: 0;
+  border-radius: 0;
+  cursor: pointer;
+  color: #aaa;
+}
+
+
+#image-thumb div#clear:hover{
+  background: #f93131;
+  color: white;
+}
+
 
 /* Errors */
 .msg{

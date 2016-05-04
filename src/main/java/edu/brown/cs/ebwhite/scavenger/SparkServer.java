@@ -30,6 +30,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.Upload;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+
 import edu.brown.cs.ebwhite.database.TurtleQuery;
 import edu.brown.cs.ebwhite.friends.Friend;
 import edu.brown.cs.ebwhite.geo.LatLong;
@@ -41,20 +47,23 @@ import edu.brown.cs.ebwhite.user.UserProxy;
 public class SparkServer {
   Gson GSON;
   String imagepath;
+  boolean external;
 
   public SparkServer(int port, String keystore, String keypass) {
     GSON = new Gson();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.setSecure(keystore, keypass, null, null);
-    imagepath = "/images";
+    imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images";
+    external = true;
   }
 
   public SparkServer(int port) {
     GSON = new Gson();
     Spark.setPort(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
-    imagepath = "images/";
+    imagepath = "src/main/resources/static/images/";
+    external = false;
   }
 
   public void run() {
@@ -227,7 +236,7 @@ public class SparkServer {
       "/tmp");
       req.raw().setAttribute("org.eclipse.jetty.multipartConfig",
       multipartConfigElement);
-        String message = "no-error";
+      String message = "no-error";
       Part filePart;
       System.err.println(req.raw().getParameterMap());
 
@@ -256,9 +265,26 @@ public class SparkServer {
 
         /* Try to write image to file */
         InputStream is = filePart.getInputStream();
-        BufferedImage image = ImageIO.read(is);
-        File outputfile = new File(imagepath + newImageID + ".jpg");
-        ImageIO.write(image, "jpg", outputfile);
+        if(external){
+          try {
+            String bucket = "trtl-images";
+            String key = newImageID + ".jpg";
+
+            TransferManager tm = new TransferManager(new ProfileCredentialsProvider());
+            ObjectMetadata meta = new ObjectMetadata();
+            meta.setContentLength(filePart.getSize());
+            meta.setContentType(filePart.getContentType());
+            Upload upload = tm.upload(bucket, key, is, meta);
+          	upload.waitForCompletion();
+          } catch (AmazonClientException | InterruptedException e) {
+          	message = "Unable to upload file, upload was aborted.";
+          	e.printStackTrace();
+          }
+        } else{
+          BufferedImage image = ImageIO.read(is);
+          File outputfile = new File(imagepath + newImageID + ".jpg");
+          ImageIO.write(image, "jpg", outputfile);
+        }
 
         /* Set path for image (won't happen if write fails)*/
         TurtleQuery.setImagePath(newImageID, path);
