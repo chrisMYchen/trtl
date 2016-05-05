@@ -83,7 +83,6 @@ function removeFollow(elem){
 }
 
 function refreshFollowLists(){
-  $("#pending-list").empty();
   $("#following-list").empty();
   $("#follower-list").empty();
   getFollowList();
@@ -95,30 +94,40 @@ function getFollowList(){
     var res = JSON.parse(data);
     console.log(res);
     if(res.error == "no-error"){
-      fillFollowList(res.followers, $("#follower-list"));
-      fillFollowList(res.pending, $("#pending-list"));
+      fillFollowList(res.followers, res.pending_followers, $("#follower-list"));
+      fillFollowList(res.following, res.pending_following $("#following-list"));
     }
     else{
-      $("#pending-list").html(res.error);
       $("#following-list").html(res.error);
       $("#follower-list").html(res.error);
     }
-
   })
 }
 
-function fillFollowList(list, dom){
+function fillFollowList(list, pending, dom){
+  for (var i = 0; i < pending.length; i++){
+    var pending_item = followDOM(pending[i], true);
+    dom.append(pending_item);
+  }
   for(var i = 0; i < list.length; i++){
-    var follow = followDOM(list[i]);
-    dom.append(follow)
+    var follow = followDOM(list[i], false);
+    dom.append(follow);
   }
 }
 
-function followDOM(follow){
-  var div = $("<div></div>").addClass("follow-item");
+function followDOM(follow, pending){
   var remove = $("<div></div>").addClass("follow-remove");
   var xicon = $("<i></i>").addClass("material-icons").html("close");
   remove.append(xicon);
+
+  var div = $("<div></div>").addClass("follow-item");
+
+  if(pending){
+    var pending = $("<div></div>").addClass("pending-label");
+    div.addClass("pending");
+    div.append(pending);
+  }
+
   div.html(follow);
   div.append(remove);
   return div;

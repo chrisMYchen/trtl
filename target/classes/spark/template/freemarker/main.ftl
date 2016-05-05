@@ -51,14 +51,19 @@
   <div id="follow-wrapper" class="overlay-wrapper" style="display:none">
     <div id="follow" class="overlay">
       <div id="follow-close" class="close"><p><i class="material-icons">close</i></p></div>
+      <div id="followers-tab">Followers</div>
+      <div id="followers-tab">Following</div>
       <div id="follow-msg" class="msg" style="display:none;"></div>
-      <form id="follow-form">
-        <input type="text" name="followname" placeholder="Follow Another User" size="30">
-        <input type="submit" value="Add">
-      </form>
-      <div id="pending-list" class="follow-list"></div>
-      <div id="following-list" class="follow-list"></div>
-      <div id="follower-list" class="follow-list"></div>
+      <div id="following">
+        <form id="follow-form">
+          <input type="text" name="followname" placeholder="Follow Another User" size="30">
+          <input type="submit" value="Add">
+        </form>
+        <div id="following-list" class="follow-list"></div>
+      </div>
+      <div id="followers">
+        <div id="follower-list" class="follow-list"></div>
+      </div>
     </div>
   </div>
   <div id="nav">
