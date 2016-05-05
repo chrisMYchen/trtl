@@ -31,7 +31,6 @@ import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
@@ -78,6 +77,7 @@ public class SparkServer {
     Spark.post("/acceptFollower", new AcceptFollower());
     Spark.post("/requestFollow", new RequestFollow());
     Spark.post("/unfollow", new Unfollow());
+    Spark.post("/removeFollower", new RemoveFollower());
     Spark.post("/userInfo", new UserInfo());
     Spark.post("/getUser", new GetUserInfoFromId());
     Spark.post("/myInfo", new MyInfo());
@@ -87,8 +87,7 @@ public class SparkServer {
   private class HomeHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
-      Map<String, Object> variables = ImmutableMap
-      .of("title", "trtl");
+      Map<String, Object> variables = ImmutableMap.of("title", "trtl");
       return new ModelAndView(variables, "home.ftl");
     }
   }
@@ -115,8 +114,8 @@ public class SparkServer {
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
-        notes = TurtleQuery.getNotes(uID, new LatLong(lat, lon),
-        radius, minPost, maxPost, timestamp);
+        notes = TurtleQuery.getNotes(uID, new LatLong(lat, lon), radius,
+            minPost, maxPost, timestamp);
         if (uID != -1) {
           NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
@@ -124,8 +123,7 @@ public class SparkServer {
         }
 
       } catch (NullPointerException np) {
-        message = "Fields not filled. Something is null: "
-        + np.getMessage();
+        message = "Fields not filled. Something is null: " + np.getMessage();
       } catch (NumberFormatException nfe) {
         message = "Number Format Exception: " + nfe.getMessage();
       } catch (SQLException e) {
@@ -165,8 +163,8 @@ public class SparkServer {
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
 
-        notes = TurtleQuery.updateNotes(uID, new LatLong(lat, lon),
-        radius, minPost, maxPost, timestamp);
+        notes = TurtleQuery.updateNotes(uID, new LatLong(lat, lon), radius,
+            minPost, maxPost, timestamp);
         if (uID != -1) {
           NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
@@ -208,12 +206,10 @@ public class SparkServer {
           double lon = Double.parseDouble(lonString);
           long timestamp = Long.parseLong(timeString);
           int privacyVal = Integer.parseInt(privacy);
-          TurtleQuery.postNote(uID, timestamp, lat, lon, content,
-          privacyVal);
+          TurtleQuery.postNote(uID, timestamp, lat, lon, content, privacyVal);
 
         } catch (NullPointerException np) {
-          message = "Fields not filled. Something is null: "
-          + np.getMessage();
+          message = "Fields not filled. Something is null: " + np.getMessage();
         } catch (NumberFormatException nfe) {
           message = "Number Format Exception: " + nfe.getMessage();
         } catch (SQLException e) {
@@ -237,14 +233,14 @@ public class SparkServer {
       long maxRequestSize = 10000000;
       int fileSizeThreshold = 10000000;
       MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
-      "/tmp", maxFileSize, maxRequestSize, fileSizeThreshold);
+          "/tmp", maxFileSize, maxRequestSize, fileSizeThreshold);
       req.raw().setAttribute("org.eclipse.jetty.multipartConfig",
-      multipartConfigElement);
+          multipartConfigElement);
       String message = "no-error";
       Part filePart;
       System.err.println(req.raw().getParameterMap());
 
-      try{
+      try {
         /* Get request data (different format for multipart) */
         filePart = req.raw().getPart("pic");
         String uIDstring = req.raw().getParameter("userID");
@@ -262,7 +258,7 @@ public class SparkServer {
         long timestamp = Long.parseLong(timeString);
         int privacyVal = Integer.parseInt(privacy);
         int noteid = TurtleQuery.postNote(uID, timestamp, lat, lon, content,
-        privacyVal);
+            privacyVal);
 
         /* Connect imageid to noteid */
         int newImageID = TurtleQuery.addImage(noteid, imagepath);
@@ -270,22 +266,23 @@ public class SparkServer {
 
         /* Try to write image to file */
         InputStream is = filePart.getInputStream();
-        if(external){
+        if (external) {
           try {
             String bucket = "trtl-images";
             String key = newImageID + ".jpg";
 
-            TransferManager tm = new TransferManager(new InstanceProfileCredentialsProvider());
+            TransferManager tm = new TransferManager(
+                new InstanceProfileCredentialsProvider());
             ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(filePart.getSize());
             meta.setContentType(filePart.getContentType());
             Upload upload = tm.upload(bucket, key, is, meta);
-          	upload.waitForCompletion();
+            upload.waitForCompletion();
           } catch (AmazonClientException | InterruptedException e) {
-          	message = "Unable to upload file, upload was aborted.";
-          	e.printStackTrace();
+            message = "Unable to upload file, upload was aborted.";
+            e.printStackTrace();
           }
-        } else{
+        } else {
           BufferedImage image = ImageIO.read(is);
           File outputfile = new File(imagepath + newImageID + ".jpg");
           ImageIO.write(image, "jpg", outputfile);
@@ -295,8 +292,7 @@ public class SparkServer {
         System.out.println("ERROR: WEIRD ERROR");
         e.printStackTrace();
       } catch (NullPointerException np) {
-        message = "Fields not filled. Something is null: "
-        + np.getMessage();
+        message = "Fields not filled. Something is null: " + np.getMessage();
       } catch (NumberFormatException nfe) {
         message = "Number Format Exception: " + nfe.getMessage();
       } catch (SQLException e) {
@@ -322,8 +318,7 @@ public class SparkServer {
       try {
         int userID = Integer.parseInt(userIDstring);
         if (!Friend.requestFollow(userID, friendUsername)) {
-          message = "User with username " + friendUsername
-          + " doesn't exist";
+          message = "User with username " + friendUsername + " doesn't exist";
         }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -333,7 +328,7 @@ public class SparkServer {
         message = "SQL error when adding friend.";
         if (e.getErrorCode() == 19) {
           message = "Your request to follow " + friendUsername
-          + " is already pending!";
+              + " is already pending!";
         }
       }
       Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
@@ -354,8 +349,7 @@ public class SparkServer {
       try {
         int userID = Integer.parseInt(userIDstring);
         if (!Friend.acceptPendingRequest(userID, friendUsername)) {
-          message = "User with username " + friendUsername
-          + " doesn't exist";
+          message = "User with username " + friendUsername + " doesn't exist";
         }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -399,6 +393,32 @@ public class SparkServer {
     }
   }
 
+  private class RemoveFollower implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String userIDstring = qm.value("userID");
+      String friendUsername = qm.value("friendUsername");
+      String message = "no-error";
+      try {
+        int userID = Integer.parseInt(userIDstring);
+        if (Friend.removeFollower(userID, friendUsername)) {
+          message = "Friend with username doesn't exist";
+        }
+      } catch (NullPointerException np) {
+        message = "Fields not filled. smtn null.";
+      } catch (NumberFormatException nfe) {
+        message = "number format exception.";
+      } catch (SQLException e) {
+        message = "SQL error when adding friend.";
+      }
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message).build();
+
+      return GSON.toJson(variables);
+    }
+  }
+
   private class NewUser implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -419,12 +439,12 @@ public class SparkServer {
         phone = -1;
       }
       if (firstname != null && username != null && password != null
-      && email != null) {
+          && email != null) {
         try {
           userID = TurtleQuery.getUserID(username);
           if (userID == -1) {
-            userID = TurtleQuery.addUser(username, password,
-            firstname, lastname, email, phone);
+            userID = TurtleQuery.addUser(username, password, firstname,
+                lastname, email, phone);
           } else {
             message = "That username already exists. Cannot create account.";
           }
@@ -517,12 +537,12 @@ public class SparkServer {
 
       if (user != null) {
 
-        variables.put("firstname", user.getFirstName()).put(
-        "lastname", user.getLastName());
-        /*
         variables.put("firstname", user.getFirstName()).put("lastname",
-        user.getLastName());
-        */
+            user.getLastName());
+        /*
+         * variables.put("firstname", user.getFirstName()).put("lastname",
+         * user.getLastName());
+         */
 
         Set<String> followers = new HashSet<>();
         for (int f : user.getFollowers()) {
@@ -561,9 +581,9 @@ public class SparkServer {
           .put("error", message);
 
       if (user != null && userID != -1) {
-        variables.put("firstname", user.getFirstName()).put(
-        "lastname", user.getLastName()).put("email",
-        user.getEmail()).put("username", user.getUsername());
+        variables.put("firstname", user.getFirstName())
+            .put("lastname", user.getLastName()).put("email", user.getEmail())
+            .put("username", user.getUsername());
 
         Set<String> followers = new HashSet<>();
         for (int f : user.getFollowers()) {

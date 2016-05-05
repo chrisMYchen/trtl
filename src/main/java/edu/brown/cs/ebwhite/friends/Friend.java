@@ -20,10 +20,12 @@ public class Friend {
 
   /**
    * add a friend for to a user's list of friends.
+   *
    * @param userID
    *          the ID of the user
    * @param friendID
    *          the ID of the friend
+   * @return true if successful
    * @throws SQLException
    *           if there is an error with the query
    */
@@ -67,9 +69,14 @@ public class Friend {
 
   /**
    * add a friend for to a user's list of friends.
-   * @param userID the ID of the user
-   * @param friendID the ID of the friend
-   * @throws SQLException if there is an error with the query
+   *
+   * @param userID
+   *          the ID of the user
+   * @param friendID
+   *          the ID of the friend
+   * @return true if successful
+   * @throws SQLException
+   *           if there is an error with the query
    */
   public static boolean acceptPendingRequest(int userID, String friendUsername)
       throws SQLException {
@@ -105,9 +112,14 @@ public class Friend {
 
   /**
    * unfollow a friend from a user's list of following.
-   * @param userID the ID of the user
-   * @param friendID the ID of the User u = new UserProxy(friendID); friend
-   * @throws SQLException if there is an error with the query
+   *
+   * @param userID
+   *          the ID of the user
+   * @param friendID
+   *          the ID of the User u = new UserProxy(friendID); friend
+   * @return true if successful
+   * @throws SQLException
+   *           if there is an error with the query
    */
   public static boolean unfollow(int userID, String friendUsername)
       throws SQLException {
@@ -138,6 +150,50 @@ public class Friend {
         prep.executeUpdate();
         f.removePending(userID);
         u.removePendingFollowing(friendID);
+        return true;
+      }
+    }
+  }
+
+  /**
+   * removes a follower from your followers.
+   *
+   * @param userID
+   *          the id of the user
+   * @param friendUsername
+   *          the username of the friend
+   * @return true if successful
+   * @throws SQLException
+   *           if there is an error with the query
+   */
+  public static boolean removeFollower(int userID, String friendUsername)
+      throws SQLException {
+    int friendID = TurtleQuery.getUserID(friendUsername);
+    assert (friendID != -1);
+
+    User f = new UserProxy(friendID);
+    User u = new UserProxy(userID);
+
+    String post = "DELETE FROM user_follower WHERE (userid = ? AND follower_id = ?);";
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn.prepareStatement(post)) {
+        prep.setInt(1, friendID);
+        prep.setInt(2, userID);
+        prep.executeUpdate();
+        f.removeFollowing(userID);
+        u.removeFollower(friendID);
+      }
+    }
+
+    post = "DELETE FROM user_pending WHERE (userid = ? AND pending_id = ?);";
+
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn.prepareStatement(post)) {
+        prep.setInt(1, friendID);
+        prep.setInt(2, userID);
+        prep.executeUpdate();
+        f.removePendingFollowing(userID);
+        u.removePending(friendID);
         return true;
       }
     }
