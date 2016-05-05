@@ -331,6 +331,16 @@ public class TurtleQuery {
     }
   }
 
+  public static void removeNote(int nodeId) throws SQLException {
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn
+          .prepareStatement("DELETE FROM notes WHERE id=?;")) {
+        prep.setInt(1, nodeId);
+        prep.executeUpdate();
+      }
+    }
+  }
+
   public static double deg2rad(double deg) {
     return (deg * Math.PI / 180.0);
   }
