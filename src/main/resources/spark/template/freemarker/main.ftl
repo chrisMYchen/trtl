@@ -51,8 +51,10 @@
   <div id="follow-wrapper" class="overlay-wrapper" style="display:none">
     <div id="follow" class="overlay">
       <div id="follow-close" class="close"><p><i class="material-icons">close</i></p></div>
-      <div id="followers-tab">Followers</div>
-      <div id="followers-tab">Following</div>
+      <div id="follow-tabs" class="tabs">
+        <div id="followers-tab" class="follow-tab">Followers</div>
+        <div id="followers-tab" class="follow-tab">Following</div>
+      </div>
       <div id="follow-msg" class="msg" style="display:none;"></div>
       <div id="following">
         <form id="follow-form">

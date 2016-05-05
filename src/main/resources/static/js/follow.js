@@ -95,7 +95,7 @@ function getFollowList(){
     console.log(res);
     if(res.error == "no-error"){
       fillFollowList(res.followers, res.pending_followers, $("#follower-list"));
-      fillFollowList(res.following, res.pending_following $("#following-list"));
+      fillFollowList(res.following, res.pending_following, $("#following-list"));
     }
     else{
       $("#following-list").html(res.error);
@@ -116,20 +116,26 @@ function fillFollowList(list, pending, dom){
 }
 
 function followDOM(follow, pending){
+  var div = $("<div></div>").addClass("follow-item");
+  var user = $("<div></div>").addClass("follow-user");
+  user.html(follow);
+
   var remove = $("<div></div>").addClass("follow-remove");
   var xicon = $("<i></i>").addClass("material-icons").html("close");
   remove.append(xicon);
 
-  var div = $("<div></div>").addClass("follow-item");
+  var controls = $("<div></div>").addClass("follow-controls");
 
   if(pending){
-    var pending = $("<div></div>").addClass("pending-label");
+    var pending = $("<div></div>").html("pending").addClass("pending-label");
     div.addClass("pending");
-    div.append(pending);
+    controls.append(pending);
   }
 
-  div.html(follow);
-  div.append(remove);
+  controls.append(remove);
+
+  div.append(user).append(controls);
+
   return div;
 }
 

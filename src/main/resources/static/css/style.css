@@ -411,6 +411,26 @@ div.post-content{
 }
 
 /* Friends */
+.tabs{
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+.tabs > div{
+  flex-grow:1;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #03e;
+}
+
+.tabs > div:hover{
+  background: #00a;
+  cursor:pointer;
+  color: white;
+}
+
 .follow-list{
   max-height: 200px;
   overflow-y: auto;
@@ -429,16 +449,23 @@ div.post-content{
   background: #aaa;
 }
 
-.follow-remove{
+.follow-controls{
   position: absolute;
   right: 0;
   top:0;
-  padding: 0px 10px;
   height: 100%;
   display: flex;
-  justify-content: center;
-  flex-direction: column;
+  justify-content: flex-end;
+  flex-direction: row;
+  align-items: stretch;
   cursor: pointer;
+}
+
+.follow-controls > div{
+  display: flex;
+  justify-content:center;
+  flex-direction:column;
+  padding: 0px 10px;
 }
 
 .follow-remove i{
@@ -447,4 +474,9 @@ div.post-content{
 
 .follow-remove:hover{
   background: #f93131;
+  color: white;
+}
+
+.pending-label{
+  color: #00A;
 }

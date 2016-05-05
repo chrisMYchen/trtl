@@ -246,6 +246,7 @@ public class SparkServer {
         String uIDstring = req.raw().getParameter("userID");
         String latString = req.raw().getParameter("lat");
         String lonString = req.raw().getParameter("lon");
+
         String timeString = req.raw().getParameter("timestamp");
         String content = req.raw().getParameter("text");
         String privacy = req.raw().getParameter("private");
@@ -582,14 +583,14 @@ public class SparkServer {
           User pend = new UserProxy(f);
           pending.add(pend.getUsername());
         }
-        variables.put("pending", pending);
+        variables.put("pending_followers", pending);
 
         Set<String> pendingFollowing = new HashSet<>();
         for (int f : user.getPendingFollowing()) {
           User pendFoll = new UserProxy(f);
           pendingFollowing.add(pendFoll.getUsername());
         }
-        variables.put("pendingFollowing", pendingFollowing);
+        variables.put("pending_following", pendingFollowing);
       }
 
       Map<String, Object> map = variables.build();
