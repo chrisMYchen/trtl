@@ -69,7 +69,7 @@ public abstract class EntityProxy<E extends Entity> implements Entity {
   }
 
   /**
-   * Setting for internal.
+   * Setting for internal.E
    * @param intern new internal value
    */
   public void setInternal(E intern) {
@@ -110,6 +110,7 @@ public abstract class EntityProxy<E extends Entity> implements Entity {
       return false;
     if (getClass() != obj.getClass())
       return false;
+    @SuppressWarnings("unchecked")
     EntityProxy<E> other = (EntityProxy<E>) obj;
     if (id != other.id)
       return false;

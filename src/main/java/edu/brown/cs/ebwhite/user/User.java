@@ -27,6 +27,18 @@ public interface User extends Entity {
 
   void removePending(int f);
 
+  Set<Integer> getFollowing();
+
+  void addFollowing(int f);
+
+  void removeFollowing(int f);
+
+  Set<Integer> getPendingFollowing();
+
+  void addPendingFollowing(int f);
+
+  void removePendingFollowing(int f);
+
   int getPhone();
 
 }

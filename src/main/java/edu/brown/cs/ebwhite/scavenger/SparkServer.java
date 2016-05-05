@@ -26,15 +26,14 @@ import spark.Spark;
 import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.Upload;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
-
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.Upload;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 
 import edu.brown.cs.ebwhite.database.TurtleQuery;
 import edu.brown.cs.ebwhite.friends.Friend;
@@ -53,14 +52,14 @@ public class SparkServer {
     GSON = new Gson();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
-    Spark.setSecure(keystore, keypass, null, null);
+    Spark.secure(keystore, keypass, null, null);
     imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images";
     external = true;
   }
 
   public SparkServer(int port) {
     GSON = new Gson();
-    Spark.setPort(port);
+    Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     imagepath = "src/main/resources/static/images/";
     external = false;
@@ -135,8 +134,8 @@ public class SparkServer {
       // for (Note n : notes) {
       // System.out.println(n)
       // }
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "notes", notes).put("error", message).build();
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("notes", notes).put("error", message).build();
 
       return GSON.toJson(variables);
     }
@@ -182,8 +181,8 @@ public class SparkServer {
         message = "SQL error.";
       }
 
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "notes", notes).put("error", message).build();
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("notes", notes).put("error", message).build();
 
       return GSON.toJson(variables);
     }
@@ -223,8 +222,9 @@ public class SparkServer {
       } else {
         message = "content is empty or null";
       }
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "error", message).build();
+
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message).build();
       return GSON.toJson(variables);
     }
   }
@@ -302,13 +302,14 @@ public class SparkServer {
         message = "SQL error when posting note: " + e.getMessage();
       }
 
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "error", message).build();
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message).build();
       return GSON.toJson(variables);
     }
   }
 
   private class RequestFollow implements Route {
+
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -333,13 +334,14 @@ public class SparkServer {
           + " is already pending!";
         }
       }
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "error", message).build();
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message).build();
       return GSON.toJson(variables);
     }
   }
 
   private class AcceptFollower implements Route {
+
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -363,8 +365,8 @@ public class SparkServer {
           message = "You're already follow " + friendUsername + "!";
         }
       }
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "error", message).build();
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message).build();
       return GSON.toJson(variables);
     }
   }
@@ -388,8 +390,8 @@ public class SparkServer {
       } catch (SQLException e) {
         message = "SQL error when adding friend.";
       }
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "error", message).build();
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message).build();
 
       return GSON.toJson(variables);
     }
@@ -436,8 +438,8 @@ public class SparkServer {
         message = "Please fill all required fields";
       }
 
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "error", message).put("userID", userID).build();
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message).put("userID", userID).build();
       return GSON.toJson(variables);
     }
   }
@@ -460,8 +462,8 @@ public class SparkServer {
         message = "Login failed : Invalid username password combination.";
       }
 
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "error", message).put("userID", uID).build();
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message).put("userID", uID).build();
 
       return GSON.toJson(variables);
     }
@@ -486,14 +488,13 @@ public class SparkServer {
         message += e.getMessage();
       }
 
-      Map<String, Object> variables = new ImmutableMap.Builder().put(
-      "error", message).put("exists", exists).build();
+      Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message).put("exists", exists).build();
       return GSON.toJson(variables);
     }
   }
 
   private class UserInfo implements Route {
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -509,8 +510,8 @@ public class SparkServer {
         message += e.getMessage();
       }
 
-      Builder variables = new ImmutableMap.Builder().put("error",
-      message);
+      Builder<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message);
 
       if (user != null) {
 
@@ -536,7 +537,6 @@ public class SparkServer {
   }
 
   private class MyInfo implements Route {
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -544,9 +544,10 @@ public class SparkServer {
 
       String message = "no-error";
       User user = null;
+      int userID = -1;
 
       try {
-        int userID = Integer.parseInt(userIDstring);
+        userID = Integer.parseInt(userIDstring);
         user = new UserProxy(userID);
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -554,10 +555,10 @@ public class SparkServer {
         message = "number format exception.";
       }
 
-      Builder variables = new ImmutableMap.Builder().put("error",
-      message);
+      Builder<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message);
 
-      if (user != null) {
+      if (user != null && userID != -1) {
         variables.put("firstname", user.getFirstName()).put(
         "lastname", user.getLastName()).put("email",
         user.getEmail()).put("username", user.getUsername());
@@ -569,12 +570,26 @@ public class SparkServer {
         }
         variables.put("followers", followers);
 
+        Set<String> following = new HashSet<>();
+        for (int f : user.getFollowing()) {
+          User friend = new UserProxy(f);
+          following.add(friend.getUsername());
+        }
+        variables.put("following", following);
+
         Set<String> pending = new HashSet<>();
         for (int f : user.getPending()) {
           User pend = new UserProxy(f);
           pending.add(pend.getUsername());
         }
         variables.put("pending", pending);
+
+        Set<String> pendingFollowing = new HashSet<>();
+        for (int f : user.getPendingFollowing()) {
+          User pendFoll = new UserProxy(f);
+          pendingFollowing.add(pendFoll.getUsername());
+        }
+        variables.put("pendingFollowing", pendingFollowing);
       }
 
       Map<String, Object> map = variables.build();
@@ -597,8 +612,8 @@ public class SparkServer {
         message = "userID not a number";
       }
 
-      Builder variables = new ImmutableMap.Builder().put("error",
-      message);
+      Builder<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message);
       if (user != null) {
         variables.put("username", user.getUsername());
       }

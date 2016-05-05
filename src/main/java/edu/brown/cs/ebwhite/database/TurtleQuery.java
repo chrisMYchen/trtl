@@ -1,10 +1,10 @@
 package edu.brown.cs.ebwhite.database;
 
 import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +13,7 @@ import edu.brown.cs.ebwhite.note.Note;
 
 public class TurtleQuery {
   private final static int NIDCOL = 1;
-  private final static int UIDCOL = 2;
+  // private final static int UIDCOL = 2;
   private final static int TIMECOL = 3;
   private final static int LATCOL = 4;
   private final static int LNGCOL = 5;
@@ -62,7 +62,7 @@ public class TurtleQuery {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
             int noteID = rs.getInt(NIDCOL);
-            int uID = rs.getInt(UIDCOL);
+            // int uID = rs.getInt(UIDCOL);
             long time = rs.getLong(TIMECOL);
             double lat = rs.getDouble(LATCOL);
             double lng = rs.getDouble(LNGCOL);
@@ -163,7 +163,7 @@ public class TurtleQuery {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
             int noteID = rs.getInt(NIDCOL);
-            int uID = rs.getInt(UIDCOL);
+            // int uID = rs.getInt(UIDCOL);
             long time = rs.getLong(TIMECOL);
             double lat = rs.getDouble(LATCOL);
             double lng = rs.getDouble(LNGCOL);

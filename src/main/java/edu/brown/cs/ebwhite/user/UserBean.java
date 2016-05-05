@@ -13,15 +13,19 @@ public class UserBean implements User {
   private String lastName;
   private String email;
   private int phone;
-  private Set<Integer> friends;
+  private Set<Integer> followers;
+  private Set<Integer> following;
   private Set<Integer> pending;
+  private Set<Integer> pendingFollowing;
 
-  public UserBean(int id, Set<Integer> friendSet, Set<Integer> pendingSet,
-      String uname, String fname,
-      String lname, String mail, int pho) {
+  public UserBean(int id, Set<Integer> followerSet, Set<Integer> followingSet,
+      Set<Integer> pendingSet, Set<Integer> pendingFollowingSet, String uname,
+      String fname, String lname, String mail, int pho) {
     this.mID = id;
-    this.friends = friendSet;
+    this.followers = followerSet;
+    this.following = followingSet;
     this.pending = pendingSet;
+    this.pendingFollowing = pendingFollowingSet;
     this.username = uname;
     this.firstName = fname;
     this.lastName = lname;
@@ -59,6 +63,11 @@ public class UserBean implements User {
     return phone;
   }
 
+  @Override
+  public Set<Integer> getFollowing() {
+    return following;
+  }
+
   // @Override
   // public Set<Integer> getFriends() {
   // return friends;
@@ -76,17 +85,17 @@ public class UserBean implements User {
 
   @Override
   public Set<Integer> getFollowers() {
-    return friends;
+    return followers;
   }
 
   @Override
   public void addFollower(int f) {
-    friends.add(f);
+    followers.add(f);
   }
 
   @Override
   public void removeFollower(int f) {
-    friends.remove(f);
+    followers.remove(f);
   }
 
   @Override
@@ -106,4 +115,28 @@ public class UserBean implements User {
 
   }
 
+  @Override
+  public void addFollowing(int f) {
+    following.add(f);
+  }
+
+  @Override
+  public void removeFollowing(int f) {
+    following.remove(f);
+  }
+
+  @Override
+  public Set<Integer> getPendingFollowing() {
+    return pendingFollowing;
+  }
+
+  @Override
+  public void addPendingFollowing(int f) {
+    pendingFollowing.add(f);
+  }
+
+  @Override
+  public void removePendingFollowing(int f) {
+    pendingFollowing.remove(f);
+  }
 }

@@ -18,6 +18,7 @@ public abstract class AbstractEntity<T> implements Entity<T>{
     if(!(obj instanceof Entity)){
         return false;
     }
+    @SuppressWarnings("unchecked")
     Entity<T> e = (Entity<T>) obj;
     return this.getID().equals(e.getID());
   }
