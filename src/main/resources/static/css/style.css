@@ -412,23 +412,67 @@ div.post-content{
 
 /* Friends */
 .tabs{
-  margin: 5px;
+  margin: 5px 5px 0px;
   display: flex;
   justify-content: center;
 }
 
 .tabs > div{
   flex-grow:1;
-  margin: 5px;
+  margin: 5px 5px 0px;
   padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #03e;
+  border-radius: 5px 5px 0px 0px;
+  border: 1px solid #888;
+  border-bottom: 0px;
+  color: #888;
+  font-size: 11pt;
+  text-transform: uppercase;
 }
 
 .tabs > div:hover{
-  background: #00a;
+  color: #44a;
+  border: 1px #44a solid;
+  border-bottom: 0px;
   cursor:pointer;
+}
+
+.tabs > div.active{
   color: white;
+  border:none;
+  background: #44a;
+}
+
+.follow-page{
+  border: 1px solid #44a;
+  border-radius: 0px 0px 5px 5px;
+  margin: 0px 10px 10px;
+  background: none;
+}
+
+#follow-form{
+  display: flex;
+  justify-content: center;
+}
+
+#follow-form input[type=text]{
+  border-radius: 3px 0px 0px 3px;
+  margin: 0;
+  border: 1px #44a solid;
+  border-right: none;
+}
+
+#follow-form input[type=submit]{
+  border: none;
+  border-radius: 0px 3px 3px 0px;
+  margin: 0;
+  background: #44a;
+  color: white;
+}
+
+#follow-form input[type=submit]:hover{
+  background: none;
+  color: #44a;
+  border: 1px solid #44a;
 }
 
 .follow-list{
@@ -443,10 +487,7 @@ div.post-content{
   text-align: left;
   margin: 3px;
   background: #ddd;
-}
-
-.follow-item:hover{
-  background: #aaa;
+  cursor: default;
 }
 
 .follow-controls{
@@ -458,7 +499,6 @@ div.post-content{
   justify-content: flex-end;
   flex-direction: row;
   align-items: stretch;
-  cursor: pointer;
 }
 
 .follow-controls > div{
@@ -466,6 +506,10 @@ div.post-content{
   justify-content:center;
   flex-direction:column;
   padding: 0px 10px;
+}
+
+.follow-remove{
+  cursor: pointer;
 }
 
 .follow-remove i{
@@ -477,6 +521,19 @@ div.post-content{
   color: white;
 }
 
+.follow-accept{
+  cursor: pointer;
+}
+
+.follow-accept i{
+  display: inline-block;
+}
+
+.follow-accept:hover{
+  background: #00A0FD;
+  color: white;
+}
+
 .pending-label{
-  color: #00A;
+  color: #00A0FD;
 }
