@@ -20,16 +20,17 @@ function locationStart(){
 
 function locationError(error, id){
     navigator.geolocation.clearWatch(id);
-    var icon = $("<i></i>").addClass("material-icons").html("location_off");
-    $("#location").empty().append(icon);
+
+    var icon = locationIcon();
+    icon.html("location_off");
 
     var elem = $("<p></p>").html(error.message);
     locationDropdown(elem);
 }
 
 function locationHandler(position){
-  var icon = $("<i></i>").addClass("material-icons").html("location_on");
-  $("#location").empty().append(icon)
+  var icon = locationIcon();
+  icon.html("location_on");
 
   /* Create dropdown */
   locationInfo.pos = {lat: position.lat, lon: position.lng};
@@ -40,14 +41,21 @@ function locationHandler(position){
   locationDropdown(wrapper);
 }
 
+function locationIcon(){
+  var icon = $("#location i");
+  if(icon.length == 0){
+      icon = $("<i></i>").addClass("material-icons");
+      $("#location").prepend(icon);
+  }
+  return icon;
+}
+
 function locationDropdown(elem){
-  console.log(elem)
-  var div = $("<div></div>").addClass("dropdown");
-  div.append(elem);
-
-  /* Get parent */
-  var locDiv = $("#location");
-
-  $("#location").append(div);
-  div.toggle(false);
+  var drop = $("#location .dropdown");
+  if(drop.length == 0){
+    drop = $("<div></div>").addClass("dropdown");
+    $("#location").append(drop);
+    drop.toggle(false);
+  }
+  drop.html(elem);
 }
