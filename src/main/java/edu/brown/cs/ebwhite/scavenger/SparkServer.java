@@ -31,7 +31,6 @@ import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
@@ -82,6 +81,7 @@ public class SparkServer {
     Spark.post("/getUser", new GetUserInfoFromId());
     Spark.post("/myInfo", new MyInfo());
     Spark.post("/postNoteImage", "multipart/form-data", new PostNoteImage());
+    Spark.post("/removeNote", new RemoveNote());
   }
 
   private class HomeHandler implements TemplateViewRoute {
@@ -619,6 +619,33 @@ public class SparkServer {
       if (user != null) {
         variables.put("username", user.getUsername());
       }
+
+      Map<String, Object> map = variables.build();
+
+      return GSON.toJson(map);
+    }
+  }
+
+  private class RemoveNote implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String noteIDString = qm.value("noteID");
+      String userIDString = qm.value("userID");
+      String message = "no-error";
+
+      try {
+        int noteID = Integer.parseInt(noteIDString);
+        int userID = Integer.parseInt(userIDString);
+        TurtleQuery.removeNote(noteID, userID);
+      } catch (NumberFormatException nfe) {
+        message = "nodeID or userID not a number";
+      } catch (SQLException e) {
+        message = "SQL error in removing note from database.";
+      }
+
+      Builder<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message);
 
       Map<String, Object> map = variables.build();
 
