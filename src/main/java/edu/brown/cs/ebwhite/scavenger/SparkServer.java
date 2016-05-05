@@ -27,10 +27,11 @@ import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
@@ -274,7 +275,7 @@ public class SparkServer {
             String bucket = "trtl-images";
             String key = newImageID + ".jpg";
 
-            TransferManager tm = new TransferManager(new ProfileCredentialsProvider());
+            TransferManager tm = new TransferManager(new InstanceProfileCredentialsProvider());
             ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(filePart.getSize());
             meta.setContentType(filePart.getContentType());

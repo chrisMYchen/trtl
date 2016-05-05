@@ -39,6 +39,9 @@ function postNote(post, privacy){
 function postError(message){
   var error = $("<div></div>").attr("class", "post error").html(message);
   $("#posts").prepend(error);
+  window.setTimeout(function(){
+    error.remove();
+  }, 10000);
 }
 
 function getPrivacy(){
