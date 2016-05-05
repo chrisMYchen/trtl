@@ -106,7 +106,8 @@ function processNote(note){
     content: note.text,
     dom: note.dom,
     time: new Date(note.timestamp),
-    order: note.order
+    order: note.order,
+    image: note.image
   };
 
   if((note.user) && (note.user.id) && (note.user.id != -1)){
@@ -144,6 +145,13 @@ function formatNote(note){
 
   /* Content */
   var content = $("<div></div>").attr("class","post-content").append(note.content);
+
+  /* Image */
+  if(note.image != null){
+    var image = $("<img></img>").attr("class","post-image");
+    image.attr("src", note.image);
+    content.append(image);
+  }
 
   /* Meta */
   var timestring = formatTime(note.time);

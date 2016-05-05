@@ -10,7 +10,7 @@ function loginSetup(){
   });
 
   /* Close login dialog on "X click */
-  $("#login-close").click(closeLoginDialog);
+  $("#login-close p").click(closeLoginDialog);
 
   /* Open login dialog on from nav */
   $("#login-button").click(function(){
@@ -151,7 +151,7 @@ function signupSetup(){
     }
   });
 
-  $("#signup-close").click(closeSignupDialog);
+  $("#signup-close p").click(closeSignupDialog);
 
   $("#signup-button").click(function(){
     closeLoginDialog();

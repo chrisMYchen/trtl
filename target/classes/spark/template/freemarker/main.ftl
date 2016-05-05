@@ -2,7 +2,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#FFBB8B">
+  <meta name="theme-color" content="#A2D85A">
   <title>${title}</title>
   <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:400,600,300' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,500,200,600' rel='stylesheet' type='text/css'>
@@ -52,13 +52,20 @@
     <div id="follow" class="overlay">
       <div id="follow-close" class="close"><p><i class="material-icons">close</i></p></div>
       <div id="follow-msg" class="msg" style="display:none;"></div>
-      <form id="follow-form">
-        <input type="text" name="followname" placeholder="Follow Another User" size="30">
-        <input type="submit" value="Add">
-      </form>
-      <div id="pending-list" class="follow-list"></div>
-      <div id="following-list" class="follow-list"></div>
-      <div id="follower-list" class="follow-list"></div>
+      <div id="follow-tabs" class="tabs">
+        <div id="following-tab" class="follow-tab">Following</div>
+        <div id="followers-tab" class="follow-tab">Followers</div>
+      </div>
+      <div id="following" class="follow-page">
+        <form id="follow-form">
+          <input type="text" name="followname" placeholder="Follow Another User" size="30">
+          <input type="submit" value="Add">
+        </form>
+        <div id="following-list" class="follow-list"></div>
+      </div>
+      <div id="followers" class="follow-page">
+        <div id="follower-list" class="follow-list"></div>
+      </div>
     </div>
   </div>
   <div id="nav">

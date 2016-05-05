@@ -27,10 +27,11 @@ import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
@@ -53,7 +54,7 @@ public class SparkServer {
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.secure(keystore, keypass, null, null);
-    imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images";
+    imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images/";
     external = true;
   }
 
@@ -61,8 +62,8 @@ public class SparkServer {
     GSON = new Gson();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
-    imagepath = "src/main/resources/static/images/";
-    external = false;
+    imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images/";
+    external = true;
   }
 
   public void run() {
@@ -232,8 +233,11 @@ public class SparkServer {
   private class PostNoteImage implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
+      long maxFileSize = 10000000;
+      long maxRequestSize = 10000000;
+      int fileSizeThreshold = 10000000;
       MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
-      "/tmp");
+      "/tmp", maxFileSize, maxRequestSize, fileSizeThreshold);
       req.raw().setAttribute("org.eclipse.jetty.multipartConfig",
       multipartConfigElement);
       String message = "no-error";
@@ -246,6 +250,7 @@ public class SparkServer {
         String uIDstring = req.raw().getParameter("userID");
         String latString = req.raw().getParameter("lat");
         String lonString = req.raw().getParameter("lon");
+
         String timeString = req.raw().getParameter("timestamp");
         String content = req.raw().getParameter("text");
         String privacy = req.raw().getParameter("private");
@@ -270,7 +275,7 @@ public class SparkServer {
             String bucket = "trtl-images";
             String key = newImageID + ".jpg";
 
-            TransferManager tm = new TransferManager(new ProfileCredentialsProvider());
+            TransferManager tm = new TransferManager(new InstanceProfileCredentialsProvider());
             ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(filePart.getSize());
             meta.setContentType(filePart.getContentType());
@@ -285,9 +290,6 @@ public class SparkServer {
           File outputfile = new File(imagepath + newImageID + ".jpg");
           ImageIO.write(image, "jpg", outputfile);
         }
-
-        /* Set path for image (won't happen if write fails)*/
-        TurtleQuery.setImagePath(newImageID, path);
 
       } catch (IOException | ServletException e) {
         System.out.println("ERROR: WEIRD ERROR");
@@ -330,7 +332,7 @@ public class SparkServer {
       } catch (SQLException e) {
         message = "SQL error when adding friend.";
         if (e.getErrorCode() == 19) {
-          message = "You're request to follow " + friendUsername
+          message = "Your request to follow " + friendUsername
           + " is already pending!";
         }
       }
@@ -362,7 +364,7 @@ public class SparkServer {
       } catch (SQLException e) {
         message = "SQL error when adding friend.";
         if (e.getErrorCode() == 19) {
-          message = "You're already follow " + friendUsername + "!";
+          message = "Your already follow " + friendUsername + "!";
         }
       }
       Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
@@ -582,14 +584,14 @@ public class SparkServer {
           User pend = new UserProxy(f);
           pending.add(pend.getUsername());
         }
-        variables.put("pending", pending);
+        variables.put("pending_followers", pending);
 
         Set<String> pendingFollowing = new HashSet<>();
         for (int f : user.getPendingFollowing()) {
           User pendFoll = new UserProxy(f);
           pendingFollowing.add(pendFoll.getUsername());
         }
-        variables.put("pendingFollowing", pendingFollowing);
+        variables.put("pending_following", pendingFollowing);
       }
 
       Map<String, Object> map = variables.build();

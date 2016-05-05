@@ -27,28 +27,33 @@ function imageHandle(post, privacy){
   data.append("private", privacy);
   data.append("pic", file);
 
-  $.ajax({
-    url: "postNoteImage",
-    type: "POST",
-    data: data,
-    cache: false,
-    contentType: false,
-    processData: false,
-    success: function(response){
-      var res = JSON.parse(response);
-      if(res.error != "no-error"){
-        console.log(res.error);
-        postError(res.error);
+  if(file.size > 10000000){
+    postError("Image is too large! Max image size is 10MB.");
+  }
+  else{
+    $.ajax({
+      url: "postNoteImage",
+      type: "POST",
+      data: data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(response){
+        var res = JSON.parse(response);
+        if(res.error != "no-error"){
+          console.log(res.error);
+          postError(res.error);
+        }
+        else{
+          $(".input-content").val("");
+          clearImages();
+        }
+      },
+      error: function(err){
+        postError("Posting failed.");
       }
-      else{
-        $(".input-content").val("");
-        clearImages();
-      }
-    },
-    error: function(err){
-      postError("Posting failed.");
-    }
-  });
+    });
+  }
 }
 
 function imageControl(){

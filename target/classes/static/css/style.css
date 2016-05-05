@@ -160,6 +160,10 @@ div.post-content{
   white-space: pre-wrap;
 }
 
+img.post-image{
+  width:100%;
+}
+
 .post-meta{
   border-top: 1px solid #999;
   display: flex;
@@ -178,6 +182,11 @@ div.post-content{
 
 .post-meta a:hover{
   text-decoration: underline;
+}
+
+.post .error{
+  padding: 10px;
+  background: #ff9999;
 }
 
 /* Posting abilities */
@@ -411,6 +420,70 @@ div.post-content{
 }
 
 /* Friends */
+.tabs{
+  margin: 5px 5px 0px;
+  display: flex;
+  justify-content: center;
+}
+
+.tabs > div{
+  flex-grow:1;
+  margin: 5px 5px 0px;
+  padding: 5px;
+  border-radius: 5px 5px 0px 0px;
+  border: 1px solid #888;
+  border-bottom: 0px;
+  color: #888;
+  font-size: 11pt;
+  text-transform: uppercase;
+}
+
+.tabs > div:hover{
+  color: #44a;
+  border: 1px #44a solid;
+  border-bottom: 0px;
+  cursor:pointer;
+}
+
+.tabs > div.active{
+  color: white;
+  border:none;
+  background: #44a;
+}
+
+.follow-page{
+  border: 1px solid #44a;
+  border-radius: 0px 0px 5px 5px;
+  margin: 0px 10px 10px;
+  background: none;
+}
+
+#follow-form{
+  display: flex;
+  justify-content: center;
+}
+
+#follow-form input[type=text]{
+  border-radius: 3px 0px 0px 3px;
+  margin: 0;
+  border: 1px #44a solid;
+  border-right: none;
+}
+
+#follow-form input[type=submit]{
+  border: none;
+  border-radius: 0px 3px 3px 0px;
+  margin: 0;
+  background: #44a;
+  color: white;
+}
+
+#follow-form input[type=submit]:hover{
+  background: none;
+  color: #44a;
+  border: 1px solid #44a;
+}
+
 .follow-list{
   max-height: 200px;
   overflow-y: auto;
@@ -423,21 +496,28 @@ div.post-content{
   text-align: left;
   margin: 3px;
   background: #ddd;
+  cursor: default;
 }
 
-.follow-item:hover{
-  background: #aaa;
-}
-
-.follow-remove{
+.follow-controls{
   position: absolute;
   right: 0;
   top:0;
-  padding: 0px 10px;
   height: 100%;
   display: flex;
-  justify-content: center;
-  flex-direction: column;
+  justify-content: flex-end;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.follow-controls > div{
+  display: flex;
+  justify-content:center;
+  flex-direction:column;
+  padding: 0px 10px;
+}
+
+.follow-remove{
   cursor: pointer;
 }
 
@@ -447,4 +527,22 @@ div.post-content{
 
 .follow-remove:hover{
   background: #f93131;
+  color: white;
+}
+
+.follow-accept{
+  cursor: pointer;
+}
+
+.follow-accept i{
+  display: inline-block;
+}
+
+.follow-accept:hover{
+  background: #00A0FD;
+  color: white;
+}
+
+.pending-label{
+  color: #00A0FD;
 }

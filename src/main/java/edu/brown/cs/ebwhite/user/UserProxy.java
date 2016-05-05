@@ -66,7 +66,7 @@ public class UserProxy extends EntityProxy<User> implements User {
 
     try (PreparedStatement prep = conn.prepareStatement(query)) {
       prep.setInt(1, getId());
-      prep.setInt(1, getId());
+      prep.setInt(2, getId());
       try (ResultSet rs = prep.executeQuery()) {
         while (rs.next()) {
           int userID = rs.getInt(1);
