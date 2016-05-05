@@ -184,7 +184,7 @@ img.post-image{
   text-decoration: underline;
 }
 
-.post .error{
+.post.error{
   padding: 10px;
   background: #ff9999;
 }
