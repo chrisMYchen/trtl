@@ -13,6 +13,7 @@ public class Note {
   // private String displayName;
   private User user;
   private int privacy;
+  private String image;
 
   public Note(long time, String content, int ID, int uID, double lat,
       double lng, int priv) {
@@ -23,6 +24,7 @@ public class Note {
     this.latlng = new LatLong(lat, lng);
     this.privacy = priv;
     // this.displayName = ownerName;
+    this.image = null;
   }
 
   public Note(NoteBuilder b) {
@@ -34,6 +36,7 @@ public class Note {
     this.latlng = new LatLong(b.lat, b.lng);
     // this.displayName = b.displayName;
     this.privacy = b.privacy;
+    this.image = b.image;
   }
 
   @Override
@@ -75,6 +78,10 @@ public class Note {
     return latlng;
   }
 
+  public String getImage() {
+    return image;
+  }
+
   // public String getUsername() {
   // return displayName;
   // }
@@ -89,6 +96,7 @@ public class Note {
     private double lng;
     // private String displayName;
     private int privacy;
+    private String image;
 
     public NoteBuilder(int myId, long time) {
       this.timestamp = time;
@@ -97,6 +105,11 @@ public class Note {
 
     public NoteBuilder setContent(String content) {
       this.text = content;
+      return this;
+    }
+
+    public NoteBuilder setImage(String imagePath) {
+      this.image = imagePath;
       return this;
     }
 

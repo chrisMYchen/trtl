@@ -46,7 +46,8 @@ public class TurtleQuery {
       double left_lng, double right_lng, int minPost, int maxPost,
       long timeStamp) throws SQLException {
 
-    String getNotes = "SELECT * FROM notes WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+    String getNotes = "SELECT * FROM notes AS n LEFT JOIN image_note AS i ON n.id=i.noteid "
+        + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
         + " AND (timestamp < ?) AND (private = 0) ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
@@ -67,8 +68,9 @@ public class TurtleQuery {
             double lng = rs.getDouble(LNGCOL);
             String txt = rs.getString(TXTCOL);
             // uID just not placed in note if not logged in
+            String image = rs.getString("path");
             Note n = new Note.NoteBuilder(noteID, time).setContent(txt)
-                .setLat(lat).setLng(lng).build();
+                .setLat(lat).setLng(lng).setImage(image).build();
             allNotes.add(n);
           }
           return allNotes;
@@ -82,12 +84,13 @@ public class TurtleQuery {
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp) throws SQLException {
 
-    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
+    String getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
         + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
         + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
         + " AND (timestamp < ?) AND (n.private = 0 OR n.userid = ? OR"
         + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
-        + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ? ;";
+        + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i"
+        + " ON i.noteid=n.id;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
         prep.setDouble(1, left_lng);
@@ -109,9 +112,10 @@ public class TurtleQuery {
             double lng = rs.getDouble(5);
             String txt = rs.getString(6);
             int priv = rs.getInt(7);
+            String image = rs.getString("path");
             Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
                 .setContent(txt).setLat(lat).setLng(lng).setPrivate(priv)
-                .build();
+                .setImage(image).build();
             allNotes.add(n);
           }
           return allNotes;
@@ -144,7 +148,8 @@ public class TurtleQuery {
   public static List<Note> updateNotesAnonymous(double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp) throws SQLException {
-    String getNotes = "SELECT * FROM notes WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+    String getNotes = "SELECT * FROM notes AS n LEFT JOIN image_note AS i ON n.id=i.noteid "
+        + "WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
         + " AND (timestamp >= ?) AND (private = 0) ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
@@ -164,9 +169,10 @@ public class TurtleQuery {
             double lat = rs.getDouble(LATCOL);
             double lng = rs.getDouble(LNGCOL);
             String txt = rs.getString(TXTCOL);
+            String image = rs.getString("path");
             // uID just not placed in note if not logged in
             Note n = new Note.NoteBuilder(noteID, time).setContent(txt)
-                .setLat(lat).setLng(lng).build();
+                .setLat(lat).setLng(lng).setImage(image).build();
             allNotes.add(n);
           }
           return allNotes;
@@ -178,10 +184,10 @@ public class TurtleQuery {
   public static List<Note> updateNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp) throws SQLException {
-    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_follower as uf WHERE "
+    String getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_follower as uf WHERE "
         + " (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp >= ?) AND "
         + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
-        + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ? ;";
+        + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i ON n.id=i.noteid ;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
         prep.setDouble(1, left_lng);
@@ -203,9 +209,10 @@ public class TurtleQuery {
             double lng = rs.getDouble(5);
             String txt = rs.getString(6);
             int priv = rs.getInt(7);
+            String image = rs.getString("path");
             Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
                 .setContent(txt).setLat(lat).setLng(lng).setPrivate(priv)
-                .build();
+                .setImage(image).build();
             allNotes.add(n);
           }
           return allNotes;
