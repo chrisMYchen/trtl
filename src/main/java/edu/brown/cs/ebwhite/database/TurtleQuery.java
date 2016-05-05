@@ -270,7 +270,10 @@ public class TurtleQuery {
         /* Get autoincrement key */
         ResultSet rs = prep.getGeneratedKeys();
         rs.next();
-        return rs.getInt(1);
+        int imageID = rs.getInt(1);
+        String imagepath = path + imageID + ".jpg";
+        setImagePath(imageID, imagepath);
+        return imageID;
       }
     }
   }

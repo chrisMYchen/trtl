@@ -53,7 +53,7 @@ public class SparkServer {
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.secure(keystore, keypass, null, null);
-    imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images";
+    imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images/";
     external = true;
   }
 
@@ -61,8 +61,8 @@ public class SparkServer {
     GSON = new Gson();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
-    imagepath = "src/main/resources/static/images/";
-    external = false;
+    imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images/";
+    external = true;
   }
 
   public void run() {
@@ -232,8 +232,11 @@ public class SparkServer {
   private class PostNoteImage implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
+      long maxFileSize = 10000000;
+      long maxRequestSize = 10000000;
+      int fileSizeThreshold = 10000000;
       MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
-      "/tmp");
+      "/tmp", maxFileSize, maxRequestSize, fileSizeThreshold);
       req.raw().setAttribute("org.eclipse.jetty.multipartConfig",
       multipartConfigElement);
       String message = "no-error";
@@ -286,9 +289,6 @@ public class SparkServer {
           File outputfile = new File(imagepath + newImageID + ".jpg");
           ImageIO.write(image, "jpg", outputfile);
         }
-
-        /* Set path for image (won't happen if write fails)*/
-        TurtleQuery.setImagePath(newImageID, path);
 
       } catch (IOException | ServletException e) {
         System.out.println("ERROR: WEIRD ERROR");
