@@ -54,6 +54,7 @@ function sendLogin(){
     var res = JSON.parse(response);
     console.log(res);
     if((res.error == "no-error") && (res.userID != -1)){
+      resetNotes();
       login(res.userID);
       closeLoginDialog();
     }
@@ -72,7 +73,6 @@ function login(userID){
     userInfo = {id: userID, username: res.username};
     setLoginMode(true);
     setLoginCookie(userID);
-    resetNotes();
   });
 }
 
@@ -160,7 +160,7 @@ function signupSetup(){
 
   /* Reset form*/
   $("#signup-form").on("reset", function(){
-    $("#friend-form input[name=username]").css("background", "#FFF");
+    $("#signup-form input[name=username]").css("background", "#FFF");
   });
 
   $("#signup-form input[name=username]").on("input", function(){
