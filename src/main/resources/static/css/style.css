@@ -107,13 +107,14 @@ div#nav {
 #wrapper{
   padding-top: 50px;
   height: 100%;
+  width: 75%;
 }
 
 /* map */
 #map{
   background: #afa;
   position: absolute;
-  width: 25%;
+  width: calc(25% - 40px);
   height: 300px;
   right: 0;
   top: 50px;
@@ -126,9 +127,7 @@ div#nav {
 /* posts */
 #posts-wrapper{
     max-width: 800px;
-    width: 75%;
-    left: 0;
-    margin: 0px 10px;
+    margin: auto;
 }
 
 #posts{
@@ -404,6 +403,19 @@ img.post-image{
   .input{
     border-radius: 0px;
     margin: 20px 0px 0px 0px;
+  }
+
+  #wrapper{
+    width: 100%;
+  }
+
+  #map{
+    position: relative;
+    width: 100%;
+    margin: 20px 0px;
+    border-radius: 0px;
+    top: 0;
+    height: 200px;
   }
 
   #posts[data-columns]::before {

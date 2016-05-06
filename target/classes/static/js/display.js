@@ -107,7 +107,8 @@ function processNote(note){
     dom: note.dom,
     time: new Date(note.timestamp),
     order: note.order,
-    image: note.image
+    image: note.image,
+    marker: addMarker(note.latlng)
   };
 
   if((note.user) && (note.user.id) && (note.user.id != -1)){

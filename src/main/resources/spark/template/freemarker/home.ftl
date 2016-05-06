@@ -1,4 +1,5 @@
 <#assign content>
+<div id="map"></div>
 <div id="posts-wrapper">
   <div class="input">
     <textarea class="input-content" rows="4" placeholder="Post a note to this location"></textarea>
@@ -18,6 +19,5 @@
   <div id="posts" data-columns>
   </div>
 </div>
-<div id="map"></div>
 </#assign>
 <#include "main.ftl">
