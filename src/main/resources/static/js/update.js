@@ -21,6 +21,8 @@ function updatesDOM(notes, start){
       $(window).scrollTop(position_before + difference);
     }
   }
+  console.log(linkify.test('dev@example.com')); // true
+  $('.post').linkify();
 }
 
 function updateNotes(time, radius){

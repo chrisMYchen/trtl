@@ -8,6 +8,9 @@
   <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,500,200,600' rel='stylesheet' type='text/css'>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="/js/linkify.min.js"></script>
+  <script src="/js/linkify-jquery.min.js"></script>
   <script src="/js/main.js"></script>
   <script src="/js/location.js"></script>
   <script src="/js/display.js"></script>
@@ -16,6 +19,7 @@
   <script src="/js/follow.js"></script>
   <script src="/js/update.js"></script>
   <script src="/js/image.js"></script>
+
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/font.css">

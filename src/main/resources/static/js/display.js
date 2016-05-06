@@ -160,6 +160,8 @@ function formatNote(note){
   meta.append(time);
 
   dom.append(user).append(content).append(meta);
+  console.log(linkify.test('dev@example.com')); // true
+  $('.post').linkify();
 }
 
 function formatTime(time){
