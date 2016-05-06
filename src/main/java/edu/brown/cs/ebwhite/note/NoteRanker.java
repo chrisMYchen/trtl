@@ -25,24 +25,26 @@ public class NoteRanker implements Comparator<Note> {
     double currentTime = new Date().getTime();
     double timeSinceNote1 = currentTime - o1.getTimestamp();
     double timeSinceNote2 = currentTime - o2.getTimestamp();
+    System.out.println("current" + currentTime);
+    System.out.println("time since " + timeSinceNote1);
     if (currentUser != null) {
       if (currentUser.getFollowers().contains(o1.getUser().getId())) {
         // System.out.println("note 1 friend " + timeSinceNote1);
-        timeSinceNote1 = Math.log(timeSinceNote1);
+        timeSinceNote1 = timeSinceNote1/30000;
         // System.out.println("note 1 post log " + timeSinceNote1);
       }
       if (currentUser.getFollowers().contains(o2.getUser().getId())) {
         // System.out.println("note 2 friend " + timeSinceNote2);
-        timeSinceNote2 = Math.log(timeSinceNote2);
+        timeSinceNote2 = timeSinceNote2/30000;
         // System.out.println("note 2 post log " + timeSinceNote2);
       }
       if (o1.getPrivacy() == 1) {
-        timeSinceNote1 = Math.log(timeSinceNote1);
+        timeSinceNote1 = timeSinceNote1/100;
       }
       if (o2.getPrivacy() == 1) {
-        timeSinceNote2 = Math.log(timeSinceNote2);
+        timeSinceNote2 = timeSinceNote2/100;
       }
-
+      System.out.println("new val: " + timeSinceNote1);
     }
     // System.out.println("note " + o1.getId() + ": " + timeSinceNote1 +
     // "note 2 "
