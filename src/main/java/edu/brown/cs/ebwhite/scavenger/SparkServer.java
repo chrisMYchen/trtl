@@ -381,8 +381,11 @@ public class SparkServer {
       String message = "no-error";
       try {
         int userID = Integer.parseInt(userIDstring);
-        if (Friend.unfollow(userID, friendUsername)) {
+        int friendID = TurtleQuery.getUserID(friendUsername);
+        if(friendID == -1){
           message = "Friend with username doesn't exist";
+        } else {
+          Friend.unfollow(userID, friendID);
         }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";

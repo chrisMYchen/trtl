@@ -48,7 +48,7 @@ function followSetup(){
   });
 
   $("#following-list").on("click", ".follow-remove", function(){
-    removeFollowing(this);
+    unfollow(this);
   });
 
   $("#follower-list").on("click", ".follow-accept", function(){
@@ -151,6 +151,7 @@ function removeFollower(elem){
 function unfollow(elem){
   var followname = $(elem).parents(".follow-item").children(".follow-user").html();
   var req = {friendUsername: followname, userID: userInfo.id};
+  console.log(req);
   $.post("/unfollow", req, function(data){
     var res = JSON.parse(data);
     if(res.error == "no-error"){
@@ -245,7 +246,5 @@ function followMsg(message, error){
     elem.toggleClass("success", true);
   }
   elem.show();
-  window.setTimeout(function(){
-    elem.hide();
-  }, 5000);
+  elem.delay(10000).fadeOut();
 }

@@ -121,11 +121,8 @@ public class Friend {
    * @throws SQLException
    *           if there is an error with the query
    */
-  public static boolean unfollow(int userID, String friendUsername)
+  public static boolean unfollow(int userID, int friendID)
       throws SQLException {
-
-    int friendID = TurtleQuery.getUserID(friendUsername);
-    assert (friendID != -1);
 
     User f = new UserProxy(friendID);
     User u = new UserProxy(userID);

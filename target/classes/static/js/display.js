@@ -193,6 +193,7 @@ function deletePost(){
   var parent = $(this).closest(".post");
   var noteid = parent.attr("data-noteid");
   var req = {noteID: noteid, userID: userInfo.id};
+  console.log(req);
   $.post("/removeNote", req, function(data){
     var res = JSON.parse(data);
     if(res.error == "no-error"){
@@ -211,4 +212,5 @@ function deletePost(){
 function displayError(message){
   var error = $("<div></div>").attr("class", "post error").html(message);
   $("#posts").prepend(error);
+  error.delay(7000).fadeOut();
 }

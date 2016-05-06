@@ -9,6 +9,9 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmEuGPRCUd5SDZqR353cHw2CIn9qpxEyo&callback=initMap">
+    </script>
   <script src="/js/linkify.min.js"></script>
   <script src="/js/linkify-jquery.min.js"></script>
   <script src="/js/main.js"></script>
@@ -19,6 +22,7 @@
   <script src="/js/follow.js"></script>
   <script src="/js/update.js"></script>
   <script src="/js/image.js"></script>
+  <script src="/js/map.js"></script>
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/font.css">

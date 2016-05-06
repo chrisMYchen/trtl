@@ -18,5 +18,6 @@
   <div id="posts" data-columns>
   </div>
 </div>
+<div id="map"></div>
 </#assign>
 <#include "main.ftl">
