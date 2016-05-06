@@ -5,6 +5,7 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import edu.brown.cs.ebwhite.database.Db;
 
+
 public class Main {
 
   public static void main(String[] args) {
@@ -43,7 +44,7 @@ public class Main {
 
     if (options.has("gui")) {
       if(options.has(secure)){
-        String keystore = (String) options.valueOf(secure);
+        String keystore = options.valueOf(secure);
         String keypass = (String) options.valueOf("keypass");
         SparkServer s = new SparkServer(port, keystore, keypass);
       }

@@ -43,6 +43,7 @@ import edu.brown.cs.ebwhite.note.NoteRanker;
 import edu.brown.cs.ebwhite.user.User;
 import edu.brown.cs.ebwhite.user.UserProxy;
 
+
 public class SparkServer {
   Gson GSON;
   String imagepath;
@@ -61,8 +62,8 @@ public class SparkServer {
     GSON = new Gson();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
-    imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images/";
-    external = true;
+    imagepath = "src/main/resources/static";
+    external = false;
   }
 
   public void run() {
