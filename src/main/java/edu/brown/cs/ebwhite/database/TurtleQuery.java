@@ -404,6 +404,11 @@ public class TurtleQuery {
         prep.setInt(2, userId);
         prep.executeUpdate();
       }
+      try (PreparedStatement prep = conn
+          .prepareStatement("DELETE FROM image_note WHERE noteid=?;")) {
+        prep.setInt(1, nodeId);
+        prep.executeUpdate();
+      }
     }
   }
 
