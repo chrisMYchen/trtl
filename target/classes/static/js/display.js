@@ -50,7 +50,7 @@ function getNotes(time, radius){
     radius: radius,
     filter: 2
   }
-  
+
   if(userInfo != null){
     req.userID = userInfo.id;
   }
@@ -145,6 +145,7 @@ function formatNote(note){
 
   /* Content */
   var content = $("<div></div>").attr("class","post-content").append(note.content);
+  content.linkify();
 
   /* Image */
   if(note.image != null){
@@ -160,8 +161,6 @@ function formatNote(note){
   meta.append(time);
 
   dom.append(user).append(content).append(meta);
-  console.log(linkify.test('dev@example.com')); // true
-  $('.post').linkify();
 }
 
 function formatTime(time){

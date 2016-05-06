@@ -15,13 +15,15 @@ edu/brown/cs/ebwhite/user/UserProxy.class
 edu/brown/cs/ebwhite/geo/LatLong.class
 edu/brown/cs/ebwhite/user/UserBean.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$UserInfo.class
-edu/brown/cs/ebwhite/entities/AbstractEntity.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$AcceptFollower.class
+edu/brown/cs/ebwhite/entities/AbstractEntity.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$RemoveFollower.class
 edu/brown/cs/ebwhite/database/Db.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$PostNoteImage.class
 edu/brown/cs/ebwhite/scavenger/SparkServer.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$MyInfo.class
 edu/brown/cs/ebwhite/note/Note$NoteBuilder.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$RemoveNote.class
 edu/brown/cs/ebwhite/friends/Friend.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$CheckUsername.class
 edu/brown/cs/ebwhite/scavenger/SparkServer$PostNote.class
