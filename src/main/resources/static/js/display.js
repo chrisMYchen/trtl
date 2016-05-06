@@ -47,8 +47,10 @@ function getNotes(time, radius){
     timestamp: time,
     minPost: range.min,
     maxPost: range.max,
-    radius: radius
+    radius: radius,
+    filter: 2
   }
+
   if(userInfo != null){
     req.userID = userInfo.id;
   }
@@ -143,6 +145,7 @@ function formatNote(note){
 
   /* Content */
   var content = $("<div></div>").attr("class","post-content").append(note.content);
+  content.linkify();
 
   /* Image */
   if(note.image != null){

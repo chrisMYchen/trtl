@@ -20,8 +20,9 @@ public class TurtleQuery {
   private final static int TXTCOL = 6;
   private final static int AUTOKEYS = Statement.RETURN_GENERATED_KEYS;
 
-  public static List<Note> getNotes(int userID, LatLong loc, double radius,
-      int minPost, int maxPost, long timeStamp) throws SQLException {
+  public static List<Note> getNotes(int userID, LatLong loc,
+      double radius, int minPost, int maxPost, long timeStamp,
+      int filter) throws SQLException {
     double allowed_distance_latitude = radius / 110575; // this is in
     // meters
 
@@ -34,17 +35,17 @@ public class TurtleQuery {
     double left_lng = inputLng - allowed_distance_longitude;
     double right_lng = inputLng + allowed_distance_longitude;
     if (userID != -1) {
-      return getNotesLoggedIn(userID, bottom_lat, top_lat, left_lng, right_lng,
-          minPost, maxPost, timeStamp);
+      return getNotesLoggedIn(userID, bottom_lat, top_lat, left_lng,
+          right_lng, minPost, maxPost, timeStamp, filter);
     } else {
-      return getNotesAnonymous(bottom_lat, top_lat, left_lng, right_lng,
-          minPost, maxPost, timeStamp);
+      return getNotesAnonymous(bottom_lat, top_lat, left_lng,
+          right_lng, minPost, maxPost, timeStamp);
     }
   }
 
-  public static List<Note> getNotesAnonymous(double bottom_lat, double top_lat,
-      double left_lng, double right_lng, int minPost, int maxPost,
-      long timeStamp) throws SQLException {
+  public static List<Note> getNotesAnonymous(double bottom_lat,
+      double top_lat, double left_lng, double right_lng, int minPost,
+      int maxPost, long timeStamp) throws SQLException {
 
     String getNotes = "SELECT * FROM notes AS n LEFT JOIN image_note AS i ON n.id=i.noteid "
         + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
@@ -69,8 +70,8 @@ public class TurtleQuery {
             String txt = rs.getString(TXTCOL);
             // uID just not placed in note if not logged in
             String image = rs.getString("path");
-            Note n = new Note.NoteBuilder(noteID, time).setContent(txt)
-                .setLat(lat).setLng(lng).setImage(image).build();
+            Note n = new Note.NoteBuilder(noteID, time).setContent(
+                txt).setLat(lat).setLng(lng).setImage(image).build();
             allNotes.add(n);
           }
           return allNotes;
@@ -80,9 +81,10 @@ public class TurtleQuery {
 
   }
 
-  public static List<Note> getNotesLoggedIn(int userID, double bottom_lat,
-      double top_lat, double left_lng, double right_lng, int minPost,
-      int maxPost, long timeStamp) throws SQLException {
+  public static List<Note> getNotesLoggedIn(int userID,
+      double bottom_lat, double top_lat, double left_lng,
+      double right_lng, int minPost, int maxPost, long timeStamp,
+      int filter) throws SQLException {
 
     String getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
         + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
@@ -91,6 +93,27 @@ public class TurtleQuery {
         + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
         + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i"
         + " ON i.noteid=n.id;";
+
+    if (filter == 1) {
+      getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
+          + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
+          + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+          + " AND (timestamp < ?) AND"
+          + " (uf.follower_id = ? AND uf.userid = n.userid) "
+          + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i"
+          + " ON i.noteid=n.id;";
+    }
+
+    else if (filter == 2) {
+      getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
+          + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
+          + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+          + " AND (timestamp < ?) AND"
+          + " n.userid = ? "
+          + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i"
+          + " ON i.noteid=n.id;";
+
+    }
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
         prep.setDouble(1, left_lng);
@@ -98,10 +121,20 @@ public class TurtleQuery {
         prep.setDouble(3, bottom_lat);
         prep.setDouble(4, top_lat);
         prep.setLong(5, timeStamp);
-        prep.setInt(6, userID);
-        prep.setInt(7, userID);
-        prep.setInt(8, maxPost - minPost);
-        prep.setInt(9, minPost);
+        if (filter == 0) {
+          prep.setInt(6, userID);
+          prep.setInt(7, userID);
+          prep.setInt(8, maxPost - minPost);
+          prep.setInt(9, minPost);
+        } else if (filter == 1) {
+          prep.setInt(6, userID);
+          prep.setInt(7, maxPost - minPost);
+          prep.setInt(8, minPost);
+        } else if (filter == 2) {
+          prep.setInt(6, userID);
+          prep.setInt(7, maxPost - minPost);
+          prep.setInt(8, minPost);
+        }
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
@@ -114,8 +147,8 @@ public class TurtleQuery {
             int priv = rs.getInt(7);
             String image = rs.getString("path");
             Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
-                .setContent(txt).setLat(lat).setLng(lng).setPrivate(priv)
-                .setImage(image).build();
+                .setContent(txt).setLat(lat).setLng(lng).setPrivate(
+                    priv).setImage(image).build();
             allNotes.add(n);
           }
           return allNotes;
@@ -124,8 +157,9 @@ public class TurtleQuery {
     }
   }
 
-  public static List<Note> updateNotes(int userID, LatLong loc, double radius,
-      int minPost, int maxPost, long timeStamp) throws SQLException {
+  public static List<Note> updateNotes(int userID, LatLong loc,
+      double radius, int minPost, int maxPost, long timeStamp,
+      int filter) throws SQLException {
     double allowed_distance_latitude = radius / 110575; // this is in
     // meters
     double inputLat = loc.getLat();
@@ -137,11 +171,11 @@ public class TurtleQuery {
     double left_lng = inputLng - allowed_distance_longitude;
     double right_lng = inputLng + allowed_distance_longitude;
     if (userID != -1) {
-      return updateNotesLoggedIn(userID, bottom_lat, top_lat, left_lng,
-          right_lng, minPost, maxPost, timeStamp);
+      return updateNotesLoggedIn(userID, bottom_lat, top_lat,
+          left_lng, right_lng, minPost, maxPost, timeStamp, filter);
     } else {
-      return updateNotesAnonymous(bottom_lat, top_lat, left_lng, right_lng,
-          minPost, maxPost, timeStamp);
+      return updateNotesAnonymous(bottom_lat, top_lat, left_lng,
+          right_lng, minPost, maxPost, timeStamp);
     }
   }
 
@@ -151,6 +185,7 @@ public class TurtleQuery {
     String getNotes = "SELECT * FROM notes AS n LEFT JOIN image_note AS i ON n.id=i.noteid "
         + "WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
         + " AND (timestamp >= ?) AND (private = 0) ORDER BY timestamp DESC LIMIT ? OFFSET ? ;";
+
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
         prep.setDouble(1, left_lng);
@@ -171,8 +206,8 @@ public class TurtleQuery {
             String txt = rs.getString(TXTCOL);
             String image = rs.getString("path");
             // uID just not placed in note if not logged in
-            Note n = new Note.NoteBuilder(noteID, time).setContent(txt)
-                .setLat(lat).setLng(lng).setImage(image).build();
+            Note n = new Note.NoteBuilder(noteID, time).setContent(
+                txt).setLat(lat).setLng(lng).setImage(image).build();
             allNotes.add(n);
           }
           return allNotes;
@@ -181,13 +216,35 @@ public class TurtleQuery {
     }
   }
 
-  public static List<Note> updateNotesLoggedIn(int userID, double bottom_lat,
-      double top_lat, double left_lng, double right_lng, int minPost,
-      int maxPost, long timeStamp) throws SQLException {
+  public static List<Note> updateNotesLoggedIn(int userID,
+      double bottom_lat, double top_lat, double left_lng,
+      double right_lng, int minPost, int maxPost, long timeStamp,
+      int filter) throws SQLException {
     String getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private FROM notes as n, user_follower as uf WHERE "
         + " (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp >= ?) AND "
         + " (private = 0 OR n.userid = ? OR (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
         + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i ON n.id=i.noteid ;";
+
+    if (filter == 1) {
+      getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
+          + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
+          + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+          + " AND (timestamp >= ?) AND"
+          + " (uf.follower_id = ? AND uf.userid = n.userid) "
+          + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i"
+          + " ON i.noteid=n.id;";
+    }
+
+    else if (filter == 2) {
+      getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
+          + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
+          + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
+          + " AND (timestamp >= ?) AND"
+          + " n.userid = ? "
+          + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i"
+          + " ON i.noteid=n.id;";
+
+    }
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
         prep.setDouble(1, left_lng);
@@ -195,10 +252,20 @@ public class TurtleQuery {
         prep.setDouble(3, bottom_lat);
         prep.setDouble(4, top_lat);
         prep.setLong(5, timeStamp);
-        prep.setInt(6, userID);
-        prep.setInt(7, userID);
-        prep.setInt(8, maxPost - minPost);
-        prep.setInt(9, minPost);
+        if (filter == 0) {
+          prep.setInt(6, userID);
+          prep.setInt(7, userID);
+          prep.setInt(8, maxPost - minPost);
+          prep.setInt(9, minPost);
+        } else if (filter == 1) {
+          prep.setInt(6, userID);
+          prep.setInt(7, maxPost - minPost);
+          prep.setInt(8, minPost);
+        } else if (filter == 2) {
+          prep.setInt(6, userID);
+          prep.setInt(7, maxPost - minPost);
+          prep.setInt(8, minPost);
+        }
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
@@ -211,8 +278,8 @@ public class TurtleQuery {
             int priv = rs.getInt(7);
             String image = rs.getString("path");
             Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
-                .setContent(txt).setLat(lat).setLng(lng).setPrivate(priv)
-                .setImage(image).build();
+                .setContent(txt).setLat(lat).setLng(lng).setPrivate(
+                    priv).setImage(image).build();
             allNotes.add(n);
           }
           return allNotes;
@@ -239,12 +306,13 @@ public class TurtleQuery {
     }
   }
 
-  public static int postNote(int userID, long time, double lat, double lng,
-      String text, int privacy) throws SQLException {
+  public static int postNote(int userID, long time, double lat,
+      double lng, String text, int privacy) throws SQLException {
 
     String post = "INSERT INTO notes VALUES (NULL, ?, ?, ?, ?, ?, ?);";
     try (Connection conn = Db.getConnection()) {
-      try (PreparedStatement prep = conn.prepareStatement(post, AUTOKEYS)) {
+      try (PreparedStatement prep = conn.prepareStatement(post,
+          AUTOKEYS)) {
         prep.setInt(1, userID);
         prep.setLong(2, time);
         prep.setDouble(3, lat);
@@ -259,10 +327,12 @@ public class TurtleQuery {
     }
   }
 
-  public static int addImage(int noteid, String path) throws SQLException {
+  public static int addImage(int noteid, String path)
+      throws SQLException {
     String query = "INSERT INTO image_note VALUES (NULL, ?, ?);";
     try (Connection conn = Db.getConnection()) {
-      try (PreparedStatement prep = conn.prepareStatement(query, AUTOKEYS)) {
+      try (PreparedStatement prep = conn.prepareStatement(query,
+          AUTOKEYS)) {
         prep.setInt(1, noteid);
         prep.setString(2, path);
         prep.executeUpdate();
@@ -278,7 +348,8 @@ public class TurtleQuery {
     }
   }
 
-  public static void setImagePath(int imageid, String path) throws SQLException {
+  public static void setImagePath(int imageid, String path)
+      throws SQLException {
     String query = "UPDATE image_note SET path=? WHERE id=?";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(query)) {
@@ -289,8 +360,9 @@ public class TurtleQuery {
     }
   }
 
-  public static int addUser(String username, String password, String firstname,
-      String lastname, String email, int phone) throws SQLException {
+  public static int addUser(String username, String password,
+      String firstname, String lastname, String email, int phone)
+      throws SQLException {
     String post = "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?);";
     try (Connection conn = Db.getConnection()) {
 
@@ -319,6 +391,18 @@ public class TurtleQuery {
           }
           return uID;
         }
+      }
+    }
+  }
+
+  public static void removeNote(int nodeId, int userId)
+      throws SQLException {
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn
+          .prepareStatement("DELETE FROM notes WHERE id=? AND userid=?;")) {
+        prep.setInt(1, nodeId);
+        prep.setInt(2, userId);
+        prep.executeUpdate();
       }
     }
   }

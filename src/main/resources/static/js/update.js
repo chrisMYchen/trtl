@@ -35,7 +35,8 @@ function updateNotes(time, radius){
     timestamp: time,
     minPost: range.min,
     maxPost: range.max,
-    radius: radius
+    radius: radius,
+    filter: 2
   }
   if(userInfo != null){
     req.userID = userInfo.id;
