@@ -104,6 +104,7 @@ public class SparkServer {
       String minPostString = qm.value("minPost");
       String maxPostString = qm.value("maxPost");
       String radiusString = qm.value("radius");
+      String filterString = qm.value("filter");
       String message = "no-error";
       List<Note> notes = new ArrayList<>();
       try {
@@ -114,9 +115,10 @@ public class SparkServer {
         long timestamp = Long.parseLong(timeString);
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
+        int filter = Integer.parseInt(filterString);
         double radius = Double.parseDouble(radiusString);
         notes = TurtleQuery.getNotes(uID, new LatLong(lat, lon), radius,
-            minPost, maxPost, timestamp);
+            minPost, maxPost, timestamp, filter);
         if (uID != -1) {
           NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
@@ -152,6 +154,7 @@ public class SparkServer {
       String minPostString = qm.value("minPost");
       String maxPostString = qm.value("maxPost");
       String radiusString = qm.value("radius");
+      String filterString = qm.value("filter");
       String message = "no-error";
       List<Note> notes = new ArrayList<>();
       try {
@@ -163,9 +166,10 @@ public class SparkServer {
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
+        int filter = Integer.parseInt(filterString);
 
         notes = TurtleQuery.updateNotes(uID, new LatLong(lat, lon), radius,
-            minPost, maxPost, timestamp);
+            minPost, maxPost, timestamp, filter);
         if (uID != -1) {
           NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
