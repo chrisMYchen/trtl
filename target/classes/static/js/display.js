@@ -1,3 +1,6 @@
+function displaySetup(){
+}
+
 function displayNotes(){
   var time = Date.now();
   var radius = 100;
@@ -23,19 +26,13 @@ function initialLoad(time, radius){
   }, 2000);
 }
 
-function resetNotes(){
-  $(".post").remove();
-  $(window).scrollTop(0);
-  $(window).off("scroll", scrollCallback);
-  displayNotes();
-}
-
 function scrollCallback(event){
-  var time = event.data.time;
-  var radius = event.data.radius;
-  var scrollPos = $("#posts").height() - $(window).scrollTop();
+  var scrollPos = $("#posts > div").height() - $(window).scrollTop();
   var threshold = $(window).height() + 50;
   if(scrollPos < threshold){
+    console.log(scrollPos);
+    var time = event.data.time;
+    var radius = event.data.radius;
     getNotes(time, radius);
   }
 }
@@ -91,11 +88,12 @@ function getRange(){
 }
 
 function notesDOM(notes, start){
+  var posts = $("#posts").get(0);
    for(var i = 0; i < notes.length; i++){
        var note = notes[i];
        note.order = start + i;
        var dom = $("<div></div>").attr("class","post").attr("data-order", note.order);
-       $("#posts").append(dom);
+       salvattore.appendElements(posts, [dom.get(0)]);
        note.dom = dom;
        processNote(note);
    }

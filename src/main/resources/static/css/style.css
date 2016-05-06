@@ -111,18 +111,32 @@ div#nav {
   height: 100%;
 }
 
+#posts-wrapper{
+    max-width: 800px;
+    margin: 0px 10px;
+}
+
 #posts{
-  max-width: 500px;
-  margin:auto;
   height: 100%;
 }
+
+@media screen and (min-width: 501px){
+  #posts[data-columns]::before{
+    content: '2 .column.size-1of2';
+  }
+}
+
+.column {float: left;}
+.column.size-1of1{ width: 100%; }
+.column.size-1of2{ width: 50%; }
+
 
 .post{
   background: #fff;
   box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
   border-radius: 2px;
   overflow: hidden;
-  margin: 20px;
+  margin: 20px 10px;
 }
 
 .post > div{
@@ -195,7 +209,7 @@ img.post-image{
   box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
   border-radius: 2px;
   overflow: hidden;
-  margin: 20px;
+  margin: 20px 10px 0px 10px;;
 }
 
 .input > textarea{
@@ -337,6 +351,7 @@ img.post-image{
   div#nav{
     font-size: 11pt;
   }
+
   #user-name{
     display: none;
   }
@@ -360,7 +375,15 @@ img.post-image{
 
   .input{
     border-radius: 0px;
-    margin: 20px 0px;
+    margin: 20px 0px 0px 0px;
+  }
+
+  #posts[data-columns]::before {
+		content: '1 .column.size-1of1';
+	}
+
+  #posts-wrapper{
+    margin: 0px;
   }
 
   .post{

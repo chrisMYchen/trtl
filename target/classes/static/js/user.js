@@ -54,9 +54,8 @@ function sendLogin(){
     var res = JSON.parse(response);
     console.log(res);
     if((res.error == "no-error") && (res.userID != -1)){
-      resetNotes();
-      login(res.userID);
-      closeLoginDialog();
+      setLoginCookie(res.userID);
+      window.location.reload();
     }
     else{
       $("#login-form")[0].reset();

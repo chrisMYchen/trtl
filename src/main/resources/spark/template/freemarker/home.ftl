@@ -1,5 +1,5 @@
 <#assign content>
-<div id="posts">
+<div id="posts-wrapper">
   <div class="input">
     <textarea class="input-content" rows="4" placeholder="Post a note to this location"></textarea>
     <div id="image-thumb"></div>
@@ -15,7 +15,8 @@
       </select>
     </div>
   </div>
-  <div id="updates"></div>
+  <div id="posts" data-columns>
+  </div>
 </div>
 </#assign>
 <#include "main.ftl">

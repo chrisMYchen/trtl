@@ -86,5 +86,6 @@
   <div id="wrapper">
     ${content}
   </div>
+  <script src="/js/salvattore.min.js"></script>
 </body>
 </html>
