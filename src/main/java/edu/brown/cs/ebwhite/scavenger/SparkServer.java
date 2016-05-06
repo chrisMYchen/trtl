@@ -287,6 +287,7 @@ public class SparkServer {
           } catch (AmazonClientException | InterruptedException e) {
             message = "Unable to upload file, upload was aborted.";
             e.printStackTrace();
+            TurtleQuery.removeNote(noteid, uID);
           }
         } else {
           BufferedImage image = ImageIO.read(is);

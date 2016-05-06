@@ -3,12 +3,13 @@ package edu.brown.cs.ebwhite.note;
 import java.util.Comparator;
 import java.util.Date;
 
+import edu.brown.cs.ebwhite.geo.LatLong;
 import edu.brown.cs.ebwhite.user.User;
 import edu.brown.cs.ebwhite.user.UserProxy;
 
 public class NoteRanker implements Comparator<Note> {
   private User currentUser;
-
+  private LatLong myLocation;
   public NoteRanker() {
 
   }
@@ -17,11 +18,15 @@ public class NoteRanker implements Comparator<Note> {
     currentUser = new UserProxy(uID);
   }
 
+  public void setCurrentLocation(LatLong ll) {
+    myLocation = ll;
+  }
+
   @Override
   public int compare(Note o1, Note o2) {
     // TODO Auto-generated method stub
     // what does eli send us? this is in seconds
-
+    o1.getLatLong();
     double currentTime = new Date().getTime();
     double timeSinceNote1 = currentTime - o1.getTimestamp();
     double timeSinceNote2 = currentTime - o2.getTimestamp();
@@ -30,20 +35,22 @@ public class NoteRanker implements Comparator<Note> {
     if (currentUser != null) {
       if (currentUser.getFollowers().contains(o1.getUser().getId())) {
         // System.out.println("note 1 friend " + timeSinceNote1);
-        timeSinceNote1 = timeSinceNote1/30000;
+        timeSinceNote1 = timeSinceNote1 / 2;
         // System.out.println("note 1 post log " + timeSinceNote1);
       }
       if (currentUser.getFollowers().contains(o2.getUser().getId())) {
         // System.out.println("note 2 friend " + timeSinceNote2);
-        timeSinceNote2 = timeSinceNote2/30000;
+        timeSinceNote2 = timeSinceNote2 / 2;
         // System.out.println("note 2 post log " + timeSinceNote2);
       }
       if (o1.getPrivacy() == 1) {
-        timeSinceNote1 = timeSinceNote1/100;
+        timeSinceNote1 = timeSinceNote1 / 2;
       }
       if (o2.getPrivacy() == 1) {
-        timeSinceNote2 = timeSinceNote2/100;
+        timeSinceNote2 = timeSinceNote2 / 2;
       }
+      timeSinceNote1 *= LatLong.distanceLatLong(myLocation, o1.getLatLong());
+      timeSinceNote2 *= LatLong.distanceLatLong(myLocation, o2.getLatLong());
       System.out.println("new val: " + timeSinceNote1);
     }
     // System.out.println("note " + o1.getId() + ": " + timeSinceNote1 +
@@ -52,4 +59,5 @@ public class NoteRanker implements Comparator<Note> {
     // + timeSinceNote2);
     return Double.compare(timeSinceNote1, timeSinceNote2);
   }
+
 }
