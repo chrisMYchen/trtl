@@ -1,8 +1,4 @@
-var production = "AIzaSyCmEuGPRCUd5SDZqR353cHw2CIn9qpxEyo";
-var local = "AIzaSyBQ9fjmVvsQ-e2Z52Cu7z8PxmVqpMvD8XA";
-
 var mapObj = null;
-
 
 function initMap(){
 
