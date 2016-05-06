@@ -42,9 +42,10 @@ function followSetup(){
     usernameCheck($(this), "#AFA", "#FAA");
   });
 
-/*  $("#follower-list").on("click", ".remove", function(){
+  $("#follower-list").on("click", ".follow-remove", function(){
+    console.log("follower-remove");
     removeFollower(this);
-  });*/
+  });
 
   $("#following-list").on("click", ".follow-remove", function(){
     removeFollowing(this);
@@ -131,13 +132,28 @@ function acceptFollower(elem){
   });
 }
 
-function removeFollowing(elem){
+function removeFollower(elem){
   var followname = $(elem).parents(".follow-item").children(".follow-user").html();
   var req = {friendUsername: followname, userID: userInfo.id};
-  console.log(req);
+  $.post("/removeFollower", req, function(data){
+    var res = JSON.parse(data);
+    if(res.error == "no-error"){
+      refreshFollowLists();
+      var msg = "You have removed " + followname + " as a follower.";
+      followMsg(msg, false);
+    }
+    else{
+      followMsg(res.error, true);
+    }
+  });
+}
+
+function unfollow(elem){
+  var followname = $(elem).parents(".follow-item").children(".follow-user").html();
+  var req = {friendUsername: followname, userID: userInfo.id};
   $.post("/unfollow", req, function(data){
     var res = JSON.parse(data);
-    if(res.error = "no-error"){
+    if(res.error == "no-error"){
       refreshFollowLists();
       var msg = "You have unfollowed " + followname + ".";
       followMsg(msg, false);

@@ -1,12 +1,11 @@
-function displaySetup(){
-}
-
 function displayNotes(){
   var time = Date.now();
   var radius = 100;
   initialLoad(time, radius);
 
   $(window).on("scroll", {time: time, radius: radius}, scrollCallback);
+
+  $("body").on("click", ".post-delete", deletePost);
 }
 
 function initialLoad(time, radius){
@@ -103,6 +102,7 @@ function notesDOM(notes, start){
 
 function processNote(note){
   var compiledNote = {
+    id: note.id,
     content: note.text,
     dom: note.dom,
     time: new Date(note.timestamp),
@@ -115,7 +115,7 @@ function processNote(note){
     $.post("/getUser", userReq, function(data){
       var res = JSON.parse(data);
       if(res.error == "no-error"){
-        compiledNote.user = {username: res.username};
+        compiledNote.user = {userid: note.user.id, username: res.username};
         formatNote(compiledNote);
       }
       else{
@@ -129,23 +129,40 @@ function processNote(note){
 }
 
 function formatNote(note){
+  /* Container */
   var dom = note.dom;
+  dom.attr("data-noteid", note.id);
+
+  /* Top */
+  var top = $("<div></div>").attr("class", "post-top");
+  dom.append(top);
+
+  /* Content */
+  var content = $("<div></div>").attr("class","post-content").append(note.content);
+  content.linkify();
+
+  /* Meta */
+  var timestring = formatTime(note.time);
+  var meta = $("<div></div>").attr("class","post-meta");
+  var time = $("<div></div>").attr("class","post-time").append(timestring);
+  meta.append(time);
+
   /* User */
   var user = $("<div></div>").attr("class","post-user");
+  top.append(user);
   if(note.user){
-    /*var userrn = $("<div></div>").attr("class","post-realname").append(note.user.fullname);*/
-    var handle = $("<a></a>").attr("class","post-handle").attr("href","/user/" + note.user.username).append("@" + note.user.username);
+    var handle = $("<p></p>").attr("class","post-handle").append("@" + note.user.username);
     user.append(handle);
+    if(note.user.userid == userInfo.id){
+      var del = $("<div></div>").addClass("post-delete").html("Delete");
+      meta.append(del);
+    }
   }
   else{
     var icon = $("<i></i>").addClass("material-icons").html("account_circle");
     var anon = $("<div></div>").attr("class","anon").append("Anonymous");
     user.append(icon).append(anon);
   }
-
-  /* Content */
-  var content = $("<div></div>").attr("class","post-content").append(note.content);
-  content.linkify();
 
   /* Image */
   if(note.image != null){
@@ -154,13 +171,7 @@ function formatNote(note){
     content.append(image);
   }
 
-  /* Meta */
-  var timestring = formatTime(note.time);
-  var meta = $("<div></div>").attr("class","post-meta");
-  var time = $("<div></div>").attr("class","post-time").append(timestring);
-  meta.append(time);
-
-  dom.append(user).append(content).append(meta);
+  dom.append(content).append(meta);
 }
 
 function formatTime(time){
@@ -178,7 +189,26 @@ function formatTime(time){
   return timestring + " " + datestring;
 }
 
+function deletePost(){
+  var parent = $(this).closest(".post");
+  var noteid = parent.attr("data-noteid");
+  var req = {noteID: noteid, userID: userInfo.id};
+  $.post("/removeNote", req, function(data){
+    var res = JSON.parse(data);
+    if(res.error == "no-error"){
+      parent.fadeOut(1000, function(){
+        parent.remove();
+      });
+    }
+    else{
+      var msg = "This post could not be deleted."
+      console.log(res.error);
+      displayError(msg);
+    }
+  });
+}
+
 function displayError(message){
   var error = $("<div></div>").attr("class", "post error").html(message);
-  $("#posts").append(error);
+  $("#posts").prepend(error);
 }

@@ -49,10 +49,8 @@ function loginSubmit(e){
 
 function sendLogin(){
   var data = $("#login-form").serialize();
-  console.log(data);
   $.post("/login", data, function(response){
     var res = JSON.parse(response);
-    console.log(res);
     if((res.error == "no-error") && (res.userID != -1)){
       setLoginCookie(res.userID);
       window.location.reload();
@@ -108,7 +106,6 @@ function logout(){
 /***********************/
 function checkLoginCookie(){
   var cookie = getCookie("userid");
-  console.log(cookie);
   if (cookie != null){
     login(parseInt(cookie));
   }
@@ -116,7 +113,6 @@ function checkLoginCookie(){
 
 function setLoginCookie(userID){
   var cookie = "userid=" + userID + ";";
-  console.log(cookie);
   document.cookie = cookie;
 }
 
@@ -188,10 +184,8 @@ function signupSubmit(e){
 
 function sendSignup(){
   var data = $("#signup-form").serialize();
-  console.log(data);
   $.post("/newUser", data, function(response){
     var res = JSON.parse(response);
-    console.log(res);
     if(res.error == "no-error"){
       login(res.userID);
       closeSignupDialog();
@@ -216,7 +210,6 @@ function usernameCheck(elem, exists, notexists){
   if(uname.length > 2){
     $.post("/checkUsername", {username: uname}, function(response){
       var res = JSON.parse(response);
-      console.log(res);
       if(res.error == "no-error"){
         if(res.exists){
           elem.css("background", exists);

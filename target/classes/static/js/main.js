@@ -38,9 +38,3 @@ $(function(){
       e.stopImmediatePropagation();
     });
 });
-$('div').linkify();
-$('#sidebar').linkify({
-    target: "_blank"
-});
-console.log(linkify.test('dev@example.com')); // true
-$('#wrapper').linkify();

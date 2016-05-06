@@ -666,7 +666,8 @@ public class SparkServer {
       } catch (NumberFormatException nfe) {
         message = "nodeID or userID not a number";
       } catch (SQLException e) {
-        message = "SQL error in removing note from database.";
+        message = "SQL error in removing note from database: ";
+        message += e.getMessage();
       }
 
       Builder<String, Object> variables = new ImmutableMap.Builder<String, Object>()
