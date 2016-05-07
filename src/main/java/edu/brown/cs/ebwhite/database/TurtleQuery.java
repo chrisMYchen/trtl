@@ -98,8 +98,8 @@ public class TurtleQuery {
       getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
           + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
           + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
-          + " AND (timestamp < ?) AND"
-          + " (uf.follower_id = ? AND uf.userid = n.userid) "
+          + " AND (timestamp < ?) AND ((n.userid = ?) OR "
+          + " (uf.follower_id = ? AND uf.userid = n.userid)) "
           + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i"
           + " ON i.noteid=n.id;";
     }
@@ -128,8 +128,9 @@ public class TurtleQuery {
           prep.setInt(9, minPost);
         } else if (filter == 1) {
           prep.setInt(6, userID);
-          prep.setInt(7, maxPost - minPost);
-          prep.setInt(8, minPost);
+          prep.setInt(7, userID);
+          prep.setInt(8, maxPost - minPost);
+          prep.setInt(9, minPost);
         } else if (filter == 2) {
           prep.setInt(6, userID);
           prep.setInt(7, maxPost - minPost);
@@ -229,8 +230,8 @@ public class TurtleQuery {
       getNotes = "SELECT * FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
           + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
           + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
-          + " AND (timestamp >= ?) AND"
-          + " (uf.follower_id = ? AND uf.userid = n.userid) "
+          + " AND (timestamp >= ?) AND ((n.userid = ?) OR "
+          + " (uf.follower_id = ? AND uf.userid = n.userid)) "
           + " ORDER BY n.timestamp DESC LIMIT ? OFFSET ?) AS n LEFT JOIN image_note AS i"
           + " ON i.noteid=n.id;";
     }
@@ -259,8 +260,9 @@ public class TurtleQuery {
           prep.setInt(9, minPost);
         } else if (filter == 1) {
           prep.setInt(6, userID);
-          prep.setInt(7, maxPost - minPost);
-          prep.setInt(8, minPost);
+          prep.setInt(7, userID);
+          prep.setInt(8, maxPost - minPost);
+          prep.setInt(9, minPost);
         } else if (filter == 2) {
           prep.setInt(6, userID);
           prep.setInt(7, maxPost - minPost);
@@ -402,6 +404,11 @@ public class TurtleQuery {
           .prepareStatement("DELETE FROM notes WHERE id=? AND userid=?;")) {
         prep.setInt(1, nodeId);
         prep.setInt(2, userId);
+        prep.executeUpdate();
+      }
+      try (PreparedStatement prep = conn
+          .prepareStatement("DELETE FROM image_note WHERE noteid=?;")) {
+        prep.setInt(1, nodeId);
         prep.executeUpdate();
       }
     }
