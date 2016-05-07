@@ -120,16 +120,19 @@ public class SparkServer {
         int maxPost = Integer.parseInt(maxPostString);
         int filter = Integer.parseInt(filterString);
         double radius = Double.parseDouble(radiusString);
-        notes = TurtleQuery.getNotes(uID, new LatLong(lat, lon), radius,
+        LatLong curr_loc = new LatLong(lat, lon);
+        notes = TurtleQuery.getNotes(uID, curr_loc, radius,
             minPost, maxPost, timestamp, filter);
         if (uID != -1) {
           NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
+          noteRank.setCurrentLocation(curr_loc);
           Collections.sort(notes, noteRank);
         }
 
       } catch (NullPointerException np) {
         message = "Fields not filled. Something is null: " + np.getMessage();
+        np.printStackTrace();
       } catch (NumberFormatException nfe) {
         message = "Number Format Exception: " + nfe.getMessage();
       } catch (SQLException e) {
@@ -170,12 +173,14 @@ public class SparkServer {
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
         int filter = Integer.parseInt(filterString);
+        LatLong curr_loc = new LatLong(lat, lon);
 
-        notes = TurtleQuery.updateNotes(uID, new LatLong(lat, lon), radius,
+        notes = TurtleQuery.updateNotes(uID, curr_loc, radius,
             minPost, maxPost, timestamp, filter);
         if (uID != -1) {
           NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
+          noteRank.setCurrentLocation(curr_loc);
           Collections.sort(notes, noteRank);
         }
 
@@ -289,6 +294,7 @@ public class SparkServer {
           } catch (AmazonClientException | InterruptedException e) {
             message = "Unable to upload file, upload was aborted.";
             e.printStackTrace();
+            TurtleQuery.removeNote(noteid, uID);
           }
         } else {
           BufferedImage image = ImageIO.read(is);
