@@ -2,6 +2,9 @@ var mapObj = null;
 
 function initMap(){
 
+  $(window).load(mapSize);
+  $(window).resize(mapSize);
+
   var counter = 0;
   var intervalID = window.setInterval(function(){
     if(locationInfo.pos == null){
@@ -109,4 +112,9 @@ function addMarker(pos){
       addMarker(pos)
     }, 1000);
   }
+}
+
+function mapSize(){
+  var width = $("#map-container").width();
+  $("#map-container").height(width);  
 }

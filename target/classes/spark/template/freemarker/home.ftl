@@ -1,5 +1,14 @@
 <#assign content>
-<div id="map"></div>
+<div id="sidebar">
+  <div id="map-container" class="sidebar-element">
+    <div id="map"></div>
+  </div>
+  <div id="filtering" class="sidebar-element">
+    <div class="filter-option active" data-filter="0">All</div>
+    <div class="filter-option" data-filter="1">Friends</div>
+    <div class="filter-option" data-filter="2">Mine</div>
+  </div>
+</div>
 <div id="posts-wrapper">
   <div class="input">
     <textarea class="input-content" rows="4" placeholder="Post a note to this location"></textarea>

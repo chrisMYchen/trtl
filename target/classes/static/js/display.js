@@ -56,6 +56,7 @@ function getNotes(time, radius){
 
   $.post("/getNotes", req, function(data){
     var res = JSON.parse(data);
+    console.log(req);
     console.log(res);
     if(res.error == "no-error"){
       console.log(res.notes);

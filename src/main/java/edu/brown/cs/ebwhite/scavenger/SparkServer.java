@@ -130,6 +130,7 @@ public class SparkServer {
 
       } catch (NullPointerException np) {
         message = "Fields not filled. Something is null: " + np.getMessage();
+        np.printStackTrace();
       } catch (NumberFormatException nfe) {
         message = "Number Format Exception: " + nfe.getMessage();
       } catch (SQLException e) {
