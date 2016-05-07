@@ -47,7 +47,7 @@ function getNotes(time, radius){
     minPost: range.min,
     maxPost: range.max,
     radius: radius,
-    filter: 2
+    filter: 0
   }
 
   if(userInfo != null){
