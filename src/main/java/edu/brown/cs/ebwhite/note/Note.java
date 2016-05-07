@@ -15,6 +15,8 @@ public class Note {
   private int privacy;
   private String image;
 
+  // private int turtle;
+
   public Note(long time, String content, int ID, int uID, double lat,
       double lng, int priv) {
     this.timestamp = time;
@@ -25,6 +27,7 @@ public class Note {
     this.privacy = priv;
     // this.displayName = ownerName;
     this.image = null;
+    // this.turtle = 0;
   }
 
   public Note(NoteBuilder b) {

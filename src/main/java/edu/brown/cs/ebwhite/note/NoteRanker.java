@@ -49,9 +49,10 @@ public class NoteRanker implements Comparator<Note> {
       if (o2.getPrivacy() == 1) {
         timeSinceNote2 = timeSinceNote2 / 2;
       }
-      timeSinceNote1 *= LatLong.distanceLatLong(myLocation, o1.getLatLong());
-      timeSinceNote2 *= LatLong.distanceLatLong(myLocation, o2.getLatLong());
+      timeSinceNote1 *= LatLong.distanceLatLong(myLocation, o1.getLatLong()) * 1000;
+      timeSinceNote2 *= LatLong.distanceLatLong(myLocation, o2.getLatLong()) * 1000;
       System.out.println("new val: " + timeSinceNote1);
+      System.out.println(LatLong.distanceLatLong(myLocation, o1.getLatLong()));
     }
     // System.out.println("note " + o1.getId() + ": " + timeSinceNote1 +
     // "note 2 "
