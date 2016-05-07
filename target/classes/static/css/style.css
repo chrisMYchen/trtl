@@ -411,6 +411,11 @@ img.post-image{
 
   #map{
     position: relative;
+    width: 100%;
+    margin: 20px 0px;
+    border-radius: 0px;
+    top: 0;
+    height: 200px;
   }
 
   #posts[data-columns]::before {

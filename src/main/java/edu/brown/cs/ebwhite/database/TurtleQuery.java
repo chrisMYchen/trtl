@@ -397,22 +397,56 @@ public class TurtleQuery {
     }
   }
 
-  public static void removeNote(int nodeId, int userId)
+  public static void removeNote(int noteId, int userId)
       throws SQLException {
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn
           .prepareStatement("DELETE FROM notes WHERE id=? AND userid=?;")) {
-        prep.setInt(1, nodeId);
+        prep.setInt(1, noteId);
         prep.setInt(2, userId);
         prep.executeUpdate();
       }
       try (PreparedStatement prep = conn
           .prepareStatement("DELETE FROM image_note WHERE noteid=?;")) {
-        prep.setInt(1, nodeId);
+        prep.setInt(1, noteId);
         prep.executeUpdate();
       }
     }
   }
+
+  public static void upvote(int noteID, int userID) throws SQLException {
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn
+          .prepareStatement("INSERT INTO vote VALUES (?,?);")) {
+        prep.setInt(1, noteID);
+        prep.setInt(2, userID);
+        prep.executeUpdate();
+      }
+    }
+  }
+
+  public static void removeUpvote(int noteID, int userID) throws SQLException {
+    try (Connection conn = Db.getConnection()) {
+      try (PreparedStatement prep = conn
+          .prepareStatement("DELETE FROM vote WHERE note_id=? AND user_id=?;")) {
+        prep.setInt(1, noteID);
+        prep.setInt(2, userID);
+        prep.executeUpdate();
+      }
+    }
+  }
+
+//  public static void isUpvoted(List<Note> notes, int userID) throws SQLException {
+//    try (Connection conn = Db.getConnection()) {
+//      try (PreparedStatement prep = conn
+//          .prepareStatement("SELECT * FROM vote WHERE note_id=? user_id=?;")) {
+//
+//        prep.setInt(1, userID);
+//        prep.setInt(1, userID);
+//        prep.executeUpdate();
+//      }
+//    }
+//  }
 
   public static double deg2rad(double deg) {
     return (deg * Math.PI / 180.0);
