@@ -1,5 +1,7 @@
 <#assign content>
-<div id="map"></div>
+<div id="map-container">
+  <div id="map"></div>
+</div>
 <div id="posts-wrapper">
   <div class="input">
     <textarea class="input-content" rows="4" placeholder="Post a note to this location"></textarea>
