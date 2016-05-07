@@ -1,7 +1,6 @@
 package edu.brown.cs.ebwhite.note;
 
 import java.util.Comparator;
-import java.util.Date;
 
 import edu.brown.cs.ebwhite.geo.LatLong;
 import edu.brown.cs.ebwhite.user.User;
@@ -27,11 +26,11 @@ public class NoteRanker implements Comparator<Note> {
     // TODO Auto-generated method stub
     // what does eli send us? this is in seconds
     o1.getLatLong();
-    double currentTime = new Date().getTime();
+    double currentTime = System.currentTimeMillis();
     double timeSinceNote1 = currentTime - o1.getTimestamp();
     double timeSinceNote2 = currentTime - o2.getTimestamp();
-    System.out.println("current" + currentTime);
-    System.out.println("time since " + timeSinceNote1);
+    // System.out.println("current" + currentTime);
+    // System.out.println("time since " + timeSinceNote1);
     if (currentUser != null) {
       if (currentUser.getFollowers().contains(o1.getUser().getId())) {
         // System.out.println("note 1 friend " + timeSinceNote1);
@@ -51,9 +50,12 @@ public class NoteRanker implements Comparator<Note> {
       }
       timeSinceNote1 *= LatLong.distanceLatLong(myLocation, o1.getLatLong()) * 1000;
       timeSinceNote2 *= LatLong.distanceLatLong(myLocation, o2.getLatLong()) * 1000;
-      System.out.println("new val: " + timeSinceNote1);
-      System.out.println(LatLong.distanceLatLong(myLocation, o1.getLatLong()));
+      // System.out.println("new val: " + timeSinceNote1);
+      // System.out.println(LatLong.distanceLatLong(myLocation,
+      // o1.getLatLong()));
     }
+    timeSinceNote1 /= ((o1.getVote() + 1));
+    timeSinceNote2 /= ((o2.getVote() + 1));
     // System.out.println("note " + o1.getId() + ": " + timeSinceNote1 +
     // "note 2 "
     // + o2.getId() + ": "

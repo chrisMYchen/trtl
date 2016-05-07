@@ -15,10 +15,10 @@ public class Note {
   private int privacy;
   private String image;
 
-  // private int turtle;
+  private int vote;
 
   public Note(long time, String content, int ID, int uID, double lat,
-      double lng, int priv) {
+      double lng, int priv, int voteNum) {
     this.timestamp = time;
     this.text = content;
     this.id = ID;
@@ -27,7 +27,7 @@ public class Note {
     this.privacy = priv;
     // this.displayName = ownerName;
     this.image = null;
-    // this.turtle = 0;
+    this.vote = voteNum;
   }
 
   public Note(NoteBuilder b) {
@@ -40,13 +40,14 @@ public class Note {
     // this.displayName = b.displayName;
     this.privacy = b.privacy;
     this.image = b.image;
+    this.vote = b.vote;
   }
 
   @Override
   public String toString() {
     return "Note [timestamp=" + timestamp + ", text=" + text + ", id=" + id
         + ", latlng=" + latlng + ", user=" + user + ", privacy=" + privacy
-        + "]";
+        + ", vote=" + vote + "]";
   }
 
   public long getTimestamp() {
@@ -71,6 +72,10 @@ public class Note {
 
   public int getPrivacy() {
     return privacy;
+  }
+
+  public int getVote() {
+    return vote;
   }
 
   // public int getUserId() {
@@ -100,6 +105,7 @@ public class Note {
     // private String displayName;
     private int privacy;
     private String image;
+    private int vote;
 
     public NoteBuilder(int myId, long time) {
       this.timestamp = time;
@@ -144,6 +150,11 @@ public class Note {
 
     public NoteBuilder setPrivate(int priv) {
       this.privacy = priv;
+      return this;
+    }
+
+    public NoteBuilder setVote(int voteNum) {
+      this.vote = voteNum;
       return this;
     }
 

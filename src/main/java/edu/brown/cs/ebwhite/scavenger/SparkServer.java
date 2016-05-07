@@ -43,7 +43,6 @@ import edu.brown.cs.ebwhite.note.NoteRanker;
 import edu.brown.cs.ebwhite.user.User;
 import edu.brown.cs.ebwhite.user.UserProxy;
 
-
 public class SparkServer {
   Gson GSON;
   String imagepath;
@@ -119,14 +118,17 @@ public class SparkServer {
         int filter = Integer.parseInt(filterString);
         double radius = Double.parseDouble(radiusString);
         LatLong curr_loc = new LatLong(lat, lon);
-        notes = TurtleQuery.getNotes(uID, curr_loc, radius,
-            minPost, maxPost, timestamp, filter);
+        notes = TurtleQuery.getNotes(uID, curr_loc, radius, minPost, maxPost,
+            timestamp, filter);
+
+        NoteRanker noteRank = new NoteRanker();
         if (uID != -1) {
-          NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
-          noteRank.setCurrentLocation(curr_loc);
-          Collections.sort(notes, noteRank);
         }
+        noteRank.setCurrentLocation(curr_loc);
+        Collections.sort(notes, noteRank);
+        notes = notes.subList(Math.min((notes.size()), minPost),
+            Math.min(notes.size(), maxPost));
 
       } catch (NullPointerException np) {
         message = "Fields not filled. Something is null: " + np.getMessage();
@@ -137,9 +139,9 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = "SQL error when getting note: " + e.getMessage();
       }
-      // for (Note n : notes) {
-      // System.out.println(n)
-      // }
+      for (Note n : notes) {
+        System.out.println(n);
+      }
       Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
           .put("notes", notes).put("error", message).build();
 
@@ -173,14 +175,16 @@ public class SparkServer {
         int filter = Integer.parseInt(filterString);
         LatLong curr_loc = new LatLong(lat, lon);
 
-        notes = TurtleQuery.updateNotes(uID, curr_loc, radius,
-            minPost, maxPost, timestamp, filter);
+        notes = TurtleQuery.updateNotes(uID, curr_loc, radius, minPost,
+            maxPost, timestamp, filter);
+        NoteRanker noteRank = new NoteRanker();
         if (uID != -1) {
-          NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
-          noteRank.setCurrentLocation(curr_loc);
-          Collections.sort(notes, noteRank);
         }
+        noteRank.setCurrentLocation(curr_loc);
+        Collections.sort(notes, noteRank);
+        notes = notes.subList(Math.min((notes.size()), minPost),
+            Math.min(notes.size(), maxPost));
 
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -389,7 +393,7 @@ public class SparkServer {
       try {
         int userID = Integer.parseInt(userIDstring);
         int friendID = TurtleQuery.getUserID(friendUsername);
-        if(friendID == -1){
+        if (friendID == -1) {
           message = "Friend with username doesn't exist";
         } else {
           Friend.unfollow(userID, friendID);
