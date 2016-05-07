@@ -532,18 +532,18 @@ div.post-meta{
   }
 
   #sidebar{
-
-  }
-
-  #map-container{
     position: relative;
     z-index: 1;
     width: 100%;
-    margin: 20px 0px;
-    border-radius: 0px;
     top: 0;
-    height: 200px;
+    margin: 0;
   }
+
+  .sidebar-element{
+    border-radius: 0px;
+  }
+
+
 
   #posts[data-columns]::before {
 		content: '1 .column.size-1of1';
