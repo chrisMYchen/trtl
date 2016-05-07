@@ -127,7 +127,7 @@ div#nav {
 }
 
 /* map */
-#map{
+#map-container{
   background: #afa;
   position: fixed;
   width: calc(25% - 40px);
@@ -138,6 +138,12 @@ div#nav {
   border-radius: 3px;
   background: #fff;
   box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+#map{
+  width: 100%;
+  height: 100%;
 }
 
 /* posts */
@@ -466,8 +472,8 @@ img.post-image{
     width: 100%;
   }
 
-  #map{
-    position: relative;;
+  #map-container{
+    position: relative;
     z-index: 1;
     width: 100%;
     margin: 20px 0px;

@@ -14,12 +14,17 @@ div{
 
 /* Header */
 div#nav {
-  height: 50px;
-  box-shadow: 0px 0px 5px 0px #000;
-  background: #A2D85A;
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  -webkit-align-content: center;
+
   display: flex;
   justify-content: space-between;
   align-content: center;
+
+  height: 50px;
+  box-shadow: 0px 0px 5px 0px #000;
+  background: #A2D85A;
   position: fixed;
   width: 100%;
   z-index: 10;
@@ -28,18 +33,29 @@ div#nav {
 }
 
 #nav > div{
+  display: -webkit-flex;
+  -webkit-justify-content:center;
+  -webkit-align-content:center;
+  -webkit-flex-direction:row;
+
   display: flex;
   justify-content:center;
   align-content:center;
   flex-direction:row;
+
   padding: 0px;
 }
 
 .menu-item{
-  position: relative;
+  display: -webkit-flex;
+  -webkit-justify-content:center;
+  -webkit-flex-direction:column;
+
   display: flex;
   justify-content:center;
   flex-direction:column;
+
+  position: relative;
   padding: 0px 5px;
   cursor: pointer;
 }
@@ -111,9 +127,9 @@ div#nav {
 }
 
 /* map */
-#map{
+#map-container{
   background: #afa;
-  position: absolute;
+  position: fixed;
   width: calc(25% - 40px);
   height: 300px;
   right: 0;
@@ -122,6 +138,12 @@ div#nav {
   border-radius: 3px;
   background: #fff;
   box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+#map{
+  width: 100%;
+  height: 100%;
 }
 
 /* posts */
@@ -158,11 +180,16 @@ div#nav {
 }
 
 div.post-top{
-  background: none;
-  padding-bottom: 0px;
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  -webkit-align-items: center;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  background: none;
+  padding-bottom: 0px;
 }
 
 .post-user > div{
@@ -194,10 +221,15 @@ img.post-image{
 }
 
 .post-meta{
-  border-top: 1px solid #999;
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  -webkit-align-items: center;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  border-top: 1px solid #999;
   color: #555;
   text-transform: uppercase;
   font-size: 10pt;
@@ -215,6 +247,10 @@ img.post-image{
   padding: 2px 4px;
   font-weight: 400;
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .post-delete:hover{
@@ -250,9 +286,14 @@ img.post-image{
 }
 
 .input-controls{
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  -webkit-flex-direction: row-reverse;
+
   display: flex;
   justify-content: space-between;
   flex-direction: row-reverse;
+
   color: #000;
   text-transform: uppercase;
   font-size: 10pt;
@@ -269,6 +310,10 @@ img.post-image{
 }
 
 .input-controls > div {
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  -webkit-justify-content: center;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -289,6 +334,11 @@ img.post-image{
 
 #image-thumb{
   border: 1px solid #ddd;
+
+  display: -webkit-flex;
+  -webkit-justify-content: flex-start;
+  -webkit-align-items: center;
+
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -343,6 +393,7 @@ img.post-image{
 /* LOGIN */
 .overlay-wrapper{
   position: fixed;
+  z-index: 5;
   width: 100%;
   height: 100%;
   overflow-y: auto;
@@ -394,6 +445,18 @@ img.post-image{
     position: relative;
   }
 
+  #follow-form{
+    padding: 10px;
+  }
+
+  #follow-form input[type="text"]{
+    flex: 1;
+  }
+
+  #follow-form input[type="submit"]{
+    width: auto;
+  }
+
   .overlay input{
     width: calc(100% - 32px);
     border-radius: 0px;
@@ -409,8 +472,14 @@ img.post-image{
     width: 100%;
   }
 
-  #map{
+  #map-container{
     position: relative;
+    z-index: 1;
+    width: 100%;
+    margin: 20px 0px;
+    border-radius: 0px;
+    top: 0;
+    height: 200px;
   }
 
   #posts[data-columns]::before {
@@ -480,11 +549,16 @@ img.post-image{
 /* Friends */
 .tabs{
   margin: 5px 5px 0px;
+
+  display: -webkit-flex;
+  -webkit-justify-content: center;
+
   display: flex;
   justify-content: center;
 }
 
 .tabs > div{
+  -webkit-flex-grow:1;
   flex-grow:1;
   margin: 5px 5px 0px;
   padding: 5px;
@@ -517,6 +591,8 @@ img.post-image{
 }
 
 #follow-form{
+  display: -webkit-flex;
+  -webkit-justify-content: center;
   display: flex;
   justify-content: center;
 }
@@ -562,6 +638,12 @@ img.post-image{
   right: 0;
   top:0;
   height: 100%;
+
+  display: -webkit-flex;
+  -webkit-justify-content: flex-end;
+  -webkit-flex-direction: row;
+  -webkit-align-items: stretch;
+
   display: flex;
   justify-content: flex-end;
   flex-direction: row;
@@ -569,9 +651,14 @@ img.post-image{
 }
 
 .follow-controls > div{
+  display: -webkit-flex;
+  -webkit-justify-content:center;
+  -webkit-flex-direction:column;
+
   display: flex;
   justify-content:center;
   flex-direction:column;
+
   padding: 0px 10px;
 }
 
