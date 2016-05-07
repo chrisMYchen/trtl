@@ -185,8 +185,7 @@ public class SparkServer {
         }
         noteRank.setCurrentLocation(curr_loc);
         Collections.sort(notes, noteRank);
-        notes = notes.subList(Math.min((notes.size()), minPost),
-            Math.min(notes.size(), maxPost));
+
 
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
