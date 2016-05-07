@@ -1,15 +1,18 @@
 body {
   margin: 0;
-  font-family: 'Raleway', serif;
+  font-family: 'Oxygen', sans-serif;
+  font-weight: 300;
   background: #eee;
 }
 
 p{
-  font-family: 'Raleway', serif;
+  font-family: 'Oxygen', sans-serif;
+  font-weight: 300;
 }
 
 div{
-  font-family: 'Raleway', serif;
+  font-family: 'Oxygen', sans-serif;
+  font-weight: 300;
 }
 
 /* Header */
@@ -23,7 +26,7 @@ div#nav {
   align-content: center;
 
   height: 50px;
-  box-shadow: 0px 0px 5px 0px #000;
+  box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.4);
   background: #A2D85A;
   position: fixed;
   width: 100%;
@@ -98,7 +101,7 @@ div#nav {
   left: 0;
   background: #fff;
   padding: 10px;
-  box-shadow: 0px 0px 5px 0px #000;
+  box-shadow: 0px 0px 7px 0px rgba(0,0,0,0.2);
   text-transform: none;
 }
 
@@ -126,18 +129,54 @@ div#nav {
   width: 75%;
 }
 
-/* map */
-#map-container{
-  background: #afa;
+#sidebar{
   position: fixed;
   width: calc(25% - 40px);
-  height: 300px;
-  right: 0;
+  height: 100%;
   top: 50px;
-  margin: 20px;
-  border-radius: 3px;
+  right: 0;
+  margin: 0px 20px;
+}
+
+.sidebar-element{
+  margin: 20px 0px;
+  box-shadow: 0px 1px 7px 0px rgba(0,0,0,0.2);
+  border-radius: 2px;
+}
+
+#filtering{
   background: #fff;
-  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
+
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  -webkit-align-items: center;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+#filtering div.filter-option{
+  flex:1;
+  padding: 5px 10px;
+  text-align: center;
+}
+
+#filtering div.filter-option:hover{
+  background: #ccc;
+}
+
+#filtering div.filter-option.active{
+  background: #888;
+  color: #fff;
+}
+
+/* map */
+#map-container{
+  height: 300px;
+  background: #fff;
   overflow: hidden;
 }
 
@@ -169,7 +208,7 @@ div#nav {
 
 .post{
   background: #fff;
-  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
+  box-shadow: 0px 1px 7px 0px rgba(0,0,0,0.2);
   border-radius: 2px;
   overflow: hidden;
   margin: 20px 10px;
@@ -192,6 +231,16 @@ div.post-top{
   padding-bottom: 0px;
 }
 
+.post-user{
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  -webkit-align-items: center;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .post-user > div{
   margin: 5px;
 }
@@ -203,6 +252,8 @@ div.post-top{
 .post-user .anon{
   color: #777;
   text-transform: uppercase;
+  font-family: "Raleway", sans-serif;
+  font-weight: 400;
 }
 
 p.post-handle{
@@ -214,13 +265,15 @@ div.post-content{
   padding: 15px;
   font-size: 13pt;
   white-space: pre-wrap;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 300;
 }
 
 img.post-image{
   width:100%;
 }
 
-.post-meta{
+div.post-meta{
   display: -webkit-flex;
   -webkit-justify-content: space-between;
   -webkit-align-items: center;
@@ -229,12 +282,12 @@ img.post-image{
   justify-content: space-between;
   align-items: center;
 
-  border-top: 1px solid #999;
+  padding-top: 0;
   color: #555;
   text-transform: uppercase;
+  font-family: "Open Sans", sans-serif;
   font-size: 10pt;
   font-weight: 400;
-  background: #ccc;
 }
 
 .post-delete{
@@ -269,7 +322,7 @@ img.post-image{
 /* Posting abilities */
 .input{
   background: #fff;
-  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.5);
+  box-shadow: 0px 1px 7px 0px rgba(0,0,0,0.3);
   border-radius: 2px;
   overflow: hidden;
   margin: 20px 10px 0px 10px;;
@@ -297,12 +350,11 @@ img.post-image{
   color: #000;
   text-transform: uppercase;
   font-size: 10pt;
-  background: #ded;
-  border-top: 1px dashed #333;
 }
 
 .input-controls div{
-  padding: 10px;
+  padding: 5px 10px;
+  margin: 5px;
   background: none;
   cursor: pointer;
   font-size: 12pt;
@@ -317,14 +369,21 @@ img.post-image{
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  border-radius: 3px;
 }
 
 .input-controls > div:hover{
-    background: rgba(0,0,0,0.2);
+    color: #2a2;
 }
 
 .input-controls select{
   color: black;
+  margin: 5px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  background: #fff;
+  overflow: auto !important;
 }
 
 /* Image handling */
@@ -472,6 +531,10 @@ img.post-image{
     width: 100%;
   }
 
+  #sidebar{
+
+  }
+
   #map-container{
     position: relative;
     z-index: 1;
@@ -493,7 +556,7 @@ img.post-image{
   .post{
     border-radius: 0px;
     overflow: hidden;
-    margin: 20px 0px;
+    margin: 15px 0px;
   }
 
   #branding{
