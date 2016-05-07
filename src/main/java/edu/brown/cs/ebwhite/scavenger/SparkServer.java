@@ -83,6 +83,8 @@ public class SparkServer {
     Spark.post("/myInfo", new MyInfo());
     Spark.post("/postNoteImage", "multipart/form-data", new PostNoteImage());
     Spark.post("/removeNote", new RemoveNote());
+    Spark.post("/upvote", new Upvote());
+    Spark.post("/removeUpvote", new RemoveUpvote());
   }
 
   private class HomeHandler implements TemplateViewRoute {
@@ -678,7 +680,7 @@ public class SparkServer {
         int userID = Integer.parseInt(userIDString);
         TurtleQuery.removeNote(noteID, userID);
       } catch (NumberFormatException nfe) {
-        message = "nodeID or userID not a number";
+        message = "noteID or userID not a number";
       } catch (SQLException e) {
         message = "SQL error in removing note from database: ";
         message += e.getMessage();
@@ -693,4 +695,61 @@ public class SparkServer {
     }
   }
 
+  private class Upvote implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String noteIDString = qm.value("noteID");
+      String userIDString = qm.value("userID");
+      String message = "no-error";
+
+      try {
+        int noteID = Integer.parseInt(noteIDString);
+        int userID = Integer.parseInt(userIDString);
+        TurtleQuery.upvote(noteID, userID);
+      } catch (NumberFormatException nfe) {
+        message = "noteID or userID not a number";
+      } catch (SQLException e) {
+        message = "SQL error in adding vote to database: ";
+        message += e.getMessage();
+      }
+
+      Builder<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message);
+
+      Map<String, Object> map = variables.build();
+
+      return GSON.toJson(map);
+    }
+  }
+
+  private class RemoveUpvote implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String noteIDString = qm.value("noteID");
+      String userIDString = qm.value("userID");
+      String message = "no-error";
+
+      try {
+        int noteID = Integer.parseInt(noteIDString);
+        int userID = Integer.parseInt(userIDString);
+        TurtleQuery.removeUpvote(noteID, userID);
+      } catch (NumberFormatException nfe) {
+        message = "noteID or userID not a number";
+      } catch (SQLException e) {
+        message = "SQL error in removing vote from database: ";
+        message += e.getMessage();
+      }
+
+      Builder<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message);
+
+      Map<String, Object> map = variables.build();
+
+      return GSON.toJson(map);
+    }
+  }
+
 }
+
