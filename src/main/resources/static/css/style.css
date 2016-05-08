@@ -349,6 +349,33 @@ div.post-meta{
   font-weight: 400;
 }
 
+div.upvote{
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  -webkit-align-items: center;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: #aaa;
+  cursor: pointer;
+  font-size: 12pt;  
+}
+
+div.upvote i:hover{
+  color: #0F860D;
+}
+
+div.upvote.upvoted i{
+  color: #0F860D;
+}
+
+p.upvote-count{
+  margin: 0;
+  padding: 5px;
+}
+
 .post-delete{
   color: #777;
   background: none;

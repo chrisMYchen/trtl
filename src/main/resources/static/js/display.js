@@ -14,6 +14,8 @@ function displayNotes(){
   $("body").on("click", ".collapse", collapsePost);
 
   $(".filter-option").click(changeFilter);
+
+  $(".user-handle").click(filterUser);
 }
 
 function initialLoad(time, radius){
@@ -132,7 +134,9 @@ function processNote(note){
     time: new Date(note.timestamp),
     order: note.order,
     image: note.image,
-    user: note.user
+    user: note.user,
+    vote: note.vote,
+    voteStatus: note.voteStatus
   };
 
   if(note.privacy == 1){
@@ -176,8 +180,20 @@ function formatNote(note){
   }
 
   /* Meta */
-  var timestring = formatTime(note.time);
   var meta = $("<div></div>").attr("class","post-meta");
+  var upvote_div = $("<div></div>").addClass("upvote");
+  if(note.voteStatus){
+    upvote_div.addClass("upvoted");
+  }
+  if(userInfo.id != -1){
+   var upvote_icon = $("<i></i>").addClass("material-icons").html("thumb_up");
+   upvote_div.append(upvote_icon);
+  }
+  var upvote_count = $("<p></p>").addClass("upvote-count").html(note.vote);
+  upvote_div.append(upvote_count);
+  meta.append(upvote_div);
+
+  var timestring = formatTime(note.time);
   var time = $("<div></div>").attr("class","post-time").append(timestring);
   meta.append(time);
   dom.append(meta);
@@ -217,7 +233,6 @@ function formatNote(note){
     priv.append(icon).append(text);
     top.append(priv);
   }
-
 }
 
 function formatTime(time){
@@ -289,6 +304,10 @@ function changeFilter(){
   $(this).toggleClass("active", true);
   filter_setting = $(this).attr("data-filter");
   resetNotes();
+}
+
+function filterUser(){
+  
 }
 
 function displayError(message){

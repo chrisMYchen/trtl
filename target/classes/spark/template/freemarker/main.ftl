@@ -22,6 +22,7 @@
   <script src="/js/update.js"></script>
   <script src="/js/image.js"></script>
   <script src="/js/map.js"></script>
+  <script src="/js/upvote.js"></script>
   <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ9fjmVvsQ-e2Z52Cu7z8PxmVqpMvD8XA&callback=initMap">
     </script>
