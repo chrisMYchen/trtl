@@ -43,7 +43,6 @@ import edu.brown.cs.ebwhite.note.NoteRanker;
 import edu.brown.cs.ebwhite.user.User;
 import edu.brown.cs.ebwhite.user.UserProxy;
 
-
 public class SparkServer {
   Gson GSON;
   String imagepath;
@@ -84,6 +83,8 @@ public class SparkServer {
     Spark.post("/myInfo", new MyInfo());
     Spark.post("/postNoteImage", "multipart/form-data", new PostNoteImage());
     Spark.post("/removeNote", new RemoveNote());
+    Spark.post("/upvote", new Upvote());
+    Spark.post("/removeUpvote", new RemoveUpvote());
   }
 
   private class HomeHandler implements TemplateViewRoute {
@@ -118,13 +119,18 @@ public class SparkServer {
         int maxPost = Integer.parseInt(maxPostString);
         int filter = Integer.parseInt(filterString);
         double radius = Double.parseDouble(radiusString);
-        notes = TurtleQuery.getNotes(uID, new LatLong(lat, lon), radius,
-            minPost, maxPost, timestamp, filter);
+        LatLong curr_loc = new LatLong(lat, lon);
+        notes = TurtleQuery.getNotes(uID, curr_loc, radius, minPost, maxPost,
+            timestamp, filter);
+
+        NoteRanker noteRank = new NoteRanker();
         if (uID != -1) {
-          NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
-          Collections.sort(notes, noteRank);
         }
+        noteRank.setCurrentLocation(curr_loc);
+        Collections.sort(notes, noteRank);
+        notes = notes.subList(Math.min((notes.size()), minPost),
+            Math.min(notes.size(), maxPost));
 
       } catch (NullPointerException np) {
         message = "Fields not filled. Something is null: " + np.getMessage();
@@ -135,9 +141,9 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = "SQL error when getting note: " + e.getMessage();
       }
-      // for (Note n : notes) {
-      // System.out.println(n)
-      // }
+      for (Note n : notes) {
+        System.out.println(n);
+      }
       Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
           .put("notes", notes).put("error", message).build();
 
@@ -169,14 +175,17 @@ public class SparkServer {
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
         int filter = Integer.parseInt(filterString);
+        LatLong curr_loc = new LatLong(lat, lon);
 
-        notes = TurtleQuery.updateNotes(uID, new LatLong(lat, lon), radius,
-            minPost, maxPost, timestamp, filter);
+        notes = TurtleQuery.updateNotes(uID, curr_loc, radius, minPost,
+            maxPost, timestamp, filter);
+        NoteRanker noteRank = new NoteRanker();
         if (uID != -1) {
-          NoteRanker noteRank = new NoteRanker();
           noteRank.setCurrentUser(uID);
-          Collections.sort(notes, noteRank);
         }
+        noteRank.setCurrentLocation(curr_loc);
+        Collections.sort(notes, noteRank);
+
 
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -385,7 +394,7 @@ public class SparkServer {
       try {
         int userID = Integer.parseInt(userIDstring);
         int friendID = TurtleQuery.getUserID(friendUsername);
-        if(friendID == -1){
+        if (friendID == -1) {
           message = "Friend with username doesn't exist";
         } else {
           Friend.unfollow(userID, friendID);
@@ -670,7 +679,7 @@ public class SparkServer {
         int userID = Integer.parseInt(userIDString);
         TurtleQuery.removeNote(noteID, userID);
       } catch (NumberFormatException nfe) {
-        message = "nodeID or userID not a number";
+        message = "noteID or userID not a number";
       } catch (SQLException e) {
         message = "SQL error in removing note from database: ";
         message += e.getMessage();
@@ -685,4 +694,61 @@ public class SparkServer {
     }
   }
 
+  private class Upvote implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String noteIDString = qm.value("noteID");
+      String userIDString = qm.value("userID");
+      String message = "no-error";
+
+      try {
+        int noteID = Integer.parseInt(noteIDString);
+        int userID = Integer.parseInt(userIDString);
+        TurtleQuery.upvote(noteID, userID);
+      } catch (NumberFormatException nfe) {
+        message = "noteID or userID not a number";
+      } catch (SQLException e) {
+        message = "SQL error in adding vote to database: ";
+        message += e.getMessage();
+      }
+
+      Builder<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message);
+
+      Map<String, Object> map = variables.build();
+
+      return GSON.toJson(map);
+    }
+  }
+
+  private class RemoveUpvote implements Route {
+    @Override
+    public Object handle(final Request req, final Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String noteIDString = qm.value("noteID");
+      String userIDString = qm.value("userID");
+      String message = "no-error";
+
+      try {
+        int noteID = Integer.parseInt(noteIDString);
+        int userID = Integer.parseInt(userIDString);
+        TurtleQuery.removeUpvote(noteID, userID);
+      } catch (NumberFormatException nfe) {
+        message = "noteID or userID not a number";
+      } catch (SQLException e) {
+        message = "SQL error in removing vote from database: ";
+        message += e.getMessage();
+      }
+
+      Builder<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+          .put("error", message);
+
+      Map<String, Object> map = variables.build();
+
+      return GSON.toJson(map);
+    }
+  }
+
 }
+
