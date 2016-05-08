@@ -781,15 +781,12 @@ div.post-meta{
   display: flex;
   justify-content:center;
   flex-direction:column;
+  cursor: pointer;
 
   padding: 0px 10px;
 }
 
-.follow-remove{
-  cursor: pointer;
-}
-
-.follow-remove i{
+.follow-controls i{
   display: inline-block;
 }
 
@@ -798,16 +795,13 @@ div.post-meta{
   color: white;
 }
 
-.follow-accept{
-  cursor: pointer;
-}
-
-.follow-accept i{
-  display: inline-block;
-}
-
 .follow-accept:hover{
   background: #00A0FD;
+  color: white;
+}
+
+.followback:hover{
+  background: #00FDA0;
   color: white;
 }
 

@@ -72,7 +72,7 @@
       <div id="follow-close" class="close"><p><i class="material-icons">close</i></p></div>
       <div id="follow-msg" class="msg" style="display:none;"></div>
       <div id="follow-tabs" class="tabs">
-        <div id="following-tab" class="follow-tab">Following</div>
+        <div id="following-tab" class="follow-tab active">Following</div>
         <div id="followers-tab" class="follow-tab">Followers</div>
       </div>
       <div id="following" class="follow-page">
@@ -82,7 +82,7 @@
         </form>
         <div id="following-list" class="follow-list"></div>
       </div>
-      <div id="followers" class="follow-page">
+      <div id="followers" class="follow-page" style="display:none">
         <div id="follower-list" class="follow-list"></div>
       </div>
     </div>

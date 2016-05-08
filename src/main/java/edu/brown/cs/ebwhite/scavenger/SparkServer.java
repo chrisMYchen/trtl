@@ -343,8 +343,14 @@ public class SparkServer {
 
       try {
         int userID = Integer.parseInt(userIDstring);
-        if (!Friend.requestFollow(userID, friendUsername)) {
+        int friendID = TurtleQuery.getUserID(friendUsername);
+        if(friendID == -1){
           message = "User with username " + friendUsername + " doesn't exist";
+        } else {
+          boolean success = Friend.requestFollow(userID, friendID);
+          if(!success){
+            message = "You are already following " +friendUsername;
+          }
         }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -431,9 +437,13 @@ public class SparkServer {
       String message = "no-error";
       try {
         int userID = Integer.parseInt(userIDstring);
-        if (Friend.removeFollower(userID, friendUsername)) {
+        int friendID = TurtleQuery.getUserID(friendUsername);
+        if (friendID == -1) {
           message = "Friend with username doesn't exist";
+        } else{
+          Friend.removeFollower(userID, friendID);
         }
+
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
       } catch (NumberFormatException nfe) {

@@ -29,43 +29,35 @@ public class Friend {
    * @throws SQLException
    *           if there is an error with the query
    */
-  public static boolean requestFollow(int userID, String friendUsername)
-      throws SQLException {
+   public static boolean requestFollow(int userID, int friendID)
+   throws SQLException {
 
-    int friendID = -1;
-    friendID = TurtleQuery.getUserID(friendUsername);
-    if (friendID == -1) {
-      return false;
-    } else {
-
-      String post = "SELECT * FROM user_follower WHERE userid=? AND follower_id = ?;";
-      try (Connection conn = Db.getConnection()) {
-        try (PreparedStatement prep = conn.prepareStatement(post)) {
-          prep.setInt(1, friendID);
-          prep.setInt(2, userID);
-          try (ResultSet rs = prep.executeQuery()) {
-            if (rs.next()) {
-              return true;
-            }
-          }
-        }
-      }
-      post = "INSERT INTO user_pending VALUES (?, ?)";
-      User f = new UserProxy(friendID);
-      User u = new UserProxy(userID);
-      try (Connection conn = Db.getConnection()) {
-        try (PreparedStatement prep = conn.prepareStatement(post)) {
-          prep.setInt(1, friendID);
-          prep.setInt(2, userID);
-          prep.executeUpdate();
-          f.addPending(userID);
-          u.addPendingFollowing(friendID);
-          return true;
-        }
-      }
-    }
-
-  }
+     String post = "SELECT * FROM user_follower WHERE userid=? AND follower_id = ?;";
+     try (Connection conn = Db.getConnection()) {
+       try (PreparedStatement prep = conn.prepareStatement(post)) {
+         prep.setInt(1, friendID);
+         prep.setInt(2, userID);
+         try (ResultSet rs = prep.executeQuery()) {
+           if (rs.next()) {
+             return false;
+           }
+         }
+       }
+     }
+     post = "INSERT INTO user_pending VALUES (?, ?)";
+     User f = new UserProxy(friendID);
+     User u = new UserProxy(userID);
+     try (Connection conn = Db.getConnection()) {
+       try (PreparedStatement prep = conn.prepareStatement(post)) {
+         prep.setInt(1, friendID);
+         prep.setInt(2, userID);
+         prep.executeUpdate();
+         f.addPending(userID);
+         u.addPendingFollowing(friendID);
+         return true;
+       }
+     }
+   }
 
   /**
    * add a friend for to a user's list of friends.
@@ -121,7 +113,7 @@ public class Friend {
    * @throws SQLException
    *           if there is an error with the query
    */
-  public static boolean unfollow(int userID, int friendID)
+  public static void unfollow(int userID, int friendID)
       throws SQLException {
 
     User f = new UserProxy(friendID);
@@ -147,7 +139,6 @@ public class Friend {
         prep.executeUpdate();
         f.removePending(userID);
         u.removePendingFollowing(friendID);
-        return true;
       }
     }
   }
@@ -163,10 +154,8 @@ public class Friend {
    * @throws SQLException
    *           if there is an error with the query
    */
-  public static boolean removeFollower(int userID, String friendUsername)
+  public static void removeFollower(int userID, int friendID)
       throws SQLException {
-    int friendID = TurtleQuery.getUserID(friendUsername);
-    assert (friendID != -1);
 
     User f = new UserProxy(friendID);
     User u = new UserProxy(userID);
@@ -191,7 +180,6 @@ public class Friend {
         prep.executeUpdate();
         f.removePendingFollowing(userID);
         u.removePending(friendID);
-        return true;
       }
     }
   }
