@@ -173,6 +173,11 @@ div#nav {
   color: #fff;
 }
 
+#filtering .name{
+  color: #ccc;
+  font-size: 10pt;
+}
+
 /* map */
 #map-container{
   height: 300px;

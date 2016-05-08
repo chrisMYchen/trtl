@@ -14,7 +14,7 @@ function locationStart(){
         locationError(error, id);
       }, loc_options);
   } else{
-    $("#location").html("Location not available");
+    $("#location").html("Location not supported");
   }
 }
 
@@ -31,6 +31,10 @@ function locationError(error, id){
 function locationHandler(position){
   var icon = locationIcon();
   icon.html("location_on");
+
+  if(distance(locationInfo.pos, {lat: position.lat, lon: position.lng})){
+    resetNotes();
+  }
 
   /* Create dropdown */
   locationInfo.pos = {lat: position.lat, lon: position.lng};
@@ -58,4 +62,8 @@ function locationDropdown(elem){
     drop.toggle(false);
   }
   drop.html(elem);
+}
+
+function distance(){
+  
 }

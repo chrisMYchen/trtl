@@ -111,7 +111,8 @@ public class TurtleQuery {
     else if (filter == 2) {
       getNotes += " AND n.userid = ? ORDER BY n.timestamp DESC) AS n ";
     }
- else if (profileID != -1 && filter == 3) {
+
+    else if (profileID != -1 && filter == 3) {
       getNotes += " AND n.userid =? AND (n.private = 0 OR"
           + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
           + " ORDER BY n.timestamp DESC) AS n ";
@@ -183,7 +184,7 @@ public class TurtleQuery {
   }
 
   public static List<Note> updateNotes(int userID, LatLong loc, double radius,
-      int minPost, int maxPost, long start_time, long end_time, int filter) throws SQLException {
+      int minPost, int maxPost, long start_time, long end_time, int filter, int profileID) throws SQLException {
     double allowed_distance_latitude = radius / 110575; // this is in
     // meters
     double inputLat = loc.getLat();
@@ -196,7 +197,7 @@ public class TurtleQuery {
     double right_lng = inputLng + allowed_distance_longitude;
     if (userID != -1) {
       return updateNotesLoggedIn(userID, bottom_lat, top_lat, left_lng,
-          right_lng, minPost, maxPost, start_time, end_time, filter);
+          right_lng, minPost, maxPost, start_time, end_time, filter, profileID);
     } else {
       return updateNotesAnonymous(bottom_lat, top_lat, left_lng, right_lng,
           minPost, maxPost, start_time, end_time);
@@ -245,7 +246,7 @@ public class TurtleQuery {
 
   public static List<Note> updateNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
-      int maxPost, long start_time, long end_time, int filter) throws SQLException {
+      int maxPost, long start_time, long end_time, int filter, int profileID) throws SQLException {
     String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private, n.NumberOfVotes, n.path,"
         + " CASE WHEN v.user_id=? THEN 'True' ELSE 'False' END"
         + " FROM (SELECT DISTINCT *, COUNT(v.user_id) as NumberOfVotes"
@@ -267,6 +268,12 @@ public class TurtleQuery {
 
     else if (filter == 2) {
       getNotes += " AND n.userid = ? ORDER BY n.timestamp DESC) AS n ";
+    }
+
+     else if (profileID != -1 && filter == 3) {
+      getNotes += " AND n.userid =? AND (n.private = 0 OR"
+          + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
+          + " ORDER BY n.timestamp DESC) AS n ";
     }
 
     getNotes += " LEFT JOIN vote as v ON n.id = v.note_id"
@@ -298,6 +305,10 @@ public class TurtleQuery {
           prep.setInt(9, userID);
           // prep.setInt(7, maxPost - minPost);
           // prep.setInt(8, minPost);
+        } else if (filter == 3) {
+          prep.setInt(8, profileID);
+          prep.setInt(9, userID);
+          prep.setInt(10, userID);
         }
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();

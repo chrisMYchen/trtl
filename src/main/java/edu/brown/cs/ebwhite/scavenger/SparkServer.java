@@ -168,6 +168,7 @@ public class SparkServer {
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String uIDstring = qm.value("userID");
+      String username = qm.value("username");
       String latString = qm.value("lat");
       String lonString = qm.value("lon");
       String starttimeString = qm.value("start_time");
@@ -181,6 +182,11 @@ public class SparkServer {
       try {
         // uID is -1 if not logged in
         int uID = Integer.parseInt(uIDstring);
+        int profileID = -1;
+        if (username != null) {
+          // to see a specific user's posts : get filter = 3 with username
+          profileID = UserProxy.ofName(username).getId();
+        }
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
         long start_time = Long.parseLong(starttimeString);
@@ -192,7 +198,7 @@ public class SparkServer {
         LatLong curr_loc = new LatLong(lat, lon);
 
         notes = TurtleQuery.updateNotes(uID, curr_loc, radius, minPost,
-            maxPost, start_time, end_time, filter);
+            maxPost, start_time, end_time, filter, profileID);
         NoteRanker noteRank = new NoteRanker();
         if (uID != -1) {
           noteRank.setCurrentUser(uID);

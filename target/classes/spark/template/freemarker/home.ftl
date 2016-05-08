@@ -5,8 +5,11 @@
   </div>
   <div id="filtering" class="sidebar-element">
     <div class="filter-option active" data-filter="0">All</div>
-    <div class="filter-option" data-filter="1">Friends</div>
-    <div class="filter-option" data-filter="2">Mine</div>
+    <div id="following-filter" class="filter-option" data-filter="1">
+      Following
+      <div class="name"></div>
+    </div>
+    <div id="mine" class="filter-option" data-filter="2">Mine</div>
   </div>
 </div>
 <div id="posts-wrapper">
