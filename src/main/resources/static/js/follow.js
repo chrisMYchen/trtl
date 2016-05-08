@@ -177,8 +177,8 @@ function getFollowList(){
     var res = JSON.parse(data);
     console.log(res);
     if(res.error == "no-error"){
-      fillFollowList(res.followers, res.pending_followers, true, $("#follower-list"));
-      fillFollowList(res.following, res.pending_following, false, $("#following-list"));
+      fillFollowerList(res.followers, res.pending_followers, res.following, $("#follower-list"));
+      fillFollowingList(res.following, res.pending_following, false, $("#following-list"));
     }
     else{
       $("#following-list").html(res.error);
@@ -187,18 +187,32 @@ function getFollowList(){
   });
 }
 
-function fillFollowList(list, pending, follower, dom){
+function fillFollowingList(list, pending, following, dom){
   for (var i = 0; i < pending.length; i++){
-    var pending_item = followDOM(pending[i], true, follower);
+    var pend = pending[i];
+    var followback = (following.indexOf(pend) == -1) ? true : false;
+    var pending_item = followDOM(, true, false, followback);
     dom.append(pending_item);
   }
   for(var i = 0; i < list.length; i++){
-    var follow = followDOM(list[i], false, follower);
+    var followback = (following.indexOf(pend) == -1) ? true : false;
+    var follow = followDOM(list[i], false, false, followback);
     dom.append(follow);
   }
 }
 
-function followDOM(follow, pending, follower){
+function fillFollowerList(list, pending, dom){
+  for (var i = 0; i < pending.length; i++){
+    var pending_item = followDOM(pending[i], true, true, false);
+    dom.append(pending_item);
+  }
+  for(var i = 0; i < list.length; i++){
+    var follow = followDOM(list[i], false, true, false);
+    dom.append(follow);
+  }
+}
+
+function followDOM(follow, pending, follower, followback){
   var div = $("<div></div>").addClass("follow-item");
   var user = $("<div></div>").addClass("follow-user");
   user.html(follow);
@@ -208,6 +222,10 @@ function followDOM(follow, pending, follower){
   remove.append(xicon);
 
   var controls = $("<div></div>").addClass("follow-controls");
+
+  if(followback){
+    var fback = 
+  }
 
   if(pending){
     var pending = $("<div></div>").addClass("pending-label");

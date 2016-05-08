@@ -212,10 +212,11 @@ div#nav {
   border-radius: 2px;
   overflow: hidden;
   margin: 20px 10px;
+  padding: 10px;
 }
 
 .post > div{
-  padding: 10px;
+
 }
 
 div.post-top{
@@ -267,6 +268,28 @@ div.post-content{
   white-space: pre-wrap;
   font-family: "Open Sans", sans-serif;
   font-weight: 300;
+  overflow:hidden;
+}
+
+.collapsed{
+  height: 300px;
+}
+
+.expanded{
+  height: auto;
+}
+
+div.expand-button{
+  padding: 0px;
+  margin: 0px 15px 5px 15px; 
+  border-top: 1px solid #777;
+  background: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 10pt;
+  color: #777;
+  cursor: pointer;
+  user-select: none;
 }
 
 img.post-image{

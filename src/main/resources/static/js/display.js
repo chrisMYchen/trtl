@@ -6,6 +6,8 @@ function displayNotes(){
   $(window).on("scroll", {time: time, radius: radius}, scrollCallback);
 
   $("body").on("click", ".post-delete", deletePost);
+  $("body").on("click", ".expand", expandPost);
+  $("body").on("click", ".collapse", collapsePost);
 }
 
 function initialLoad(time, radius){
@@ -99,6 +101,8 @@ function notesDOM(notes, start){
        note.dom = dom;
        processNote(note);
    }
+
+   /* Check to see if the notes go off the page */
 }
 
 function processNote(note){
@@ -142,12 +146,21 @@ function formatNote(note){
   /* Content */
   var content = $("<div></div>").attr("class","post-content").append(note.content);
   content.linkify();
+  dom.append(content);
+
+  /* Collapse content */
+  if(note.content.length > 1000){
+    content.addClass("collapsed");
+    var expand = $("<div></div>").addClass("expand-button").addClass("expand").html("expand");
+    dom.append(expand);
+  }
 
   /* Meta */
   var timestring = formatTime(note.time);
   var meta = $("<div></div>").attr("class","post-meta");
   var time = $("<div></div>").attr("class","post-time").append(timestring);
   meta.append(time);
+  dom.append(meta);
 
   /* User */
   var user = $("<div></div>").attr("class","post-user");
@@ -170,10 +183,8 @@ function formatNote(note){
   if(note.image != null){
     var image = $("<img></img>").attr("class","post-image");
     image.attr("src", note.image);
-    content.append(image);
+    dom.after(content,image);
   }
-
-  dom.append(content).append(meta);
 }
 
 function formatTime(time){
@@ -209,6 +220,35 @@ function deletePost(){
       displayError(msg);
     }
   });
+}
+
+function expandPost(e){
+  var button = $(this);
+  
+  var content = button.siblings(".post-content");
+  var origHeight = content.get(0).scrollHeight;
+  
+  content.animate({height: origHeight}, 1000, function(){
+    button.html("Collapse");
+    button.toggleClass("expand", false);
+    button.toggleClass("collapse", true);
+    content.toggleClass("expanded", true);
+    content.toggleClass("collapsed", false);
+  });
+}
+
+function collapsePost(e){
+  var button = $(this);
+  
+  var content = $(this).siblings(".post-content");
+  content.animate({height: "300px"}, 1000, function(){
+    button.html("Expand");
+    content.toggleClass("expanded", false);
+    content.toggleClass("collapsed", true);
+    button.toggleClass("expand", true);
+    button.toggleClass("collapse", false);
+  });
+  
 }
 
 function displayError(message){

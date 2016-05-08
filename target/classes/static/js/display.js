@@ -142,12 +142,21 @@ function formatNote(note){
   /* Content */
   var content = $("<div></div>").attr("class","post-content").append(note.content);
   content.linkify();
+  dom.append(content);
+
+  /* Collapse content */
+  if(note.content.length > 1000){
+    content.addClass(collapsed);
+    var expand = $("<div></div>").addClass("expand-button").html("expand");
+    dom.append(expand);
+  }
 
   /* Meta */
   var timestring = formatTime(note.time);
   var meta = $("<div></div>").attr("class","post-meta");
   var time = $("<div></div>").attr("class","post-time").append(timestring);
   meta.append(time);
+  dom.append(meta);
 
   /* User */
   var user = $("<div></div>").attr("class","post-user");
@@ -170,10 +179,10 @@ function formatNote(note){
   if(note.image != null){
     var image = $("<img></img>").attr("class","post-image");
     image.attr("src", note.image);
-    content.append(image);
+    dom.after(content,image);
   }
 
-  dom.append(content).append(meta);
+  
 }
 
 function formatTime(time){
