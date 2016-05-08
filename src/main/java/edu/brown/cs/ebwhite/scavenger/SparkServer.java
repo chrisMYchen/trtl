@@ -31,7 +31,6 @@ import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
@@ -362,6 +361,8 @@ public class SparkServer {
           message = "Your request to follow " + friendUsername
               + " is already pending!";
         }
+      } catch (IllegalArgumentException i) {
+        message = i.getMessage();
       }
       Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
           .put("error", message).build();

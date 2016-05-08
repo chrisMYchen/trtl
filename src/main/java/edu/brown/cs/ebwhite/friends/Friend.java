@@ -30,33 +30,35 @@ public class Friend {
    *           if there is an error with the query
    */
    public static boolean requestFollow(int userID, int toFollowID)
-   throws SQLException {
-
-     String post = "SELECT * FROM user_follower WHERE userid=? AND follower_id = ?;";
-     try (Connection conn = Db.getConnection()) {
-       try (PreparedStatement prep = conn.prepareStatement(post)) {
-         prep.setInt(1, toFollowID);
-         prep.setInt(2, userID);
-         try (ResultSet rs = prep.executeQuery()) {
-           if (rs.next()) {
-             return false;
+      throws SQLException, IllegalArgumentException {
+    if (userID != toFollowID) {
+      String post = "SELECT * FROM user_follower WHERE userid=? AND follower_id = ?;";
+      try (Connection conn = Db.getConnection()) {
+        try (PreparedStatement prep = conn.prepareStatement(post)) {
+          prep.setInt(1, toFollowID);
+          prep.setInt(2, userID);
+          try (ResultSet rs = prep.executeQuery()) {
+            if (rs.next()) {
+              return false;
+            }
            }
          }
        }
-     }
-     post = "INSERT INTO user_pending VALUES (?, ?)";
-     User f = new UserProxy(toFollowID);
-     User u = new UserProxy(userID);
-     try (Connection conn = Db.getConnection()) {
-       try (PreparedStatement prep = conn.prepareStatement(post)) {
-         prep.setInt(1, toFollowID);
-         prep.setInt(2, userID);
-         prep.executeUpdate();
-         f.addPending(userID);
-         u.addPendingFollowing(toFollowID);
-         return true;
+      post = "INSERT INTO user_pending VALUES (?, ?)";
+      User f = new UserProxy(toFollowID);
+      User u = new UserProxy(userID);
+      try (Connection conn = Db.getConnection()) {
+        try (PreparedStatement prep = conn.prepareStatement(post)) {
+          prep.setInt(1, toFollowID);
+          prep.setInt(2, userID);
+          prep.executeUpdate();
+          f.addPending(userID);
+          u.addPendingFollowing(toFollowID);
+          return true;
+        }
        }
      }
+    throw new IllegalArgumentException("You can't follow yourself!");
    }
 
   /**
