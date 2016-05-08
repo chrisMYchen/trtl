@@ -13,12 +13,10 @@ import edu.brown.cs.ebwhite.note.Note;
 
 public class TurtleQuery {
   private final static int NIDCOL = 1;
-  private final static int UIDCOL = 2;
   private final static int TIMECOL = 3;
   private final static int LATCOL = 4;
   private final static int LNGCOL = 5;
   private final static int TXTCOL = 6;
-  private final static int PRIVCOL = 7;
   private final static int VOTECOL = 13;
   private final static int AUTOKEYS = Statement.RETURN_GENERATED_KEYS;
 
@@ -88,75 +86,83 @@ public class TurtleQuery {
   public static List<Note> getNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp, int filter) throws SQLException {
+    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private, n.NumberOfVotes, n.path,"
+        + " CASE WHEN v.user_id=? THEN 'True' ELSE 'False' END"
+        + " FROM (SELECT DISTINCT *, COUNT(v.user_id) as NumberOfVotes"
+        + " FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private"
+        + " FROM notes as n, user_follower as uf"
+        + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp < ?) ";
 
-    String getNotes = "SELECT *, COUNT(v.user_id) as NumberOfVotes FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
-        + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
-        + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
-        + " AND (timestamp < ?) ";
 
     if (filter == 0) {
-      getNotes += "AND (n.private = 0 OR n.userid = ? OR"
-        + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
-        + " ORDER BY n.timestamp DESC) AS n "
-        + " LEFT JOIN vote as v ON n.id = v.note_id LEFT JOIN image_note AS i"
-        + " ON i.noteid=n.id GROUP BY n.id;";
+      getNotes += " AND (n.private = 0 OR n.userid = ? OR"
+          + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
+          + " ORDER BY n.timestamp DESC) AS n ";
     }
 
     if (filter == 1) {
-      getNotes += "AND ((n.userid = ?) OR "
+      getNotes += " AND ((n.userid = ?) OR "
           + " (uf.follower_id = ? AND uf.userid = n.userid)) "
-          + " ORDER BY n.timestamp DESC) AS n "
-          + " LEFT JOIN vote as v ON n.id = v.note_id LEFT JOIN image_note AS i"
-          + " ON i.noteid=n.id GROUP BY n.id;";
+          + " ORDER BY n.timestamp DESC) AS n ";
     }
 
     else if (filter == 2) {
-      getNotes += "AND n.userid = ? ORDER BY n.timestamp DESC) AS n LEFT JOIN vote as v ON n.id = v.note_id "
-          + " LEFT JOIN image_note AS i" + " ON i.noteid=n.id GROUP BY n.id;";
+      getNotes += " AND n.userid = ? ORDER BY n.timestamp DESC) AS n";
     }
 
+    getNotes += "LEFT JOIN vote as v ON n.id = v.note_id"
+        + " LEFT JOIN image_note AS i ON i.noteid=n.id GROUP BY n.id) AS n"
+        + " LEFT JOIN vote as v ON v.note_id=n.id AND v.user_id=?;";
+
+    System.out.println(getNotes);
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
-        prep.setDouble(1, left_lng);
-        prep.setDouble(2, right_lng);
-        prep.setDouble(3, bottom_lat);
-        prep.setDouble(4, top_lat);
-        prep.setLong(5, timeStamp);
+        prep.setInt(1, userID);
+        prep.setDouble(2, left_lng);
+        prep.setDouble(3, right_lng);
+        prep.setDouble(4, bottom_lat);
+        prep.setDouble(5, top_lat);
+        prep.setLong(6, timeStamp);
         if (filter == 0) {
-          prep.setInt(6, userID);
           prep.setInt(7, userID);
+          prep.setInt(8, userID);
+          prep.setInt(9, userID);
           // prep.setInt(8, maxPost - minPost);
           // prep.setInt(9, minPost);
         } else if (filter == 1) {
-          prep.setInt(6, userID);
           prep.setInt(7, userID);
+          prep.setInt(8, userID);
+          prep.setInt(9, userID);
           // prep.setInt(8, maxPost - minPost);
           // prep.setInt(9, minPost);
         } else if (filter == 2) {
-          prep.setInt(6, userID);
+          prep.setInt(7, userID);
+          prep.setInt(8, userID);
           // prep.setInt(7, maxPost - minPost);
           // prep.setInt(8, minPost);
         }
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
-            for (int i = 1; i < 14; i++) {
-              System.out.println("i " + i + ": " + rs.getInt(i) + "string: "
-                  + rs.getString(i));
-            }
-            System.out.println("one note");
-            int noteID = rs.getInt(NIDCOL);
-            int uID = rs.getInt(UIDCOL);
-            long time = rs.getLong(TIMECOL);
-            double lat = rs.getDouble(LATCOL);
-            double lng = rs.getDouble(LNGCOL);
-            String txt = rs.getString(TXTCOL);
-            int priv = rs.getInt(PRIVCOL);
-            int vote = rs.getInt(VOTECOL);
+
+            // System.out.println("one note");
+            int noteID = rs.getInt(1);
+            int uID = rs.getInt(2);
+            long time = rs.getLong(3);
+            double lat = rs.getDouble(4);
+            double lng = rs.getDouble(5);
+            String txt = rs.getString(6);
+            int priv = rs.getInt(7);
+            int vote = rs.getInt(8);
             String image = rs.getString("path");
+            boolean voteStatus = Boolean.parseBoolean(rs.getString(10));
+
+            // System.out.println("noteID " + noteID + " : " + voteStatus
+            // + "string: " + rs.getString(10));
             Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
                 .setContent(txt).setLat(lat).setLng(lng).setPrivate(priv)
-                .setImage(image).setVote(vote).build();
+                .setImage(image).setVote(vote).setVoteStatus(voteStatus)
+                .build();
             allNotes.add(n);
           }
           return allNotes;
@@ -228,73 +234,80 @@ public class TurtleQuery {
   public static List<Note> updateNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp, int filter) throws SQLException {
-    String getNotes = "SELECT *, COUNT(v.user_id) as NumberOfVotes FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat,"
-        + " n.long, n.text, n.private FROM notes as n, user_follower as uf"
-        + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?)"
-        + " AND (timestamp >= ?) ";
+    String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private, n.NumberOfVotes, n.path,"
+        + " CASE WHEN v.user_id=? THEN 'True' ELSE 'False' END"
+        + " FROM (SELECT DISTINCT *, COUNT(v.user_id) as NumberOfVotes"
+        + " FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private"
+        + " FROM notes as n, user_follower as uf"
+        + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp >= ?) ";
 
     if (filter == 0) {
-      getNotes += "AND (n.private = 0 OR n.userid = ? OR"
-        + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
-        + " ORDER BY n.timestamp DESC) AS n "
-        + " LEFT JOIN vote as v ON n.id = v.note_id LEFT JOIN image_note AS i"
-        + " ON i.noteid=n.id GROUP BY n.id;";
+      getNotes += " AND (n.private = 0 OR n.userid = ? OR"
+          + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
+          + " ORDER BY n.timestamp DESC) AS n ";
     }
 
     if (filter == 1) {
-      getNotes += "AND ((n.userid = ?) OR "
+      getNotes += " AND ((n.userid = ?) OR "
           + " (uf.follower_id = ? AND uf.userid = n.userid)) "
-          + " ORDER BY n.timestamp DESC) AS n "
-          + " LEFT JOIN vote as v ON n.id = v.note_id LEFT JOIN image_note AS i"
-          + " ON i.noteid=n.id GROUP BY n.id;";
+          + " ORDER BY n.timestamp DESC) AS n ";
     }
 
     else if (filter == 2) {
-      getNotes += "AND n.userid = ? ORDER BY n.timestamp DESC) AS n LEFT JOIN vote as v ON n.id = v.note_id "
-          + " LEFT JOIN image_note AS i" + " ON i.noteid=n.id GROUP BY n.id;";
+      getNotes += " AND n.userid = ? ORDER BY n.timestamp DESC) AS n";
     }
+
+    getNotes += "LEFT JOIN vote as v ON n.id = v.note_id"
+        + " LEFT JOIN image_note AS i ON i.noteid=n.id GROUP BY n.id) AS n"
+        + " LEFT JOIN vote as v ON v.note_id=n.id AND v.user_id=?;";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
-        prep.setDouble(1, left_lng);
-        prep.setDouble(2, right_lng);
-        prep.setDouble(3, bottom_lat);
-        prep.setDouble(4, top_lat);
-        prep.setLong(5, timeStamp);
+        prep.setInt(1, userID);
+        prep.setDouble(2, left_lng);
+        prep.setDouble(3, right_lng);
+        prep.setDouble(4, bottom_lat);
+        prep.setDouble(5, top_lat);
+        prep.setLong(6, timeStamp);
         if (filter == 0) {
-          prep.setInt(6, userID);
           prep.setInt(7, userID);
+          prep.setInt(8, userID);
+          prep.setInt(9, userID);
           // prep.setInt(8, maxPost - minPost);
           // prep.setInt(9, minPost);
         } else if (filter == 1) {
-          prep.setInt(6, userID);
           prep.setInt(7, userID);
+          prep.setInt(8, userID);
+          prep.setInt(9, userID);
           // prep.setInt(8, maxPost - minPost);
           // prep.setInt(9, minPost);
         } else if (filter == 2) {
-          prep.setInt(6, userID);
+          prep.setInt(7, userID);
+          prep.setInt(8, userID);
           // prep.setInt(7, maxPost - minPost);
           // prep.setInt(8, minPost);
         }
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
-            for (int i = 1; i < 14; i++) {
-              System.out.println("i " + i + ": " + rs.getInt(i) + "string: "
-                  + rs.getString(i));
-            }
-            System.out.println("one note");
-            int noteID = rs.getInt(NIDCOL);
-            int uID = rs.getInt(UIDCOL);
-            long time = rs.getLong(TIMECOL);
-            double lat = rs.getDouble(LATCOL);
-            double lng = rs.getDouble(LNGCOL);
-            String txt = rs.getString(TXTCOL);
-            int priv = rs.getInt(PRIVCOL);
-            int vote = rs.getInt(VOTECOL);
+
+            // System.out.println("one note");
+            int noteID = rs.getInt(1);
+            int uID = rs.getInt(2);
+            long time = rs.getLong(3);
+            double lat = rs.getDouble(4);
+            double lng = rs.getDouble(5);
+            String txt = rs.getString(6);
+            int priv = rs.getInt(7);
+            int vote = rs.getInt(8);
             String image = rs.getString("path");
+            boolean voteStatus = Boolean.parseBoolean(rs.getString(10));
+
+            // System.out.println("noteID " + noteID + " : " + voteStatus
+            // + "string: " + rs.getString(10));
             Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
                 .setContent(txt).setLat(lat).setLng(lng).setPrivate(priv)
-                .setImage(image).setVote(vote).build();
+                .setImage(image).setVote(vote).setVoteStatus(voteStatus)
+                .build();
             allNotes.add(n);
           }
           return allNotes;
@@ -405,9 +418,7 @@ public class TurtleQuery {
     }
   }
 
-
-  public static void removeNote(int noteId, int userId)
-      throws SQLException {
+  public static void removeNote(int noteId, int userId) throws SQLException {
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn
           .prepareStatement("DELETE FROM notes WHERE id=? AND userid=?;")) {
@@ -445,17 +456,18 @@ public class TurtleQuery {
     }
   }
 
-//  public static void isUpvoted(List<Note> notes, int userID) throws SQLException {
-//    try (Connection conn = Db.getConnection()) {
-//      try (PreparedStatement prep = conn
-//          .prepareStatement("SELECT * FROM vote WHERE note_id=? user_id=?;")) {
-//
-//        prep.setInt(1, userID);
-//        prep.setInt(1, userID);
-//        prep.executeUpdate();
-//      }
-//    }
-//  }
+  // public static void isUpvoted(List<Note> notes, int userID) throws
+  // SQLException {
+  // try (Connection conn = Db.getConnection()) {
+  // try (PreparedStatement prep = conn
+  // .prepareStatement("SELECT * FROM vote WHERE note_id=? user_id=?;")) {
+  //
+  // prep.setInt(1, userID);
+  // prep.setInt(1, userID);
+  // prep.executeUpdate();
+  // }
+  // }
+  // }
 
   public static double deg2rad(double deg) {
     return (deg * Math.PI / 180.0);

@@ -14,20 +14,23 @@ public class Note {
   private User user;
   private int privacy;
   private String image;
-
+  private String username;
   private int vote;
+  private boolean voteStatus;
 
   public Note(long time, String content, int ID, int uID, double lat,
-      double lng, int priv, int voteNum) {
+      double lng, int priv, int voteNum, boolean vStatus) {
     this.timestamp = time;
     this.text = content;
     this.id = ID;
     this.user = new UserProxy(uID);
+    this.username = user.getUsername();
     this.latlng = new LatLong(lat, lng);
     this.privacy = priv;
     // this.displayName = ownerName;
     this.image = null;
     this.vote = voteNum;
+    this.voteStatus = vStatus;
   }
 
   public Note(NoteBuilder b) {
@@ -35,19 +38,21 @@ public class Note {
     this.id = b.id;
     this.text = b.text;
     this.user = b.user;
+    this.username = b.user.getUsername();
     // this.userid = b.uid;
     this.latlng = new LatLong(b.lat, b.lng);
     // this.displayName = b.displayName;
     this.privacy = b.privacy;
     this.image = b.image;
     this.vote = b.vote;
+    this.voteStatus = b.voteStatus;
   }
 
   @Override
   public String toString() {
     return "Note [timestamp=" + timestamp + ", text=" + text + ", id=" + id
         + ", latlng=" + latlng + ", user=" + user + ", privacy=" + privacy
-        + ", vote=" + vote + "]";
+        + ", vote=" + vote + ", voteStatus= " + voteStatus + "]";
   }
 
   public long getTimestamp() {
@@ -106,6 +111,7 @@ public class Note {
     private int privacy;
     private String image;
     private int vote;
+    private boolean voteStatus;
 
     public NoteBuilder(int myId, long time) {
       this.timestamp = time;
@@ -155,6 +161,11 @@ public class Note {
 
     public NoteBuilder setVote(int voteNum) {
       this.vote = voteNum;
+      return this;
+    }
+
+    public NoteBuilder setVoteStatus(boolean vStatus) {
+      this.voteStatus = vStatus;
       return this;
     }
 
