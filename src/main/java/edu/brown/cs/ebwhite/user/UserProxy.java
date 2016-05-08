@@ -143,18 +143,6 @@ public class UserProxy extends EntityProxy<User> implements User {
     return getInternal().getPhone();
   }
 
-  // @Override
-  // public void addFriend(int f) {
-  // fill();
-  // getInternal().addFriend(f);
-  // }
-  //
-  // @Override
-  // public void removeFriend(int f) {
-  // fill();
-  // getInternal().removeFriend(f);
-  // }
-
   @Override
   public Set<Integer> getFollowers() {
     fill();

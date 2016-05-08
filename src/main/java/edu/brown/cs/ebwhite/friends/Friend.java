@@ -23,19 +23,19 @@ public class Friend {
    *
    * @param userID
    *          the ID of the user
-   * @param friendID
+   * @param toFollowID
    *          the ID of the friend
    * @return true if successful
    * @throws SQLException
    *           if there is an error with the query
    */
-   public static boolean requestFollow(int userID, int friendID)
+   public static boolean requestFollow(int userID, int toFollowID)
    throws SQLException {
 
      String post = "SELECT * FROM user_follower WHERE userid=? AND follower_id = ?;";
      try (Connection conn = Db.getConnection()) {
        try (PreparedStatement prep = conn.prepareStatement(post)) {
-         prep.setInt(1, friendID);
+         prep.setInt(1, toFollowID);
          prep.setInt(2, userID);
          try (ResultSet rs = prep.executeQuery()) {
            if (rs.next()) {
@@ -45,15 +45,15 @@ public class Friend {
        }
      }
      post = "INSERT INTO user_pending VALUES (?, ?)";
-     User f = new UserProxy(friendID);
+     User f = new UserProxy(toFollowID);
      User u = new UserProxy(userID);
      try (Connection conn = Db.getConnection()) {
        try (PreparedStatement prep = conn.prepareStatement(post)) {
-         prep.setInt(1, friendID);
+         prep.setInt(1, toFollowID);
          prep.setInt(2, userID);
          prep.executeUpdate();
          f.addPending(userID);
-         u.addPendingFollowing(friendID);
+         u.addPendingFollowing(toFollowID);
          return true;
        }
      }
@@ -62,29 +62,27 @@ public class Friend {
   /**
    * add a friend for to a user's list of friends.
    *
-   * @param userID
-   *          the ID of the user
-   * @param friendID
-   *          the ID of the friend
+   * @param userID the ID of the user
+   * @param pendingFollowerString the pending follower username as a string
    * @return true if successful
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
-  public static boolean acceptPendingRequest(int userID, String friendUsername)
+  public static boolean acceptPendingRequest(int userID,
+      String pendingFollowerString)
       throws SQLException {
 
     String post = "DELETE FROM user_pending WHERE (userid = ? AND pending_id = ?);";
-    int friendID = TurtleQuery.getUserID(friendUsername);
-    assert (friendID != -1);
+    int pendingFollowerID = TurtleQuery.getUserID(pendingFollowerString);
+    assert (pendingFollowerID != -1);
 
     User u = new UserProxy(userID);
-    User f = new UserProxy(friendID);
+    User f = new UserProxy(pendingFollowerID);
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
         prep.setInt(1, userID);
-        prep.setInt(2, friendID);
+        prep.setInt(2, pendingFollowerID);
         prep.executeUpdate();
-        u.removePending(friendID);
+        u.removePending(pendingFollowerID);
         f.removePendingFollowing(userID);
       }
     }
@@ -93,9 +91,9 @@ public class Friend {
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
         prep.setInt(1, userID);
-        prep.setInt(2, friendID);
+        prep.setInt(2, pendingFollowerID);
         prep.executeUpdate();
-        u.addFollower(friendID);
+        u.addFollower(pendingFollowerID);
         f.addFollowing(userID);
         return true;
       }
@@ -107,26 +105,26 @@ public class Friend {
    *
    * @param userID
    *          the ID of the user
-   * @param friendID
+   * @param followingID
    *          the ID of the User u = new UserProxy(friendID); friend
    * @return true if successful
    * @throws SQLException
    *           if there is an error with the query
    */
-  public static void unfollow(int userID, int friendID)
+  public static void unfollow(int userID, int followingID)
       throws SQLException {
 
-    User f = new UserProxy(friendID);
+    User f = new UserProxy(followingID);
     User u = new UserProxy(userID);
 
     String post = "DELETE FROM user_follower WHERE (userid = ? AND follower_id = ?);";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
-        prep.setInt(1, friendID);
+        prep.setInt(1, followingID);
         prep.setInt(2, userID);
         prep.executeUpdate();
         f.removeFollower(userID);
-        u.removeFollowing(friendID);
+        u.removeFollowing(followingID);
       }
     }
 
@@ -134,11 +132,11 @@ public class Friend {
 
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
-        prep.setInt(1, friendID);
+        prep.setInt(1, followingID);
         prep.setInt(2, userID);
         prep.executeUpdate();
         f.removePending(userID);
-        u.removePendingFollowing(friendID);
+        u.removePendingFollowing(followingID);
       }
     }
   }
@@ -146,28 +144,25 @@ public class Friend {
   /**
    * removes a follower from your followers.
    *
-   * @param userID
-   *          the id of the user
-   * @param friendUsername
-   *          the username of the friend
+   * @param userID the id of the user
+   * @param followerID the username of the friend
    * @return true if successful
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
-  public static void removeFollower(int userID, int friendID)
+  public static void removeFollower(int userID, int followerID)
       throws SQLException {
 
-    User f = new UserProxy(friendID);
+    User f = new UserProxy(followerID);
     User u = new UserProxy(userID);
 
     String post = "DELETE FROM user_follower WHERE (userid = ? AND follower_id = ?);";
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
-        prep.setInt(1, friendID);
-        prep.setInt(2, userID);
+        prep.setInt(1, userID);
+        prep.setInt(2, followerID);
         prep.executeUpdate();
         f.removeFollowing(userID);
-        u.removeFollower(friendID);
+        u.removeFollower(followerID);
       }
     }
 
@@ -175,50 +170,13 @@ public class Friend {
 
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(post)) {
-        prep.setInt(1, friendID);
-        prep.setInt(2, userID);
+        prep.setInt(1, userID);
+        prep.setInt(2, followerID);
         prep.executeUpdate();
         f.removePendingFollowing(userID);
-        u.removePending(friendID);
+        u.removePending(followerID);
       }
     }
   }
-
-  // /**
-  // * get a list of user's friends.
-  // * @param userID
-  // * the ID of the user
-  // * @return a list of IDs of the user's friends
-  // * @throws SQLException
-  // * if there is an error with the query
-  // */
-  // public static List<Integer> getFriends(int userID) throws SQLException
-  // {
-  //
-  // List<Integer> friends = new ArrayList<>();
-  //
-  // final int FRIENDCOL = 1;
-  //
-  // String getFriends = "SELECT * FROM user_friend WHERE userid = ?";
-  //
-  // try (Connection conn = Db.getConnection()) {
-  //
-  // try (PreparedStatement prep = conn.prepareStatement(getFriends)) {
-  //
-  // prep.setInt(1, userID);
-  //
-  // try (ResultSet rs = prep.executeQuery()) {
-  //
-  // while (rs.next()) {
-  //
-  // int friendID = rs.getInt(FRIENDCOL);
-  // friends.add(friendID);
-  //
-  // }
-  // }
-  // }
-  // }
-  // return friends;
-  // }
 
 }

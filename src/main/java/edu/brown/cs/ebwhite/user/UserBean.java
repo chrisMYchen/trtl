@@ -68,21 +68,6 @@ public class UserBean implements User {
     return following;
   }
 
-  // @Override
-  // public Set<Integer> getFriends() {
-  // return friends;
-  // }
-  //
-  // @Override
-  // public void addFriend(int f) {
-  // friends.add(f);
-  // }
-  //
-  // @Override
-  // public void removeFriend(int f) {
-  // friends.remove(f);
-  // }
-
   @Override
   public Set<Integer> getFollowers() {
     return followers;
