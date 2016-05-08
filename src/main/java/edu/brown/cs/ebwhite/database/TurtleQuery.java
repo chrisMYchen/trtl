@@ -21,7 +21,8 @@ public class TurtleQuery {
   private final static int AUTOKEYS = Statement.RETURN_GENERATED_KEYS;
 
   public static List<Note> getNotes(int userID, LatLong loc, double radius,
-      int minPost, int maxPost, long timeStamp, int filter) throws SQLException {
+      int minPost, int maxPost, long timeStamp, int filter, int profileID)
+      throws SQLException {
     double allowed_distance_latitude = radius / 110575; // this is in
     // meters
 
@@ -36,7 +37,7 @@ public class TurtleQuery {
 
     if (userID != -1) {
       return getNotesLoggedIn(userID, bottom_lat, top_lat, left_lng, right_lng,
-          minPost, maxPost, timeStamp, filter);
+          minPost, maxPost, timeStamp, filter, profileID);
     } else {
       return getNotesAnonymous(bottom_lat, top_lat, left_lng, right_lng,
           minPost, maxPost, timeStamp);
@@ -85,7 +86,8 @@ public class TurtleQuery {
 
   public static List<Note> getNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
-      int maxPost, long timeStamp, int filter) throws SQLException {
+      int maxPost, long timeStamp, int filter, int profileID)
+      throws SQLException {
     String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private, n.NumberOfVotes, n.path,"
         + " CASE WHEN v.user_id=? THEN 'True' ELSE 'False' END"
         + " FROM (SELECT DISTINCT *, COUNT(v.user_id) as NumberOfVotes"
@@ -109,12 +111,17 @@ public class TurtleQuery {
     else if (filter == 2) {
       getNotes += " AND n.userid = ? ORDER BY n.timestamp DESC) AS n ";
     }
+ else if (profileID != -1 && filter == 3) {
+      getNotes += " AND n.userid =? AND (n.private = 0 OR"
+          + " (n.private = 1 AND uf.follower_id = ? AND uf.userid = n.userid)) "
+          + " ORDER BY n.timestamp DESC) AS n ";
+    }
 
     getNotes += " LEFT JOIN vote as v ON n.id = v.note_id"
         + " LEFT JOIN image_note AS i ON i.noteid=n.id GROUP BY n.id) AS n"
         + " LEFT JOIN vote as v ON v.note_id=n.id AND v.user_id=?;";
 
-    System.out.println(getNotes);
+    // System.out.println(getNotes);
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn.prepareStatement(getNotes)) {
         prep.setInt(1, userID);
@@ -140,6 +147,10 @@ public class TurtleQuery {
           prep.setInt(8, userID);
           // prep.setInt(7, maxPost - minPost);
           // prep.setInt(8, minPost);
+        } else if (filter == 3) {
+          prep.setInt(7, profileID);
+          prep.setInt(8, userID);
+          prep.setInt(9, userID);
         }
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
