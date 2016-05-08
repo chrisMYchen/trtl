@@ -31,7 +31,6 @@ import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
@@ -107,6 +106,7 @@ public class SparkServer {
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String uIDstring = qm.value("userID");
+      String username = qm.value("username");
       String latString = qm.value("lat");
       String lonString = qm.value("lon");
       String timeString = qm.value("timestamp");
@@ -119,6 +119,11 @@ public class SparkServer {
       try {
         // userID is -1 when anonymous
         int uID = Integer.parseInt(uIDstring);
+        int profileID = -1;
+        if (username != null) {
+          // to see a specific user's posts : get filter = 3 with username
+          profileID = UserProxy.ofName(username).getId();
+        }
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
         long timestamp = Long.parseLong(timeString);
@@ -128,7 +133,7 @@ public class SparkServer {
         double radius = Double.parseDouble(radiusString);
         LatLong curr_loc = new LatLong(lat, lon);
         notes = TurtleQuery.getNotes(uID, curr_loc, radius, minPost, maxPost,
-            timestamp, filter);
+            timestamp, filter, profileID);
 
         NoteRanker noteRank = new NoteRanker();
         if (uID != -1) {
@@ -148,9 +153,9 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = "SQL error when getting note: " + e.getMessage();
       }
-      for (Note n : notes) {
-        System.out.println(n);
-      }
+      // for (Note n : notes) {
+      // System.out.println(n);
+      // }
       Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
           .put("notes", notes).put("error", message).build();
 
@@ -362,6 +367,8 @@ public class SparkServer {
           message = "Your request to follow " + friendUsername
               + " is already pending!";
         }
+      } catch (IllegalArgumentException i) {
+        message = i.getMessage();
       }
       Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
           .put("error", message).build();
