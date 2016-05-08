@@ -68,7 +68,7 @@ public class SparkServer {
     GSON = gb.create();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
-    imagepath = "src/main/resources/static";
+    imagepath = "src/main/resources/static/";
     external = false;
   }
 

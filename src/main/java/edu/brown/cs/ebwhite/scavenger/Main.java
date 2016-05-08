@@ -47,10 +47,11 @@ public class Main {
         String keystore = options.valueOf(secure);
         String keypass = (String) options.valueOf("keypass");
         SparkServer s = new SparkServer(port, keystore, keypass);
+      } else {
+        SparkServer s = new SparkServer(port);
+        s.run();
       }
-      /* Start spark, etc. */
-      SparkServer s = new SparkServer(port);
-      s.run();
+
     } else {
       return;
     }

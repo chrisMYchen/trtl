@@ -168,6 +168,13 @@ function formatNote(note){
     dom.append(expand);
   }
 
+  /* Image */
+  if(note.image != null){
+    var image = $("<img></img>").attr("class","post-image");
+    image.attr("src", note.image);
+    dom.append(image);
+  }
+
   /* Meta */
   var timestring = formatTime(note.time);
   var meta = $("<div></div>").attr("class","post-meta");
@@ -211,12 +218,6 @@ function formatNote(note){
     top.append(priv);
   }
 
-  /* Image */
-  if(note.image != null){
-    var image = $("<img></img>").attr("class","post-image");
-    image.attr("src", note.image);
-    dom.after(content,image);
-  }
 }
 
 function formatTime(time){
