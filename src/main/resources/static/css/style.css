@@ -669,7 +669,19 @@ div.post-meta{
   background: #aaa;
 }
 
-/* Friends */
+/* Following */
+.follow-notify{
+  font-size: 10pt;
+  position: absolute;
+  bottom: 3px;
+  width: calc(100% - 10px);
+  text-align: center;
+}
+
+.notifications{
+  color: #700;
+}
+
 .tabs{
   margin: 5px 5px 0px;
 

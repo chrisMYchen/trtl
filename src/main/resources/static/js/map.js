@@ -62,18 +62,14 @@ function mapSetup(){
   map.fitBounds(bounds);
   mapObj = map;
 
-  new google.maps.Marker({
-    position: pos,
+  var rectangle = new google.maps.Rectangle({
+    strokeColor: '#1F98FF',
+    strokeOpacity: 0.0,
+    strokeWeight: 1,
+    fillColor: '#1F98FF',
+    fillOpacity: 0.35,
     map: map,
-    title:"ME",
-    icon: {
-      path:google.maps.SymbolPath.CIRCLE,
-      scale: 5,
-      fillColor: "#22aa11",
-      fillOpacity: 1,
-      strokeColor: "#fff",
-      strokeOpacity: 0.0
-    }
+    bounds: bounds
   });
 
 }
@@ -94,14 +90,14 @@ function mapBounds(pos, radius){
 
 function addMarker(pos){
   if(mapObj){
-    new google.maps.Marker({
+    return new google.maps.Marker({
       position: pos,
       map: mapObj,
       icon: {
         path:google.maps.SymbolPath.CIRCLE,
         scale: 2,
-        fillColor: "#000",
-        fillOpacity: 0.5,
+        fillColor: "#52981A",
+        fillOpacity: 0.7,
         strokeColor: "#fff",
         strokeOpacity: 0.0
       }

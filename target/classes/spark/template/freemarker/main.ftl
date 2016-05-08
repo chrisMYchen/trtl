@@ -98,6 +98,7 @@
       <div id="login-button" class="menu-item account loggedout">Login</div>
       <div id="follow-button" class="menu-item loggedin hidden">
         <i class="material-icons">people</i>
+        <div class="follow-notify"></div>
       </div>
       <div id="logout-button" class="menu-item account loggedin hidden">Logout</div>
     </div>

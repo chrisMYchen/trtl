@@ -86,6 +86,7 @@ function setLoginMode(value){
     $("#user-name").html("Welcome " + userInfo.username);
     $(".loggedin").toggleClass("hidden", false);
     $(".loggedout").toggleClass("hidden", true);
+    refreshFollowLists();
   }
   else{
     $("#user-name").html("");

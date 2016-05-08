@@ -132,7 +132,6 @@ function processNote(note){
     time: new Date(note.timestamp),
     order: note.order,
     image: note.image,
-    marker: addMarker(note.latlng),
     user: note.user
   };
 
@@ -143,6 +142,9 @@ function processNote(note){
   }
 
   formatNote(compiledNote);
+
+  var marker = addMarker(note.latlng);
+
 }
 
 function formatNote(note){
