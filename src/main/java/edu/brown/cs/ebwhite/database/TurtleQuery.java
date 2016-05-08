@@ -107,10 +107,10 @@ public class TurtleQuery {
     }
 
     else if (filter == 2) {
-      getNotes += " AND n.userid = ? ORDER BY n.timestamp DESC) AS n";
+      getNotes += " AND n.userid = ? ORDER BY n.timestamp DESC) AS n ";
     }
 
-    getNotes += "LEFT JOIN vote as v ON n.id = v.note_id"
+    getNotes += " LEFT JOIN vote as v ON n.id = v.note_id"
         + " LEFT JOIN image_note AS i ON i.noteid=n.id GROUP BY n.id) AS n"
         + " LEFT JOIN vote as v ON v.note_id=n.id AND v.user_id=?;";
 
@@ -172,7 +172,7 @@ public class TurtleQuery {
   }
 
   public static List<Note> updateNotes(int userID, LatLong loc, double radius,
-      int minPost, int maxPost, long timeStamp, int filter) throws SQLException {
+      int minPost, int maxPost, long start_time, long end_time, int filter) throws SQLException {
     double allowed_distance_latitude = radius / 110575; // this is in
     // meters
     double inputLat = loc.getLat();
@@ -185,19 +185,19 @@ public class TurtleQuery {
     double right_lng = inputLng + allowed_distance_longitude;
     if (userID != -1) {
       return updateNotesLoggedIn(userID, bottom_lat, top_lat, left_lng,
-          right_lng, minPost, maxPost, timeStamp, filter);
+          right_lng, minPost, maxPost, start_time, end_time, filter);
     } else {
       return updateNotesAnonymous(bottom_lat, top_lat, left_lng, right_lng,
-          minPost, maxPost, timeStamp);
+          minPost, maxPost, start_time, end_time);
     }
   }
 
   public static List<Note> updateNotesAnonymous(double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
-      int maxPost, long timeStamp) throws SQLException {
+      int maxPost, long start_time, long end_time) throws SQLException {
     String getNotes = "SELECT *, COUNT(v.user_id) as NumberOfVotes FROM notes AS n "
         + "LEFT JOIN vote as v ON n.id = v.note_id LEFT JOIN image_note AS i ON n.id=i.noteid "
-        + "WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp >= ?) "
+        + "WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp >= ? AND timestamp < ?) "
         + "AND (private = 0) GROUP BY n.id ORDER BY timestamp;";
 
     try (Connection conn = Db.getConnection()) {
@@ -206,7 +206,8 @@ public class TurtleQuery {
         prep.setDouble(2, right_lng);
         prep.setDouble(3, bottom_lat);
         prep.setDouble(4, top_lat);
-        prep.setLong(5, timeStamp);
+        prep.setLong(5, start_time);
+        prep.setLong(6, end_time);
         // prep.setInt(6, maxPost - minPost);
         // prep.setInt(7, minPost);
         try (ResultSet rs = prep.executeQuery()) {
@@ -233,13 +234,13 @@ public class TurtleQuery {
 
   public static List<Note> updateNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
-      int maxPost, long timeStamp, int filter) throws SQLException {
+      int maxPost, long start_time, long end_time, int filter) throws SQLException {
     String getNotes = "SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private, n.NumberOfVotes, n.path,"
         + " CASE WHEN v.user_id=? THEN 'True' ELSE 'False' END"
         + " FROM (SELECT DISTINCT *, COUNT(v.user_id) as NumberOfVotes"
         + " FROM (SELECT DISTINCT n.id, n.userid, n.timestamp, n.lat, n.long, n.text, n.private"
         + " FROM notes as n, user_follower as uf"
-        + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp >= ?) ";
+        + " WHERE (long BETWEEN ? AND ?) AND (lat BETWEEN ? AND ?) AND (timestamp >= ? AND timestamp < ?) ";
 
     if (filter == 0) {
       getNotes += " AND (n.private = 0 OR n.userid = ? OR"
@@ -254,10 +255,10 @@ public class TurtleQuery {
     }
 
     else if (filter == 2) {
-      getNotes += " AND n.userid = ? ORDER BY n.timestamp DESC) AS n";
+      getNotes += " AND n.userid = ? ORDER BY n.timestamp DESC) AS n ";
     }
 
-    getNotes += "LEFT JOIN vote as v ON n.id = v.note_id"
+    getNotes += " LEFT JOIN vote as v ON n.id = v.note_id"
         + " LEFT JOIN image_note AS i ON i.noteid=n.id GROUP BY n.id) AS n"
         + " LEFT JOIN vote as v ON v.note_id=n.id AND v.user_id=?;";
     try (Connection conn = Db.getConnection()) {
@@ -267,22 +268,23 @@ public class TurtleQuery {
         prep.setDouble(3, right_lng);
         prep.setDouble(4, bottom_lat);
         prep.setDouble(5, top_lat);
-        prep.setLong(6, timeStamp);
+        prep.setLong(6, start_time);
+        prep.setLong(7, end_time);
         if (filter == 0) {
-          prep.setInt(7, userID);
           prep.setInt(8, userID);
           prep.setInt(9, userID);
+          prep.setInt(10, userID);
           // prep.setInt(8, maxPost - minPost);
           // prep.setInt(9, minPost);
         } else if (filter == 1) {
-          prep.setInt(7, userID);
           prep.setInt(8, userID);
           prep.setInt(9, userID);
+          prep.setInt(10, userID);
           // prep.setInt(8, maxPost - minPost);
           // prep.setInt(9, minPost);
         } else if (filter == 2) {
-          prep.setInt(7, userID);
           prep.setInt(8, userID);
+          prep.setInt(9, userID);
           // prep.setInt(7, maxPost - minPost);
           // prep.setInt(8, minPost);
         }

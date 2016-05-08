@@ -4,7 +4,10 @@ edu/brown/cs/ebwhite/note/NoteRanker.class
 edu/brown/cs/ebwhite/user/Entity.class
 edu/brown/cs/ebwhite/user/EntityProxy.class
 edu/brown/cs/ebwhite/entities/Entity.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$Upvote.class
+edu/brown/cs/ebwhite/scavenger/SparkServer$RemoveUpvote.class
 edu/brown/cs/ebwhite/user/UserProxy.class
+edu/brown/cs/ebwhite/user/UserSerializer.class
 edu/brown/cs/ebwhite/geo/LatLong.class
 edu/brown/cs/ebwhite/user/UserBean.class
 edu/brown/cs/ebwhite/entities/AbstractEntity.class

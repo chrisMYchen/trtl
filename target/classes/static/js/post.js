@@ -32,6 +32,8 @@ function postNote(post, privacy){
       postError(response.error);
     } else{
       $(".input-content").val("");
+      window.clearInterval(update_info.interval_id);
+      updateNotes(note_loc_radius);
     }
   });
 }

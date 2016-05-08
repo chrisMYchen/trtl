@@ -178,7 +178,7 @@ function getFollowList(){
     console.log(res);
     if(res.error == "no-error"){
       fillFollowerList(res.followers, res.pending_followers, res.following, $("#follower-list"));
-      fillFollowingList(res.following, res.pending_following, false, $("#following-list"));
+      fillFollowingList(res.following, res.pending_following, $("#following-list"));
     }
     else{
       $("#following-list").html(res.error);
@@ -187,27 +187,28 @@ function getFollowList(){
   });
 }
 
-function fillFollowingList(list, pending, following, dom){
+function fillFollowerList(list, pending, following, dom){
   for (var i = 0; i < pending.length; i++){
-    var pend = pending[i];
-    var followback = (following.indexOf(pend) == -1) ? true : false;
-    var pending_item = followDOM(, true, false, followback);
+    var pendName = pending[i];
+    var followback = (following.indexOf(pendName) == -1) ? true : false;
+    var pending_item = followDOM(pendName, true, true, followback);
     dom.append(pending_item);
   }
   for(var i = 0; i < list.length; i++){
-    var followback = (following.indexOf(pend) == -1) ? true : false;
-    var follow = followDOM(list[i], false, false, followback);
+    var followName = list[i];
+    var followback = (following.indexOf(followName) == -1) ? true : false;
+    var follow = followDOM(followName, false, true, followback);
     dom.append(follow);
   }
 }
 
-function fillFollowerList(list, pending, dom){
+function fillFollowingList(list, pending, dom){
   for (var i = 0; i < pending.length; i++){
-    var pending_item = followDOM(pending[i], true, true, false);
+    var pending_item = followDOM(pending[i], true, false, false);
     dom.append(pending_item);
   }
   for(var i = 0; i < list.length; i++){
-    var follow = followDOM(list[i], false, true, false);
+    var follow = followDOM(list[i], false, false, false);
     dom.append(follow);
   }
 }
@@ -224,7 +225,8 @@ function followDOM(follow, pending, follower, followback){
   var controls = $("<div></div>").addClass("follow-controls");
 
   if(followback){
-    var fback = 
+    var fback = $("<div></div>").addClass("followback").html("Follow");
+    controls.append(fback);
   }
 
   if(pending){

@@ -31,9 +31,11 @@ import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import edu.brown.cs.ebwhite.database.TurtleQuery;
 import edu.brown.cs.ebwhite.friends.Friend;
@@ -42,6 +44,7 @@ import edu.brown.cs.ebwhite.note.Note;
 import edu.brown.cs.ebwhite.note.NoteRanker;
 import edu.brown.cs.ebwhite.user.User;
 import edu.brown.cs.ebwhite.user.UserProxy;
+import edu.brown.cs.ebwhite.user.UserSerializer;
 
 public class SparkServer {
   Gson GSON;
@@ -49,7 +52,9 @@ public class SparkServer {
   boolean external;
 
   public SparkServer(int port, String keystore, String keypass) {
-    GSON = new Gson();
+    GsonBuilder gb = new GsonBuilder();
+    gb.registerTypeAdapter(User.class, new UserSerializer());
+    GSON = gb.create();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.secure(keystore, keypass, null, null);
@@ -58,7 +63,9 @@ public class SparkServer {
   }
 
   public SparkServer(int port) {
-    GSON = new Gson();
+    GsonBuilder gb = new GsonBuilder();
+    gb.registerTypeAdapter(User.class, new UserSerializer());
+    GSON = gb.create();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     imagepath = "src/main/resources/static";
@@ -158,7 +165,8 @@ public class SparkServer {
       String uIDstring = qm.value("userID");
       String latString = qm.value("lat");
       String lonString = qm.value("lon");
-      String timeString = qm.value("timestamp");
+      String starttimeString = qm.value("start_time");
+      String endtimeString = qm.value("end_time");
       String minPostString = qm.value("minPost");
       String maxPostString = qm.value("maxPost");
       String radiusString = qm.value("radius");
@@ -170,7 +178,8 @@ public class SparkServer {
         int uID = Integer.parseInt(uIDstring);
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
-        long timestamp = Long.parseLong(timeString);
+        long start_time = Long.parseLong(starttimeString);
+        long end_time = Long.parseLong(endtimeString);
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
@@ -178,7 +187,7 @@ public class SparkServer {
         LatLong curr_loc = new LatLong(lat, lon);
 
         notes = TurtleQuery.updateNotes(uID, curr_loc, radius, minPost,
-            maxPost, timestamp, filter);
+            maxPost, start_time, end_time, filter);
         NoteRanker noteRank = new NoteRanker();
         if (uID != -1) {
           noteRank.setCurrentUser(uID);
@@ -751,4 +760,3 @@ public class SparkServer {
   }
 
 }
-

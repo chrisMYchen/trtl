@@ -93,7 +93,6 @@ function mapBounds(pos, radius){
 }
 
 function addMarker(pos){
-  console.log(mapObj);
   if(mapObj){
     new google.maps.Marker({
       position: pos,
@@ -116,5 +115,5 @@ function addMarker(pos){
 
 function mapSize(){
   var width = $("#map-container").width();
-  $("#map-container").height(width);  
+  $("#map-container").height(width);
 }

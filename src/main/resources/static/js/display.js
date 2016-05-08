@@ -1,6 +1,10 @@
+var filter_setting = 0;
+var note_loc_radius = 100;
+var update_info = {time: Date.now()};
+
 function displayNotes(){
   var time = Date.now();
-  var radius = 100;
+  var radius = note_loc_radius;
   initialLoad(time, radius);
 
   $(window).on("scroll", {time: time, radius: radius}, scrollCallback);
@@ -8,6 +12,8 @@ function displayNotes(){
   $("body").on("click", ".post-delete", deletePost);
   $("body").on("click", ".expand", expandPost);
   $("body").on("click", ".collapse", collapsePost);
+
+  $(".filter-option").click(changeFilter);
 }
 
 function initialLoad(time, radius){
@@ -25,6 +31,15 @@ function initialLoad(time, radius){
       update(time, radius);
     }
   }, 2000);
+}
+
+function resetNotes(){
+  var time = Date.now();
+  var radius = note_loc_radius;
+  window.clearInterval(update_info.interval_id);
+  $(".post").remove();
+  getNotes(time, radius);
+  update(time, radius);
 }
 
 function scrollCallback(event){
@@ -49,7 +64,7 @@ function getNotes(time, radius){
     minPost: range.min,
     maxPost: range.max,
     radius: radius,
-    filter: 0
+    filter: filter_setting
   }
 
   if(userInfo != null){
@@ -61,9 +76,11 @@ function getNotes(time, radius){
     console.log(req);
     console.log(res);
     if(res.error == "no-error"){
-      console.log(res.notes);
       notesDOM(res.notes, range.min);
       setupScrollHandler(time, radius);
+      if(res.notes.length > 0){
+        scrollCallback({data: {time, radius}});
+      }
     }
     else{
       displayError(res.error);
@@ -80,12 +97,14 @@ function setupScrollHandler(time, radius){
 
 function getRange(){
   var last = -1;
-  var post = $(".post").last();
-  if(post.length > 0){
-    last = parseInt(post.attr("data-order"), 10);
-    if(last === undefined){
-      last = 0;
-    }
+  var posts = $(".post");
+  if(posts.length > 0){
+    posts.each(function(i,e){
+      var cur = parseInt($(e).attr("data-order"), 10);
+      if(cur && (cur > last)){
+        last = cur;
+      }
+    });
   }
   var range = {min: last + 1, max: last + 11};
   return range;
@@ -113,25 +132,17 @@ function processNote(note){
     time: new Date(note.timestamp),
     order: note.order,
     image: note.image,
-    marker: addMarker(note.latlng)
+    marker: addMarker(note.latlng),
+    user: note.user
   };
 
-  if((note.user) && (note.user.id) && (note.user.id != -1)){
-    var userReq = {userID: note.user.id};
-    $.post("/getUser", userReq, function(data){
-      var res = JSON.parse(data);
-      if(res.error == "no-error"){
-        compiledNote.user = {userid: note.user.id, username: res.username};
-        formatNote(compiledNote);
-      }
-      else{
-        formatNote(compiledNote);
-      }
-    });
+  if(note.privacy == 1){
+    compiledNote.private = true;
+  } else{
+    compiledNote.private = false;
   }
-  else{
-    formatNote(compiledNote);
-  }
+
+  formatNote(compiledNote);
 }
 
 function formatNote(note){
@@ -149,7 +160,7 @@ function formatNote(note){
   dom.append(content);
 
   /* Collapse content */
-  if(note.content.length > 1000){
+  if(note.content.length > 500){
     content.addClass("collapsed");
     var expand = $("<div></div>").addClass("expand-button").addClass("expand").html("expand");
     dom.append(expand);
@@ -165,18 +176,37 @@ function formatNote(note){
   /* User */
   var user = $("<div></div>").attr("class","post-user");
   top.append(user);
-  if(note.user){
-    var handle = $("<p></p>").attr("class","post-handle").append("@" + note.user.username);
-    user.append(handle);
-    if(note.user.userid == userInfo.id){
+  if(note.user == "anon"){
+    user.addClass("anon");
+    var icon = $("<i></i>").addClass("material-icons").html("account_circle");
+    var anon = $("<div></div>").append("Anonymous");
+    user.append(icon).append(anon);
+  }
+  else if(note.user){
+    user.addClass("user");
+    var icon = $("<i></i>").addClass("material-icons").html("account_circle");
+    var handle = $("<p></p>").attr("class","post-handle").append("@" + note.user);
+    user.append(icon).append(handle);
+    if(note.user == userInfo.username){
       var del = $("<div></div>").addClass("post-delete").html("Delete");
       meta.append(del);
     }
   }
   else{
+    user.addClass("user-hidden");
     var icon = $("<i></i>").addClass("material-icons").html("account_circle");
-    var anon = $("<div></div>").attr("class","anon").append("Anonymous");
+    var anon = $("<div></div>").append("HIDDEN");
     user.append(icon).append(anon);
+  }
+
+  /* Privacy */
+  if(note.private){
+    dom.addClass("private");
+    var priv = $("<div></div>").addClass("post-privacy");
+    var icon = $("<i></i>").addClass("material-icons").html("lock");
+    var text = $("<div></div>").html("Private");
+    priv.append(icon).append(text);
+    top.append(priv);
   }
 
   /* Image */
@@ -224,11 +254,12 @@ function deletePost(){
 
 function expandPost(e){
   var button = $(this);
-  
+
   var content = button.siblings(".post-content");
-  var origHeight = content.get(0).scrollHeight;
-  
+  var origHeight = content.get(0).scrollHeight - 30;
+
   content.animate({height: origHeight}, 1000, function(){
+    content.height("auto");
     button.html("Collapse");
     button.toggleClass("expand", false);
     button.toggleClass("collapse", true);
@@ -239,16 +270,22 @@ function expandPost(e){
 
 function collapsePost(e){
   var button = $(this);
-  
+
   var content = $(this).siblings(".post-content");
-  content.animate({height: "300px"}, 1000, function(){
+  content.animate({height: "200px"}, 1000, function(){
     button.html("Expand");
     content.toggleClass("expanded", false);
     content.toggleClass("collapsed", true);
     button.toggleClass("expand", true);
     button.toggleClass("collapse", false);
   });
-  
+}
+
+function changeFilter(){
+  $(".filter-option").toggleClass("active", false);
+  $(this).toggleClass("active", true);
+  filter_setting = $(this).attr("data-filter");
+  resetNotes();
 }
 
 function displayError(message){
