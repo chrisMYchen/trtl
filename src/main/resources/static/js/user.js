@@ -192,7 +192,8 @@ function sendSignup(){
     $.post("/newUser", data, function(response){
       var res = JSON.parse(response);
       if(res.error == "no-error"){
-        login(res.userID);
+        setLoginCookie(res.userID);
+        window.location.reload();
         closeSignupDialog();
       }
       else{
