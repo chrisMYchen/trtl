@@ -25,7 +25,7 @@
   <script src="/js/upvote.js"></script>
   <script src="/js/sanitizer.js"></script>
   <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmEuGPRCUd5SDZqR353cHw2CIn9qpxEyo&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ9fjmVvsQ-e2Z52Cu7z8PxmVqpMvD8XA&callback=initMap">
     </script>
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -60,7 +60,7 @@
       <form id="signup-form">
         <input type="text" name="username" placeholder="Username" size="40" required="required"><br>
         <input type="password" name="password" placeholder="Password" size="40" required="required"><br>
-        <input type="text" name="email" placeholder="Email Address" size="40" required="required"><br>
+        <input type="email" name="email" placeholder="Email Address" size="40" required="required"><br>
         <input type="text" name="firstname" placeholder="First Name" size="40" required="required"><br>
         <input type="text" name="lastname" placeholder="Last Name" size="40" required="required"><br>
         <input type="submit">

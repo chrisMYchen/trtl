@@ -219,13 +219,6 @@ function checkSignupFields(){
     flag = false;
   }
 
-  var email = $("#signup-form input[name=email]").val();
-  var regex = /[a-zA-z.]+[@]{1}[a-zA-z.]+/
-  if(!regex.test(email)){
-    signupError("Please enter a valid email.");
-    flag = false;
-  }
-
   var firstname = $("#signup-form input[name=firstname]").val();
   if(firstname == 0){
     signupError("Please provide your first name.");

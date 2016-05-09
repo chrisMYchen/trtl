@@ -60,7 +60,7 @@
       <form id="signup-form">
         <input type="text" name="username" placeholder="Username" size="40" required="required"><br>
         <input type="password" name="password" placeholder="Password" size="40" required="required"><br>
-        <input type="text" name="email" placeholder="Email Address" size="40" required="required"><br>
+        <input type="email" name="email" placeholder="Email Address" size="40" required="required"><br>
         <input type="text" name="firstname" placeholder="First Name" size="40" required="required"><br>
         <input type="text" name="lastname" placeholder="Last Name" size="40" required="required"><br>
         <input type="submit">
