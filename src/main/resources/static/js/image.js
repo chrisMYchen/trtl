@@ -1,7 +1,11 @@
 function imageSetup(){
   $("#image-upload").click(function(){
-    $("#image-input").click();
+    if(userInfo.id != -1){
+      $("#image-input").click();
+    }
   });
+
+  $("#image-upload").click(displayImageHover);
 
   $("#image-input").click(function(e){
     e.stopImmediatePropagation();
@@ -81,4 +85,12 @@ function clearImages(){
   elem.wrap("<form>").closest("form").get(0).reset();
   elem.unwrap();
   elem.trigger("change");
+}
+
+function displayImageHover(e){
+var elem = $("<div></div>").addClass("hovermenu").html("Please signup or login to post images.");
+  $("body").append(elem);
+  elem.offset({top:e.pageY,left:e.pageX});
+  elem.delay(1000).fadeOut();
+  window.setTimeout(function(){elem.remove()}, 2000);
 }

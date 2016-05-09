@@ -86,12 +86,14 @@ function setLoginMode(value){
     $("#user-name").html("Welcome " + userInfo.username);
     $(".loggedin").toggleClass("hidden", false);
     $(".loggedout").toggleClass("hidden", true);
+    $("#image-upload").toggleClass("disabled", false);
     refreshFollowLists();
   }
   else{
     $("#user-name").html("");
     $(".loggedin").toggleClass("hidden", true);
     $(".loggedout").toggleClass("hidden", false);
+    $("#image-upload").toggleClass("disabled", true);
   }
 }
 
