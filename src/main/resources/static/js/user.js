@@ -252,7 +252,7 @@ function signupError(message){
 function usernameCheck(elem, exists, notexists){
   var uname = elem.val();
 
-  if(uname.length > 2){
+  if(uname.length > 0){
     $.post("/checkUsername", {username: uname}, function(response){
       var res = JSON.parse(response);
       if(res.error == "no-error"){
