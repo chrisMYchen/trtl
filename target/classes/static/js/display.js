@@ -126,7 +126,7 @@ function notesDOM(notes, start){
 function processNote(note){
   var compiledNote = {
     id: note.id,
-    content: note.text,
+    content: sanitizer.sanitizeHTML(note.text),
     dom: note.dom,
     time: new Date(note.timestamp),
     order: note.order,
@@ -183,7 +183,7 @@ function formatNote(note){
     upvote_div.addClass("upvoted");
   }
   if(userInfo.id != -1){
-   var upvote_icon = $("<i></i>").addClass("material-icons").html("thumb_up");
+   var upvote_icon = $("<i></div>").addClass("upvote-icon").html("u");
    upvote_div.append(upvote_icon);
   }
   var upvote_count = $("<p></p>").addClass("upvote-count").html(note.vote);
@@ -300,9 +300,10 @@ function collapsePost(e){
 function changeFilter(){
   $(".filter-option").toggleClass("active", false);
   $(this).toggleClass("active", true);
-  $("#following-filter.filter-option .name").empty();
   filter_setting.option = $(this).attr("data-filter");
   filter_setting.username = null;
+  $("#user-filter-display").hide();
+  $("#user-filter-display").empty();
   resetNotes();
 }
 
@@ -310,13 +311,17 @@ function filterUser(){
   var username = $(this).attr("data-username");
   if(username == userInfo.username){
     $("#mine.filter-option").click();
+    $("#user-filter-display").hide();
+    $("#user-filter-display").empty();
   } else{
     $(".filter-option").toggleClass("active", false);
-    $("#following-filter.filter-option").toggleClass("active", true);
-    $("#following-filter.filter-option .name").html(username);
     filter_setting.option = 3;
     filter_setting.username = username;
-    resetNotes(); 
+    resetNotes();
+
+    var userDiv = $("<span></span>").html(username).addClass("name");
+    $("#user-filter-display").html("Viewing notes from ").append(userDiv);
+    $("#user-filter-display").show();
   }
 }
 

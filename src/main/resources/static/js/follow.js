@@ -186,7 +186,7 @@ function getFollowList(){
       var following = res.following.concat(res.pending_following);
       fillFollowerList(res.followers, res.pending_followers, following, $("#follower-list"));
       fillFollowingList(res.following, res.pending_following, $("#following-list"));
-      notify(res.pending_following.concat(res.pending_followers));
+      notify(res.pending_followers, res.pending_following);
     }
     else{
       $("#following-list").html(res.error);
@@ -260,16 +260,26 @@ function followDOM(follow, pending, follower, followback){
   return div;
 }
 
-function notify(list){
+function notify(followers, following){
   var button = $("#follow-button");
   var elem = $(".follow-notify");
-  if (list.length > 0){
-    elem.html(list.length);
+
+  if (followers.length > 0){
+    elem.html(followers.length);
     button.toggleClass("notifications", true);
+    $("#followers-tab .tab-notify").html(followers.length);
   } else{
     elem.empty();
+    $("#followers-tab .tab-notify").empty();
     button.toggleClass("notifications", false);
   }
+
+  if(following.length > 0){
+    $("#following-tab .tab-notify").html(following.length);
+  } else{
+    $("#following-tab .tab-notify").empty();
+  }
+
 }
 
 function followMsg(message, error){

@@ -1,12 +1,12 @@
 function locationStart(){
   var loc_options = {
     enableHighAccuracy: true,
-    timeout: 27000,
-    maximumAge: 30000
+    timeout: 30000,
+    maximumAge: 10000
   }
 
   if(navigator.geolocation){
-    var id = navigator.geolocation.watchPosition(
+    var id = navigator.geolocation.getCurrentPosition(
       function(data){
         locationHandler({lat: data.coords.latitude, lng: data.coords.longitude});
       },
@@ -14,7 +14,7 @@ function locationStart(){
         locationError(error, id);
       }, loc_options);
   } else{
-    $("#location").html("Location not available");
+    $("#location").html("Location not supported");
   }
 }
 
@@ -58,4 +58,8 @@ function locationDropdown(elem){
     drop.toggle(false);
   }
   drop.html(elem);
+}
+
+function distance(){
+
 }

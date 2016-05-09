@@ -1,12 +1,12 @@
 function locationStart(){
   var loc_options = {
     enableHighAccuracy: true,
-    timeout: 27000,
-    maximumAge: 30000
+    timeout: 30000,
+    maximumAge: 10000
   }
 
   if(navigator.geolocation){
-    var id = navigator.geolocation.watchPosition(
+    var id = navigator.geolocation.getCurrentPosition(
       function(data){
         locationHandler({lat: data.coords.latitude, lng: data.coords.longitude});
       },
@@ -31,10 +31,6 @@ function locationError(error, id){
 function locationHandler(position){
   var icon = locationIcon();
   icon.html("location_on");
-
-  if(distance(locationInfo.pos, {lat: position.lat, lon: position.lng})){
-    resetNotes();
-  }
 
   /* Create dropdown */
   locationInfo.pos = {lat: position.lat, lon: position.lng};
@@ -65,5 +61,5 @@ function locationDropdown(elem){
 }
 
 function distance(){
-  
+
 }

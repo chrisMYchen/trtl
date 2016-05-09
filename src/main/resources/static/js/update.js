@@ -51,7 +51,6 @@ function updateNotes(radius){
   $.post("/updateNotes", req, function(data){
     var res = JSON.parse(data);
     if(res.error == "no-error"){
-      console.log(res.notes);
       updatesDOM(res.notes, range.min);
       setupUpdateHandlers(req.end_time, radius);
       update_info.time = req.end_time;

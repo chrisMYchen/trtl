@@ -1,5 +1,5 @@
 function upvoteSetup(){
-	$("body").on("click", ".upvote i", upvoteHandler);
+	$("body").on("click", ".upvote-icon", upvoteHandler);
 }
 
 function upvoteHandler(){

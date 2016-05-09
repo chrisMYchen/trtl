@@ -57,9 +57,16 @@ function mapSetup(){
     mapTypeControl: false,
     streetViewControl: false,
     zoomControl: false,
-    zoom: 11
+    zoom: 11,
+    disableDefaultUI: true
   });
   map.fitBounds(bounds);
+
+  $(window).resize(function(){
+    window.setTimeout(function(){
+      map.fitBounds(bounds);
+    }, 100);
+  });
   mapObj = map;
 
   var rectangle = new google.maps.Rectangle({
@@ -67,7 +74,7 @@ function mapSetup(){
     strokeOpacity: 0.0,
     strokeWeight: 1,
     fillColor: '#1F98FF',
-    fillOpacity: 0.35,
+    fillOpacity: 0.15,
     map: map,
     bounds: bounds
   });
@@ -97,7 +104,7 @@ function addMarker(pos){
         path:google.maps.SymbolPath.CIRCLE,
         scale: 2,
         fillColor: "#52981A",
-        fillOpacity: 0.7,
+        fillOpacity: 0.5,
         strokeColor: "#fff",
         strokeOpacity: 0.0
       }

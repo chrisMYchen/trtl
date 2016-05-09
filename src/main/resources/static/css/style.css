@@ -139,14 +139,18 @@ div#nav {
 }
 
 .sidebar-element{
-  margin: 20px 0px;
+  margin: 15px 0px 0px 0px;
   box-shadow: 0px 1px 7px 0px rgba(0,0,0,0.2);
   border-radius: 2px;
+  background: #fff;
 }
 
 #filtering{
-  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+}
 
+#filter-wrapper{
   display: -webkit-flex;
   -webkit-justify-content: space-between;
   -webkit-align-items: center;
@@ -154,8 +158,6 @@ div#nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  overflow: hidden;
 }
 
 #filtering div.filter-option{
@@ -173,9 +175,19 @@ div#nav {
   color: #fff;
 }
 
-#filtering .name{
-  color: #ccc;
-  font-size: 10pt;
+#user-filter-display{
+  padding: 10px 10px;
+  background: #888;
+  color: #ddd;
+}
+
+#user-filter-display .name{
+  color: #fff;
+  font-weight: 400;
+  padding: 3px 7px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.2);
+  font-size: 11pt;
 }
 
 /* map */
@@ -252,7 +264,14 @@ div.post-top{
 }
 
 .post-user > i{
+  color: #999;
+}
+
+p.account-icon{
+  font-family:"trtl-bold";
   color: #777;
+  font-size: 16pt;
+  margin: 0;
 }
 
 .post-user.anon div{
@@ -279,6 +298,11 @@ p.post-handle{
   padding: 3px 5px;
   font-weight: 400;
   border-radius: 2px;
+  cursor: pointer;
+}
+
+p.post-handle:hover{
+  text-decoration: underline;
 }
 
 .private{
@@ -354,6 +378,10 @@ div.post-meta{
   font-weight: 400;
 }
 
+div.post-time{
+  padding: 5px;
+}
+
 div.upvote{
   display: -webkit-flex;
   -webkit-justify-content: space-between;
@@ -365,14 +393,21 @@ div.upvote{
 
   color: #aaa;
   cursor: pointer;
-  font-size: 12pt;  
+  font-size: 12pt;
 }
 
-div.upvote i:hover{
+div.upvote .upvote-icon{
+  font-family: "trtl-bold";
+  text-transform: none;
+  font-size: 16pt;
+  font-style: normal;
+}
+
+div.upvote .upvote-icon:hover{
   color: #0F860D;
 }
 
-div.upvote.upvoted i{
+div.upvote.upvoted .upvote-icon{
   color: #0F860D;
 }
 
@@ -747,6 +782,20 @@ p.upvote-count{
   color: white;
   border:none;
   background: #44a;
+}
+
+.follow-tab .tab-notify{
+  display: inline-block;
+  padding: 0px 5px;
+  margin: 0px 5px;
+  border-radius: 5px;
+  background: #f95;
+  color:  #44a;
+}
+
+.follow-tab.active .tab-notify{
+  background: #f95;
+  color:  #44a;
 }
 
 .follow-page{
