@@ -18,9 +18,6 @@ function postHandler(data){
       postError("Your note had some content we didn't like. Please try again.");
     }
   }
-  else {
-    postError("Please enter some content!")
-  }
 }
 
 function postNote(post, privacy){
