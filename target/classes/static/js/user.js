@@ -86,12 +86,14 @@ function setLoginMode(value){
     $("#user-name").html("Welcome " + userInfo.username);
     $(".loggedin").toggleClass("hidden", false);
     $(".loggedout").toggleClass("hidden", true);
+    $("#image-upload").toggleClass("disabled", false);
     refreshFollowLists();
   }
   else{
     $("#user-name").html("");
     $(".loggedin").toggleClass("hidden", true);
     $(".loggedout").toggleClass("hidden", false);
+    $("#image-upload").toggleClass("disabled", true);
   }
 }
 
@@ -192,7 +194,8 @@ function sendSignup(){
     $.post("/newUser", data, function(response){
       var res = JSON.parse(response);
       if(res.error == "no-error"){
-        login(res.userID);
+        setLoginCookie(res.userID);
+        window.location.reload();
         closeSignupDialog();
       }
       else{

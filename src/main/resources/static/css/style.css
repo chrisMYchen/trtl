@@ -403,12 +403,16 @@ div.upvote .upvote-icon{
   font-style: normal;
 }
 
-div.upvote .upvote-icon:hover{
+div.upvote.enabled .upvote-icon:hover{
   color: #0F860D;
 }
 
-div.upvote.upvoted .upvote-icon{
+div.upvote.enabled.upvoted .upvote-icon{
   color: #0F860D;
+}
+
+div.upvote.disabled .upvote-icon{
+  color: #aaa;
 }
 
 p.upvote-count{
@@ -513,6 +517,24 @@ p.upvote-count{
 }
 
 /* Image handling */
+#image-upload{
+  color: #000;
+}
+
+#image-upload.disabled{
+  color: #999;
+  cursor:not-allowed;
+}
+
+.hovermenu{
+  position: absolute;
+  max-width: 150px;
+  background: #fff;
+  padding: 5px;
+  border-radius: 2px;
+  box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.4);
+}
+
 #image-input{
   display: none;
 }

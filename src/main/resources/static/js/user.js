@@ -86,12 +86,14 @@ function setLoginMode(value){
     $("#user-name").html("Welcome " + userInfo.username);
     $(".loggedin").toggleClass("hidden", false);
     $(".loggedout").toggleClass("hidden", true);
+    $("#image-upload").toggleClass("disabled", false);
     refreshFollowLists();
   }
   else{
     $("#user-name").html("");
     $(".loggedin").toggleClass("hidden", true);
     $(".loggedout").toggleClass("hidden", false);
+    $("#image-upload").toggleClass("disabled", true);
   }
 }
 
@@ -217,13 +219,6 @@ function checkSignupFields(){
     flag = false;
   }
 
-  var email = $("#signup-form input[name=email]").val();
-  var regex = /[a-zA-z.]+[@]{1}[a-zA-z.]+/
-  if(!regex.test(email)){
-    signupError("Please enter a valid email.");
-    flag = false;
-  }
-
   var firstname = $("#signup-form input[name=firstname]").val();
   if(firstname == 0){
     signupError("Please provide your first name.");
@@ -250,7 +245,7 @@ function signupError(message){
 function usernameCheck(elem, exists, notexists){
   var uname = elem.val();
 
-  if(uname.length > 2){
+  if(uname.length > 0){
     $.post("/checkUsername", {username: uname}, function(response){
       var res = JSON.parse(response);
       if(res.error == "no-error"){

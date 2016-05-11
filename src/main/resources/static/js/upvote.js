@@ -1,5 +1,6 @@
 function upvoteSetup(){
-	$("body").on("click", ".upvote-icon", upvoteHandler);
+	$("body").on("click", ".enabled .upvote-icon", upvoteHandler);
+	$("body").on("click", ".disabled .upvote-icon", displayUpvoteHover);
 }
 
 function upvoteHandler(){
@@ -34,4 +35,12 @@ function upvoteHandler(){
 		});
 	}
 
+}
+
+function displayUpvoteHover(e){
+  var elem = $("<div></div>").addClass("hovermenu").html("Please signup or login to upvote.");
+  $("body").append(elem);
+  elem.offset({top:e.pageY,left:e.pageX});
+  elem.delay(1000).fadeOut();
+  window.setTimeout(function(){elem.remove()}, 2000);
 }

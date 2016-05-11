@@ -5,7 +5,13 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import edu.brown.cs.ebwhite.database.Db;
 
-
+/**
+ * The Main class handles the running of TRTL. We use the data
+ * specified by flags to change how TRTL behaves. We can
+ * specify port, database, gui, keystore, and keypass.
+ * @author cchen5
+ *
+ */
 public class Main {
 
   public static void main(String[] args) {

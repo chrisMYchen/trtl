@@ -182,10 +182,13 @@ function formatNote(note){
   if(note.voteStatus){
     upvote_div.addClass("upvoted");
   }
-  if(userInfo.id != -1){
-   var upvote_icon = $("<i></div>").addClass("upvote-icon").html("u");
-   upvote_div.append(upvote_icon);
+  if(userInfo.id == -1){
+    upvote_div.addClass("disabled");
+  } else{
+    upvote_div.addClass("enabled");
   }
+  var upvote_icon = $("<i></div>").addClass("upvote-icon").html("u");
+   upvote_div.append(upvote_icon);
   var upvote_count = $("<p></p>").addClass("upvote-count").html(note.vote);
   upvote_div.append(upvote_count);
   meta.append(upvote_div);
