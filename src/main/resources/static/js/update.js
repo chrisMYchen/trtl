@@ -39,16 +39,18 @@ function updateNotes(radius){
     minPost: range.min,
     maxPost: range.max,
     radius: radius,
-    filter: filter_setting
+    filter: filter_setting.option
   }
   if(userInfo != null){
     req.userID = userInfo.id;
+  }
+  if(filter_setting.username){
+    req.username = filter_setting.username;
   }
 
   $.post("/updateNotes", req, function(data){
     var res = JSON.parse(data);
     if(res.error == "no-error"){
-      console.log(res.notes);
       updatesDOM(res.notes, range.min);
       setupUpdateHandlers(req.end_time, radius);
       update_info.time = req.end_time;

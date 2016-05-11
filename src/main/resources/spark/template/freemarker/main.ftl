@@ -22,6 +22,8 @@
   <script src="/js/update.js"></script>
   <script src="/js/image.js"></script>
   <script src="/js/map.js"></script>
+  <script src="/js/upvote.js"></script>
+  <script src="/js/sanitizer.js"></script>
   <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ9fjmVvsQ-e2Z52Cu7z8PxmVqpMvD8XA&callback=initMap">
     </script>
@@ -37,14 +39,13 @@
 </script>
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/font.css">
   <link rel="stylesheet" href="/css/trtl-bold.css">
 </head>
 <body>
   <div id="login-wrapper" class="overlay-wrapper" style="display:none">
     <div id="login" class="overlay">
       <div id="login-close" class="close"><p><i class="material-icons">close</i></p></div>
-      <div id="login-error" class="error" style="display:none;"></div>
+      <div id="login-error" class="msg error" style="display:none;"></div>
       <form id="login-form">
         <input type="text" name="username" placeholder="USERNAME" size="40" required="required"><br>
         <input type="password" name="password" placeholder="PASSWORD" size="40" required="required"><br>
@@ -55,14 +56,13 @@
   <div id="signup-wrapper" class="overlay-wrapper" style="display:none">
     <div id="signup" class="overlay">
       <div id="signup-close" class="close"><p><i class="material-icons">close</i></p></div>
-      <div id="signup-error" class="error" style="display:none;"></div>
+      <div id="signup-error" class="msg error" style="display:none;"></div>
       <form id="signup-form">
         <input type="text" name="username" placeholder="Username" size="40" required="required"><br>
         <input type="password" name="password" placeholder="Password" size="40" required="required"><br>
-        <input type="text" name="email" placeholder="Email Address" size="40" required="required"><br>
+        <input type="email" name="email" placeholder="Email Address" size="40" required="required"><br>
         <input type="text" name="firstname" placeholder="First Name" size="40" required="required"><br>
         <input type="text" name="lastname" placeholder="Last Name" size="40" required="required"><br>
-        <input type="text" name="phone" placeholder="Phone (optional)" size="40"><br>
         <input type="submit">
       </form>
     </div>
@@ -72,8 +72,14 @@
       <div id="follow-close" class="close"><p><i class="material-icons">close</i></p></div>
       <div id="follow-msg" class="msg" style="display:none;"></div>
       <div id="follow-tabs" class="tabs">
-        <div id="following-tab" class="follow-tab active">Following</div>
-        <div id="followers-tab" class="follow-tab">Followers</div>
+        <div id="following-tab" class="follow-tab active">
+          Following
+          <div class="tab-notify"></div>
+        </div>
+        <div id="followers-tab" class="follow-tab">
+          Followers
+          <div class="tab-notify"></div>
+        </div>
       </div>
       <div id="following" class="follow-page">
         <form id="follow-form">

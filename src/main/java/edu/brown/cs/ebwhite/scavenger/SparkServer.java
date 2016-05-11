@@ -45,11 +45,24 @@ import edu.brown.cs.ebwhite.user.User;
 import edu.brown.cs.ebwhite.user.UserProxy;
 import edu.brown.cs.ebwhite.user.UserSerializer;
 
+/**
+ * The spark components/handlers that make up all the information passing
+ * in the GUI.
+ * @author cchen5
+ */
 public class SparkServer {
+  /** GSON object to convert objects to JSON.*/
   Gson GSON;
+  /** Path for image when adding. */
   String imagepath;
+  /**If using external (aws db) or internal our own specified db. */
   boolean external;
-
+  /**
+   * Overloaded Spark Server object representing the port, keystore and keypass.
+   * @param port Port to run server on.
+   * @param keystore Your keystore.
+   * @param keypass Your keypass.
+   */
   public SparkServer(int port, String keystore, String keypass) {
     GsonBuilder gb = new GsonBuilder();
     gb.registerTypeAdapter(User.class, new UserSerializer());
@@ -60,7 +73,8 @@ public class SparkServer {
     imagepath = "https://s3-us-west-2.amazonaws.com/trtl-images/";
     external = true;
   }
-
+  /** Spark server object only specifying port.
+   * @param port Port to run server on. */
   public SparkServer(int port) {
     GsonBuilder gb = new GsonBuilder();
     gb.registerTypeAdapter(User.class, new UserSerializer());
@@ -70,7 +84,7 @@ public class SparkServer {
     imagepath = "src/main/resources/static/";
     external = false;
   }
-
+  /**  Function to open all spark routes.*/
   public void run() {
     Spark.get("/", new HomeHandler(), new FreeMarkerEngine());
     Spark.get("/home", new HomeHandler(), new FreeMarkerEngine());
@@ -92,7 +106,11 @@ public class SparkServer {
     Spark.post("/upvote", new Upvote());
     Spark.post("/removeUpvote", new RemoveUpvote());
   }
-
+  /**
+   * Class that handles the route for the landing page.
+   * @author cchen5
+   *
+   */
   private class HomeHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
@@ -100,7 +118,11 @@ public class SparkServer {
       return new ModelAndView(variables, "home.ftl");
     }
   }
-
+  /**
+   * Class that handles the route and post params for getting initial notes.
+   * @author cchen5
+   *
+   */
   private class GetNotes implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -136,10 +158,10 @@ public class SparkServer {
             timestamp, filter, profileID);
 
         NoteRanker noteRank = new NoteRanker();
-        if (uID != -1) {
-          noteRank.setCurrentUser(uID);
-        }
-        noteRank.setCurrentLocation(curr_loc);
+        // if (uID != -1) {
+        // noteRank.setCurrentUser(uID);
+        // }
+        // noteRank.setCurrentLocation(curr_loc);
         Collections.sort(notes, noteRank);
         notes = notes.subList(Math.min((notes.size()), minPost),
             Math.min(notes.size(), maxPost));
@@ -162,12 +184,17 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * Class that handles the route for getting new notes after initial load.
+   * @author cchen5
+   *
+   */
   private class UpdateNotes implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String uIDstring = qm.value("userID");
+      String username = qm.value("username");
       String latString = qm.value("lat");
       String lonString = qm.value("lon");
       String starttimeString = qm.value("start_time");
@@ -181,6 +208,11 @@ public class SparkServer {
       try {
         // uID is -1 if not logged in
         int uID = Integer.parseInt(uIDstring);
+        int profileID = -1;
+        if (username != null) {
+          // to see a specific user's posts : get filter = 3 with username
+          profileID = UserProxy.ofName(username).getId();
+        }
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
         long start_time = Long.parseLong(starttimeString);
@@ -192,12 +224,12 @@ public class SparkServer {
         LatLong curr_loc = new LatLong(lat, lon);
 
         notes = TurtleQuery.updateNotes(uID, curr_loc, radius, minPost,
-            maxPost, start_time, end_time, filter);
+            maxPost, start_time, end_time, filter, profileID);
         NoteRanker noteRank = new NoteRanker();
-        if (uID != -1) {
-          noteRank.setCurrentUser(uID);
-        }
-        noteRank.setCurrentLocation(curr_loc);
+        // if (uID != -1) {
+        // noteRank.setCurrentUser(uID);
+        // }
+        // noteRank.setCurrentLocation(curr_loc);
         Collections.sort(notes, noteRank);
 
 
@@ -216,7 +248,12 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * Class PsotNote is the class that handles post params to post a note to the
+   * database - not logged in.
+   * @author cchen5
+   *
+   */
   private class PostNote implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -255,7 +292,12 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * Class PostNoteImage handles the route to post a note with an image -
+   * when logged in.
+   * @author cchen5
+   *
+   */
   private class PostNoteImage implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -336,7 +378,12 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * Class RequestFollow handles the route for requesting to follow
+   * another user.
+   * @author cchen5
+   *
+   */
   private class RequestFollow implements Route {
 
     @Override
@@ -375,7 +422,11 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * AcceptFollower handles the post route to accept a follower request.
+   * @author cchen5
+   *
+   */
   private class AcceptFollower implements Route {
 
     @Override
@@ -405,7 +456,11 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * Unfollow handles the post route to unfollow a user.
+   * @author cchen5
+   *
+   */
   private class Unfollow implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -434,7 +489,11 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+/**
+ * RemoveFollower handles the post route to remove one of your followers.
+ * @author cchen5
+ *
+ */
   private class RemoveFollower implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -464,7 +523,11 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * NewUser handles the route to create a new user.
+   * @author cchen5
+   *
+   */
   private class NewUser implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -511,7 +574,11 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * Login handles the route to allow a user to login.
+   * @author cchen5
+   *
+   */
   private class Login implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -536,7 +603,11 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * CheckUsername handles the route to see if a username is already in use.
+   * @author cchen5
+   *
+   */
   private class CheckUsername implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -561,7 +632,12 @@ public class SparkServer {
       return GSON.toJson(variables);
     }
   }
-
+  /**
+   * UserInfo handles the route to get the user's information given a
+   * username.
+   * @author cchen5
+   *
+   */
   private class UserInfo implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -603,7 +679,12 @@ public class SparkServer {
       return GSON.toJson(map);
     }
   }
-
+  /**
+   * MyInfo handles the route to provide a user's information
+   * given a userID (should only be for logged in user).
+   * @author cchen5
+   *
+   */
   private class MyInfo implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -665,7 +746,11 @@ public class SparkServer {
       return GSON.toJson(map);
     }
   }
-
+  /**
+   * GetUserInfoFromId handles getting the username given a UserID.
+   * @author cchen5
+   *
+   */
   private class GetUserInfoFromId implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -691,7 +776,11 @@ public class SparkServer {
       return GSON.toJson(map);
     }
   }
-
+  /**
+   * RemoveNote handles deleting a note.
+   * @author cchen5
+   *
+   */
   private class RemoveNote implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -719,7 +808,11 @@ public class SparkServer {
       return GSON.toJson(map);
     }
   }
-
+  /**
+   * Upvote handles upvoting a note/post.
+   * @author cchen5
+   *
+   */
   private class Upvote implements Route {
     @Override
     public Object handle(final Request req, final Response res) {
@@ -747,7 +840,11 @@ public class SparkServer {
       return GSON.toJson(map);
     }
   }
-
+  /**
+   * RemoveUpvote removes an upvote from a post after its been upvoted.
+   * @author cchen5
+   *
+   */
   private class RemoveUpvote implements Route {
     @Override
     public Object handle(final Request req, final Response res) {

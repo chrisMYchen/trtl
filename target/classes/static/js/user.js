@@ -86,12 +86,14 @@ function setLoginMode(value){
     $("#user-name").html("Welcome " + userInfo.username);
     $(".loggedin").toggleClass("hidden", false);
     $(".loggedout").toggleClass("hidden", true);
+    $("#image-upload").toggleClass("disabled", false);
     refreshFollowLists();
   }
   else{
     $("#user-name").html("");
     $(".loggedin").toggleClass("hidden", true);
     $(".loggedout").toggleClass("hidden", false);
+    $("#image-upload").toggleClass("disabled", true);
   }
 }
 
@@ -180,27 +182,62 @@ function closeSignupDialog(){
 
 function signupSubmit(e){
   e.preventDefault();
+  $("#signup-error").empty();
   sendSignup();
 }
 
 function sendSignup(){
-  var data = $("#signup-form").serialize();
-  $.post("/newUser", data, function(response){
-    var res = JSON.parse(response);
-    if(res.error == "no-error"){
-      login(res.userID);
-      closeSignupDialog();
-    }
-    else{
-      signupError(res.error);
-    }
-  });
+
+  var validation = checkSignupFields();
+  if(validation){
+    var data = $("#signup-form").serialize();
+    $.post("/newUser", data, function(response){
+      var res = JSON.parse(response);
+      if(res.error == "no-error"){
+        setLoginCookie(res.userID);
+        window.location.reload();
+        closeSignupDialog();
+      }
+      else{
+        signupError(res.error);
+      }
+    });
+  }
+}
+
+function checkSignupFields(){
+  var flag = true;
+  var username = $("#signup-form input[name=username]").val();
+  if(username.length == 0){
+    signupError("Please enter a username");
+    flag = false;
+  }
+
+  var pword = $("#signup-form input[name=password]").val();
+  if(pword.length < 5){
+    signupError("Passwords must be at least 5 characters long.");
+    flag = false;
+  }
+
+  var firstname = $("#signup-form input[name=firstname]").val();
+  if(firstname == 0){
+    signupError("Please provide your first name.");
+    flag = false;
+  }
+
+  var lastname = $("#signup-form input[name=lastname]").val();
+  if(lastname == 0){
+    signupError("Please provide your last name.");
+    flag = false;
+  }
+
+  return flag;
+
 }
 
 function signupError(message){
   var body = $("<p></p>").html(message);
   var elem = $("#signup-error");
-  elem.empty();
   elem.append(body);
   elem.show();
 }
@@ -208,7 +245,7 @@ function signupError(message){
 function usernameCheck(elem, exists, notexists){
   var uname = elem.val();
 
-  if(uname.length > 2){
+  if(uname.length > 0){
     $.post("/checkUsername", {username: uname}, function(response){
       var res = JSON.parse(response);
       if(res.error == "no-error"){

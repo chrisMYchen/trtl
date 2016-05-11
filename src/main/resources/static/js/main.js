@@ -9,6 +9,7 @@ $(function(){
     displayNotes();
     postNotes();
     imageSetup();
+    upvoteSetup();
 
     $("#branding").click(function(){
         location.reload();

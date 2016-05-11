@@ -2,36 +2,39 @@ package edu.brown.cs.ebwhite.note;
 
 import java.util.Comparator;
 
-import edu.brown.cs.ebwhite.geo.LatLong;
-import edu.brown.cs.ebwhite.user.User;
-import edu.brown.cs.ebwhite.user.UserProxy;
-
+/**
+ * Ranker for the notes.
+ * @author TRTL team
+ *
+ */
 public class NoteRanker implements Comparator<Note> {
-  private User currentUser;
-  private LatLong myLocation;
-  public NoteRanker() {
 
-  }
-
-  public void setCurrentUser(int uID) {
-    currentUser = new UserProxy(uID);
-  }
-
-  public void setCurrentLocation(LatLong ll) {
-    myLocation = ll;
-  }
+  /**
+   * We might want this for ranking in the future, but is currently unused.
+   */
+  // private User currentUser;
+  // private LatLong myLocation;
+  // public NoteRanker() {
+  //
+  // }
+  //
+  // public void setCurrentUser(int uID) {
+  // currentUser = new UserProxy(uID);
+  // }
+  //
+  // public void setCurrentLocation(LatLong ll) {
+  // myLocation = ll;
+  // }
 
   @Override
   public int compare(Note o1, Note o2) {
-    // TODO Auto-generated method stub
-    // what does eli send us? this is in seconds
-    o1.getLatLong();
+
     double currentTime = System.currentTimeMillis();
     double timeSinceNote1 = currentTime - o1.getTimestamp();
     double timeSinceNote2 = currentTime - o2.getTimestamp();
-    // System.out.println("current" + currentTime);
-    // System.out.println("time since " + timeSinceNote1);
-    if (currentUser != null) {
+
+    // keeping this incase we want to update ranking later.
+    // if (currentUser != null) {
       // if (currentUser.getFollowers().contains(o1.getUser().getId())) {
       // // System.out.println("note 1 friend " + timeSinceNote1);
       // timeSinceNote1 = timeSinceNote1 / 2;
@@ -55,16 +58,13 @@ public class NoteRanker implements Comparator<Note> {
       // // System.out.println("new val: " + timeSinceNote1);
       // System.out.println(LatLong.distanceLatLong(myLocation,
       // o1.getLatLong()));
-    }
+    // }
     double score1 = (o1.getVote()) / 2;
     double score2 = (o2.getVote()) / 2;
     // one vote = 2 hours
     double value1 = timeSinceNote1 / 25000000 - score1;
     double value2 = timeSinceNote2 / 25000000 - score2;
-    // System.out.println("note " + o1.getId() + ": " + timeSinceNote1 +
-    // "note 2 "
-    // + o2.getId() + ": "
-    // + timeSinceNote2);
+
     return Double.compare(value1, value2);
   }
 

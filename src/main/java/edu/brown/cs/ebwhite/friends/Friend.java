@@ -13,7 +13,7 @@ import edu.brown.cs.ebwhite.user.UserProxy;
 /**
  * Interact with the friend system.
  *
- * @author hk125
+ * @author TRTL team
  *
  */
 public class Friend {
@@ -21,15 +21,12 @@ public class Friend {
   /**
    * add a friend for to a user's list of friends.
    *
-   * @param userID
-   *          the ID of the user
-   * @param toFollowID
-   *          the ID of the friend
-   * @return true if successful
-   * @throws SQLException
-   *           if there is an error with the query
+   * @param userID the ID of the user
+   * @param toFollowID the ID of the friend
+   * @return true if successful, false if already following
+   * @throws SQLException if there is an error with the query
    */
-   public static boolean requestFollow(int userID, int toFollowID)
+  public static boolean requestFollow(int userID, int toFollowID)
       throws SQLException, IllegalArgumentException {
     if (userID != toFollowID) {
       String post = "SELECT * FROM user_follower WHERE userid=? AND follower_id = ?;";
@@ -41,9 +38,9 @@ public class Friend {
             if (rs.next()) {
               return false;
             }
-           }
-         }
-       }
+          }
+        }
+      }
       post = "INSERT INTO user_pending VALUES (?, ?)";
       User f = new UserProxy(toFollowID);
       User u = new UserProxy(userID);
@@ -56,10 +53,10 @@ public class Friend {
           u.addPendingFollowing(toFollowID);
           return true;
         }
-       }
-     }
+      }
+    }
     throw new IllegalArgumentException("You can't follow yourself!");
-   }
+  }
 
   /**
    * add a friend for to a user's list of friends.
@@ -70,8 +67,7 @@ public class Friend {
    * @throws SQLException if there is an error with the query
    */
   public static boolean acceptPendingRequest(int userID,
-      String pendingFollowerString)
-      throws SQLException {
+      String pendingFollowerString) throws SQLException {
 
     String post = "DELETE FROM user_pending WHERE (userid = ? AND pending_id = ?);";
     int pendingFollowerID = TurtleQuery.getUserID(pendingFollowerString);
@@ -105,13 +101,10 @@ public class Friend {
   /**
    * unfollow a friend from a user's list of following.
    *
-   * @param userID
-   *          the ID of the user
-   * @param followingID
-   *          the ID of the User u = new UserProxy(friendID); friend
+   * @param userID the ID of the user
+   * @param followingID the ID of the friend to unfollow
    * @return true if successful
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
   public static void unfollow(int userID, int followingID)
       throws SQLException {
@@ -148,7 +141,6 @@ public class Friend {
    *
    * @param userID the id of the user
    * @param followerID the username of the friend
-   * @return true if successful
    * @throws SQLException if there is an error with the query
    */
   public static void removeFollower(int userID, int followerID)

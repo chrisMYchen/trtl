@@ -1,5 +1,6 @@
-var filter_setting = 0;
+var filter_setting = {option: 0, username: null};
 var note_loc_radius = 100;
+var maxPost = 0;
 var update_info = {time: Date.now()};
 
 function displayNotes(){
@@ -14,6 +15,8 @@ function displayNotes(){
   $("body").on("click", ".collapse", collapsePost);
 
   $(".filter-option").click(changeFilter);
+
+  $("body").on("click",".post-handle",filterUser);
 }
 
 function initialLoad(time, radius){
@@ -38,6 +41,7 @@ function resetNotes(){
   var radius = note_loc_radius;
   window.clearInterval(update_info.interval_id);
   $(".post").remove();
+  maxPost = 0;
   getNotes(time, radius);
   update(time, radius);
 }
@@ -64,11 +68,15 @@ function getNotes(time, radius){
     minPost: range.min,
     maxPost: range.max,
     radius: radius,
-    filter: filter_setting
+    filter: filter_setting.option
   }
 
   if(userInfo != null){
     req.userID = userInfo.id;
+  }
+
+  if(filter_setting.username != null){
+    req.username = filter_setting.username;
   }
 
   $.post("/getNotes", req, function(data){
@@ -96,22 +104,13 @@ function setupScrollHandler(time, radius){
 }
 
 function getRange(){
-  var last = -1;
-  var posts = $(".post");
-  if(posts.length > 0){
-    posts.each(function(i,e){
-      var cur = parseInt($(e).attr("data-order"), 10);
-      if(cur && (cur > last)){
-        last = cur;
-      }
-    });
-  }
-  var range = {min: last + 1, max: last + 11};
+  var range = {min: maxPost, max: maxPost + 10};
   return range;
 }
 
 function notesDOM(notes, start){
   var posts = $("#posts").get(0);
+  maxPost += notes.length + 1;
    for(var i = 0; i < notes.length; i++){
        var note = notes[i];
        note.order = start + i;
@@ -127,12 +126,14 @@ function notesDOM(notes, start){
 function processNote(note){
   var compiledNote = {
     id: note.id,
-    content: note.text,
+    content: sanitizer.sanitizeHTML(note.text),
     dom: note.dom,
     time: new Date(note.timestamp),
     order: note.order,
     image: note.image,
-    user: note.user
+    user: note.user,
+    vote: note.vote,
+    voteStatus: note.voteStatus
   };
 
   if(note.privacy == 1){
@@ -176,8 +177,23 @@ function formatNote(note){
   }
 
   /* Meta */
-  var timestring = formatTime(note.time);
   var meta = $("<div></div>").attr("class","post-meta");
+  var upvote_div = $("<div></div>").addClass("upvote");
+  if(note.voteStatus){
+    upvote_div.addClass("upvoted");
+  }
+  if(userInfo.id == -1){
+    upvote_div.addClass("disabled");
+  } else{
+    upvote_div.addClass("enabled");
+  }
+  var upvote_icon = $("<i></div>").addClass("upvote-icon").html("u");
+   upvote_div.append(upvote_icon);
+  var upvote_count = $("<p></p>").addClass("upvote-count").html(note.vote);
+  upvote_div.append(upvote_count);
+  meta.append(upvote_div);
+
+  var timestring = formatTime(note.time);
   var time = $("<div></div>").attr("class","post-time").append(timestring);
   meta.append(time);
   dom.append(meta);
@@ -195,6 +211,7 @@ function formatNote(note){
     user.addClass("user");
     var icon = $("<i></i>").addClass("material-icons").html("account_circle");
     var handle = $("<p></p>").attr("class","post-handle").append("@" + note.user);
+    handle.attr("data-username", note.user);
     user.append(icon).append(handle);
     if(note.user == userInfo.username){
       var del = $("<div></div>").addClass("post-delete").html("Delete");
@@ -217,7 +234,6 @@ function formatNote(note){
     priv.append(icon).append(text);
     top.append(priv);
   }
-
 }
 
 function formatTime(time){
@@ -287,8 +303,29 @@ function collapsePost(e){
 function changeFilter(){
   $(".filter-option").toggleClass("active", false);
   $(this).toggleClass("active", true);
-  filter_setting = $(this).attr("data-filter");
+  filter_setting.option = $(this).attr("data-filter");
+  filter_setting.username = null;
+  $("#user-filter-display").hide();
+  $("#user-filter-display").empty();
   resetNotes();
+}
+
+function filterUser(){
+  var username = $(this).attr("data-username");
+  if(username == userInfo.username){
+    $("#mine.filter-option").click();
+    $("#user-filter-display").hide();
+    $("#user-filter-display").empty();
+  } else{
+    $(".filter-option").toggleClass("active", false);
+    filter_setting.option = 3;
+    filter_setting.username = username;
+    resetNotes();
+
+    var userDiv = $("<span></span>").html(username).addClass("name");
+    $("#user-filter-display").html("Viewing notes from ").append(userDiv);
+    $("#user-filter-display").show();
+  }
 }
 
 function displayError(message){

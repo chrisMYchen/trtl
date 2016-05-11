@@ -47,3 +47,9 @@
 .icon-l-icon:before {
   content: "\6c";
 }
+.icon-person:before {
+  content: "\70";
+}
+.icon-upvote:before {
+  content: "\75";
+}
