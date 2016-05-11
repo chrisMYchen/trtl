@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import edu.brown.cs.ebwhite.geo.LatLong;
+
 public class LatLongTest {
   @BeforeClass
   public static void setUpClass() throws Exception {
@@ -29,6 +31,9 @@ public class LatLongTest {
 
   @Test
   public void latLongTest() {
-
+    LatLong ll = new LatLong(41.3, 27.8);
+    
+    assert (ll.getLat() == 41.3);
+    assert (ll.getLong() == 27.8);
   }
 }
