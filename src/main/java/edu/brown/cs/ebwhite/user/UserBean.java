@@ -5,19 +5,58 @@ import java.util.Set;
 public class UserBean implements User {
 
   /**
-   * Node ID.
+   * User ID.
    */
   private int mID;
+  /**
+   * User's username.
+   */
   private String username;
+  /**
+   * The user's first name.
+   */
   private String firstName;
+  /**
+   * The user's last name.
+   */
   private String lastName;
+  /**
+   * The user's email.
+   */
   private String email;
+  /**
+   * The user's phone number.
+   */
   private int phone;
+  /**
+   * Set of integers representing UserIDs of who is following this user.
+   */
   private Set<Integer> followers;
+  /**
+   * Set of integers representing UserIDs of who this user is following.
+   */
   private Set<Integer> following;
+  /**
+   * Set of integers representing userIDs that are pending to follow this user.
+   */
   private Set<Integer> pending;
+  /**
+   * Set of integers representing userIds that this user is trying to follow.
+   */
   private Set<Integer> pendingFollowing;
-
+  /**
+   * Constructor for the user bean.
+   * @param id user ID.
+   * @param followerSet this user's followers.
+   * @param followingSet the users this user is following.
+   * @param pendingSet this user's pending followers.
+   * @param pendingFollowingSet the users this user is following pending.
+   * @param uname the username.
+   * @param fname the first name.
+   * @param lname the last name.
+   * @param mail the email.
+   * @param pho the phone number.
+   */
   public UserBean(int id, Set<Integer> followerSet, Set<Integer> followingSet,
       Set<Integer> pendingSet, Set<Integer> pendingFollowingSet, String uname,
       String fname, String lname, String mail, int pho) {
