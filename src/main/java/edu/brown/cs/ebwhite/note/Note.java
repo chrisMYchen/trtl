@@ -14,7 +14,6 @@ public class Note {
   private User user;
   private int privacy;
   private String image;
-  private String username;
   private int vote;
   private boolean voteStatus;
 
@@ -24,7 +23,6 @@ public class Note {
     this.text = content;
     this.id = ID;
     this.user = new UserProxy(uID);
-    this.username = user.getUsername();
     this.latlng = new LatLong(lat, lng);
     this.privacy = priv;
     // this.displayName = ownerName;
@@ -38,10 +36,7 @@ public class Note {
     this.id = b.id;
     this.text = b.text;
     this.user = b.user;
-    this.username = b.user.getUsername();
-    // this.userid = b.uid;
     this.latlng = new LatLong(b.lat, b.lng);
-    // this.displayName = b.displayName;
     this.privacy = b.privacy;
     this.image = b.image;
     this.vote = b.vote;

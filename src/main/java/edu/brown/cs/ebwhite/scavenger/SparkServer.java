@@ -34,6 +34,7 @@ import com.amazonaws.services.s3.transfer.Upload;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import edu.brown.cs.ebwhite.database.TurtleQuery;
 import edu.brown.cs.ebwhite.friends.Friend;
@@ -42,6 +43,8 @@ import edu.brown.cs.ebwhite.note.Note;
 import edu.brown.cs.ebwhite.note.NoteRanker;
 import edu.brown.cs.ebwhite.user.User;
 import edu.brown.cs.ebwhite.user.UserProxy;
+import edu.brown.cs.ebwhite.user.UserSerializer;
+
 /**
  * The spark components/handlers that make up all the information passing
  * in the GUI.
@@ -61,7 +64,9 @@ public class SparkServer {
    * @param keypass Your keypass.
    */
   public SparkServer(int port, String keystore, String keypass) {
-    GSON = new Gson();
+    GsonBuilder gb = new GsonBuilder();
+    gb.registerTypeAdapter(User.class, new UserSerializer());
+    GSON = gb.create();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.secure(keystore, keypass, null, null);
@@ -71,10 +76,12 @@ public class SparkServer {
   /** Spark server object only specifying port.
    * @param port Port to run server on. */
   public SparkServer(int port) {
-    GSON = new Gson();
+    GsonBuilder gb = new GsonBuilder();
+    gb.registerTypeAdapter(User.class, new UserSerializer());
+    GSON = gb.create();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
-    imagepath = "src/main/resources/static";
+    imagepath = "src/main/resources/static/";
     external = false;
   }
   /**  Function to open all spark routes.*/
@@ -121,6 +128,7 @@ public class SparkServer {
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String uIDstring = qm.value("userID");
+      String username = qm.value("username");
       String latString = qm.value("lat");
       String lonString = qm.value("lon");
       String timeString = qm.value("timestamp");
@@ -133,6 +141,11 @@ public class SparkServer {
       try {
         // userID is -1 when anonymous
         int uID = Integer.parseInt(uIDstring);
+        int profileID = -1;
+        if (username != null) {
+          // to see a specific user's posts : get filter = 3 with username
+          profileID = UserProxy.ofName(username).getId();
+        }
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
         long timestamp = Long.parseLong(timeString);
@@ -142,7 +155,7 @@ public class SparkServer {
         double radius = Double.parseDouble(radiusString);
         LatLong curr_loc = new LatLong(lat, lon);
         notes = TurtleQuery.getNotes(uID, curr_loc, radius, minPost, maxPost,
-            timestamp, filter);
+            timestamp, filter, profileID);
 
         NoteRanker noteRank = new NoteRanker();
         if (uID != -1) {
@@ -162,9 +175,9 @@ public class SparkServer {
         // TODO Auto-generated catch block
         message = "SQL error when getting note: " + e.getMessage();
       }
-      for (Note n : notes) {
-        System.out.println(n);
-      }
+      // for (Note n : notes) {
+      // System.out.println(n);
+      // }
       Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
           .put("notes", notes).put("error", message).build();
 
@@ -181,9 +194,11 @@ public class SparkServer {
     public Object handle(final Request req, final Response res) {
       QueryParamsMap qm = req.queryMap();
       String uIDstring = qm.value("userID");
+      String username = qm.value("username");
       String latString = qm.value("lat");
       String lonString = qm.value("lon");
-      String timeString = qm.value("timestamp");
+      String starttimeString = qm.value("start_time");
+      String endtimeString = qm.value("end_time");
       String minPostString = qm.value("minPost");
       String maxPostString = qm.value("maxPost");
       String radiusString = qm.value("radius");
@@ -193,9 +208,15 @@ public class SparkServer {
       try {
         // uID is -1 if not logged in
         int uID = Integer.parseInt(uIDstring);
+        int profileID = -1;
+        if (username != null) {
+          // to see a specific user's posts : get filter = 3 with username
+          profileID = UserProxy.ofName(username).getId();
+        }
         double lat = Double.parseDouble(latString);
         double lon = Double.parseDouble(lonString);
-        long timestamp = Long.parseLong(timeString);
+        long start_time = Long.parseLong(starttimeString);
+        long end_time = Long.parseLong(endtimeString);
         int minPost = Integer.parseInt(minPostString);
         int maxPost = Integer.parseInt(maxPostString);
         double radius = Double.parseDouble(radiusString);
@@ -203,7 +224,7 @@ public class SparkServer {
         LatLong curr_loc = new LatLong(lat, lon);
 
         notes = TurtleQuery.updateNotes(uID, curr_loc, radius, minPost,
-            maxPost, timestamp, filter);
+            maxPost, start_time, end_time, filter, profileID);
         NoteRanker noteRank = new NoteRanker();
         if (uID != -1) {
           noteRank.setCurrentUser(uID);
@@ -374,8 +395,14 @@ public class SparkServer {
 
       try {
         int userID = Integer.parseInt(userIDstring);
-        if (!Friend.requestFollow(userID, friendUsername)) {
+        int friendID = TurtleQuery.getUserID(friendUsername);
+        if(friendID == -1){
           message = "User with username " + friendUsername + " doesn't exist";
+        } else {
+          boolean success = Friend.requestFollow(userID, friendID);
+          if(!success){
+            message = "You are already following " +friendUsername;
+          }
         }
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
@@ -387,6 +414,8 @@ public class SparkServer {
           message = "Your request to follow " + friendUsername
               + " is already pending!";
         }
+      } catch (IllegalArgumentException i) {
+        message = i.getMessage();
       }
       Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
           .put("error", message).build();
@@ -474,9 +503,13 @@ public class SparkServer {
       String message = "no-error";
       try {
         int userID = Integer.parseInt(userIDstring);
-        if (Friend.removeFollower(userID, friendUsername)) {
+        int friendID = TurtleQuery.getUserID(friendUsername);
+        if (friendID == -1) {
           message = "Friend with username doesn't exist";
+        } else{
+          Friend.removeFollower(userID, friendID);
         }
+
       } catch (NullPointerException np) {
         message = "Fields not filled. smtn null.";
       } catch (NumberFormatException nfe) {
@@ -841,4 +874,3 @@ public class SparkServer {
   }
 
 }
-

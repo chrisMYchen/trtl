@@ -1,14 +1,15 @@
+
 function update(time, radius){
-  window.setTimeout(function(){
+  update_info.time = time;
+  update_info.interval_id = window.setTimeout(function(){
     updateNotes(time, radius);
-  }, 3000);
+  }, 5000);
 }
 
 function updatesDOM(notes, start){
   var posts = $("#posts").get(0);
 
   for(var i = notes.length - 1; i >= 0; i--){
-    console.log(i);
   /*  var height_before = $("#updates").height();
     var position_before = $(window).scrollTop();*/
     var note = notes[i];
@@ -26,37 +27,44 @@ function updatesDOM(notes, start){
   }
 }
 
-function updateNotes(time, radius){
+function updateNotes(radius){
+  var start_time = update_info.time;
   var range = {min: 0, max: 10};
   var req = {
     userID: userInfo.id,
     lat: locationInfo.pos.lat,
     lon: locationInfo.pos.lon,
-    timestamp: time,
+    start_time: start_time,
+    end_time: Date.now(),
     minPost: range.min,
     maxPost: range.max,
     radius: radius,
-    filter: 0
+    filter: filter_setting.option
   }
   if(userInfo != null){
     req.userID = userInfo.id;
+  }
+  if(filter_setting.username){
+    req.username = filter_setting.username;
   }
 
   $.post("/updateNotes", req, function(data){
     var res = JSON.parse(data);
     if(res.error == "no-error"){
       updatesDOM(res.notes, range.min);
-      setupUpdateHandlers(Date.now(), radius);
+      setupUpdateHandlers(req.end_time, radius);
+      update_info.time = req.end_time;
     }
     else{
       displayError(res.error);
-      setupUpdateHandlers(Date.now(), radius);
+      setupUpdateHandlers(req.start_time, radius);
+      update_info.time = req.start_time;
     }
   });
 }
 
 function setupUpdateHandlers(time, radius){
-  window.setTimeout(function(){
+  update_interval_id = window.setTimeout(function(){
     updateNotes(time, radius);
-  }, 3000);
+  }, 5000);
 }

@@ -139,14 +139,18 @@ div#nav {
 }
 
 .sidebar-element{
-  margin: 20px 0px;
+  margin: 15px 0px 0px 0px;
   box-shadow: 0px 1px 7px 0px rgba(0,0,0,0.2);
   border-radius: 2px;
+  background: #fff;
 }
 
 #filtering{
-  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+}
 
+#filter-wrapper{
   display: -webkit-flex;
   -webkit-justify-content: space-between;
   -webkit-align-items: center;
@@ -154,8 +158,6 @@ div#nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  overflow: hidden;
 }
 
 #filtering div.filter-option{
@@ -171,6 +173,21 @@ div#nav {
 #filtering div.filter-option.active{
   background: #888;
   color: #fff;
+}
+
+#user-filter-display{
+  padding: 10px 10px;
+  background: #888;
+  color: #ddd;
+}
+
+#user-filter-display .name{
+  color: #fff;
+  font-weight: 400;
+  padding: 3px 7px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.2);
+  font-size: 11pt;
 }
 
 /* map */
@@ -212,10 +229,11 @@ div#nav {
   border-radius: 2px;
   overflow: hidden;
   margin: 20px 10px;
+  padding: 10px;
 }
 
 .post > div{
-  padding: 10px;
+
 }
 
 div.post-top{
@@ -246,19 +264,68 @@ div.post-top{
 }
 
 .post-user > i{
-  color: #777;
+  color: #999;
 }
 
-.post-user .anon{
+p.account-icon{
+  font-family:"trtl-bold";
+  color: #777;
+  font-size: 16pt;
+  margin: 0;
+}
+
+.post-user.anon div{
   color: #777;
   text-transform: uppercase;
   font-family: "Raleway", sans-serif;
   font-weight: 400;
 }
 
+
+.post-user.user-hidden div{
+  color: #777;
+  border: 1px solid #ccc;
+  padding: 3px 5px;
+  text-transform: uppercase;
+  font-family: "Raleway", sans-serif;
+  font-weight: 400;
+  border-radius: 2px;
+}
+
 p.post-handle{
-  color: #666;
-  margin: 0;
+  margin: 3px 3px;
+  color: #777;
+  padding: 3px 5px;
+  font-weight: 400;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+p.post-handle:hover{
+  text-decoration: underline;
+}
+
+.private{
+  background: #FFFFD2;
+}
+
+.post-privacy{
+  padding: 3px;
+  font-size: 12pt;
+  text-transform: uppercase;
+  color: #aaa;
+
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  -webkit-align-items: center;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-privacy i{
+  font-size: 10pt;
 }
 
 div.post-content{
@@ -267,6 +334,27 @@ div.post-content{
   white-space: pre-wrap;
   font-family: "Open Sans", sans-serif;
   font-weight: 300;
+  overflow:hidden;
+}
+
+.collapsed{
+  height: 200px;
+}
+
+.expanded{
+  height: auto;
+}
+
+div.expand-button{
+  padding: 0px;
+  margin: 0px 15px 5px 15px;
+  border-top: 1px solid #777;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 10pt;
+  color: #777;
+  cursor: pointer;
+  user-select: none;
 }
 
 img.post-image{
@@ -288,6 +376,48 @@ div.post-meta{
   font-family: "Open Sans", sans-serif;
   font-size: 10pt;
   font-weight: 400;
+}
+
+div.post-time{
+  padding: 5px;
+}
+
+div.upvote{
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  -webkit-align-items: center;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: #aaa;
+  cursor: pointer;
+  font-size: 12pt;
+}
+
+div.upvote .upvote-icon{
+  font-family: "trtl-bold";
+  text-transform: none;
+  font-size: 16pt;
+  font-style: normal;
+}
+
+div.upvote.enabled .upvote-icon:hover{
+  color: #0F860D;
+}
+
+div.upvote.enabled.upvoted .upvote-icon{
+  color: #0F860D;
+}
+
+div.upvote.disabled .upvote-icon{
+  color: #aaa;
+}
+
+p.upvote-count{
+  margin: 0;
+  padding: 5px;
 }
 
 .post-delete{
@@ -387,6 +517,24 @@ div.post-meta{
 }
 
 /* Image handling */
+#image-upload{
+  color: #000;
+}
+
+#image-upload.disabled{
+  color: #999;
+  cursor:not-allowed;
+}
+
+.hovermenu{
+  position: absolute;
+  max-width: 150px;
+  background: #fff;
+  padding: 5px;
+  border-radius: 2px;
+  box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.4);
+}
+
 #image-input{
   display: none;
 }
@@ -609,7 +757,19 @@ div.post-meta{
   background: #aaa;
 }
 
-/* Friends */
+/* Following */
+.follow-notify{
+  font-size: 10pt;
+  position: absolute;
+  bottom: 3px;
+  width: calc(100% - 10px);
+  text-align: center;
+}
+
+.notifications{
+  color: #700;
+}
+
 .tabs{
   margin: 5px 5px 0px;
 
@@ -644,6 +804,20 @@ div.post-meta{
   color: white;
   border:none;
   background: #44a;
+}
+
+.follow-tab .tab-notify{
+  display: inline-block;
+  padding: 0px 5px;
+  margin: 0px 5px;
+  border-radius: 5px;
+  background: #f95;
+  color:  #44a;
+}
+
+.follow-tab.active .tab-notify{
+  background: #f95;
+  color:  #44a;
 }
 
 .follow-page{
@@ -721,15 +895,12 @@ div.post-meta{
   display: flex;
   justify-content:center;
   flex-direction:column;
+  cursor: pointer;
 
   padding: 0px 10px;
 }
 
-.follow-remove{
-  cursor: pointer;
-}
-
-.follow-remove i{
+.follow-controls i{
   display: inline-block;
 }
 
@@ -738,16 +909,13 @@ div.post-meta{
   color: white;
 }
 
-.follow-accept{
-  cursor: pointer;
-}
-
-.follow-accept i{
-  display: inline-block;
-}
-
 .follow-accept:hover{
   background: #00A0FD;
+  color: white;
+}
+
+.followback:hover{
+  background: #00FDA0;
   color: white;
 }
 

@@ -11,7 +11,12 @@ function postHandler(data){
     imageHandle(post, privacy);
   }
   else if (post.length > 0){
-    postNote(post, privacy);
+    post = sanitizer.sanitizeHTML(post);
+    if(post.length > 0){
+      postNote(post, privacy);
+    } else {
+      postError("Your note had some content we didn't like. Please try again.");
+    }
   }
 }
 
@@ -32,6 +37,8 @@ function postNote(post, privacy){
       postError(response.error);
     } else{
       $(".input-content").val("");
+      window.clearInterval(update_info.interval_id);
+      updateNotes(note_loc_radius);
     }
   });
 }

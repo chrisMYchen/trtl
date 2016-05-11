@@ -3,8 +3,6 @@
 /*************************/
 function followSetup(){
 
-  setFollowTab(true);
-
   /* Allow escape */
   $(document).keydown(function(e){
     if(e.which == 27){
@@ -55,6 +53,11 @@ function followSetup(){
     console.log("accept");
     acceptFollower(this);
   });
+
+  $("#follower-list").on("click", ".followback", function(){
+    var name = $(this).closest(".follow-controls").siblings(".follow-user").html();
+    requestFollow(name);
+  });
 }
 
 function openFollowDialog(){
@@ -77,6 +80,7 @@ function setFollowTab(following){
     $("#following").toggle(true);
     $("#followers").toggle(false);
     $("#follow-form")[0].reset();
+    refreshFollowLists();
   }
   else {
     $("#following-tab").toggleClass("active", false);
@@ -84,7 +88,7 @@ function setFollowTab(following){
     $("#following").toggle(false);
     $("#followers").toggle(true);
     $("#follow-form")[0].reset();
-
+    refreshFollowLists();
   }
 }
 
@@ -92,19 +96,21 @@ function followSubmit(e){
   e.preventDefault();
   $("#friend-msg").hide();
   $("#friend-msg").empty();
-  addFollow();
+  var follow = $("#follow-form input[name=followname]").val();
+  requestFollow(follow);
 }
 
-function addFollow(){
-  var follow = $("#follow-form input[name=followname]").val();
-  var data = {userID: userInfo.id, friendUsername: follow};
+
+function requestFollow(name){
+  var data = {userID: userInfo.id, friendUsername: name};
+  console.log(data);
   $.post("/requestFollow", data, function(response){
     var res = JSON.parse(response);
     console.log(res);
     if((res.error == "no-error")){
       $("#follow-form")[0].reset();
       refreshFollowLists();
-      var msg = "Follow request for user " + follow + " was sent.";
+      var msg = "Follow request for user " + name + " was sent.";
       followMsg(msg, false);
     }
     else{
@@ -113,7 +119,6 @@ function addFollow(){
     }
   });
 }
-
 
 function acceptFollower(elem){
   var follow = $(elem).parents(".follow-item").children(".follow-user").html();
@@ -135,6 +140,7 @@ function acceptFollower(elem){
 function removeFollower(elem){
   var followname = $(elem).parents(".follow-item").children(".follow-user").html();
   var req = {friendUsername: followname, userID: userInfo.id};
+  console.log(req);
   $.post("/removeFollower", req, function(data){
     var res = JSON.parse(data);
     if(res.error == "no-error"){
@@ -177,8 +183,10 @@ function getFollowList(){
     var res = JSON.parse(data);
     console.log(res);
     if(res.error == "no-error"){
-      fillFollowList(res.followers, res.pending_followers, true, $("#follower-list"));
-      fillFollowList(res.following, res.pending_following, false, $("#following-list"));
+      var following = res.following.concat(res.pending_following);
+      fillFollowerList(res.followers, res.pending_followers, following, $("#follower-list"));
+      fillFollowingList(res.following, res.pending_following, $("#following-list"));
+      notify(res.pending_followers, res.pending_following);
     }
     else{
       $("#following-list").html(res.error);
@@ -187,18 +195,33 @@ function getFollowList(){
   });
 }
 
-function fillFollowList(list, pending, follower, dom){
+function fillFollowerList(list, pending, following, dom){
   for (var i = 0; i < pending.length; i++){
-    var pending_item = followDOM(pending[i], true, follower);
+    var pendName = pending[i];
+    var followback = (following.indexOf(pendName) == -1) ? true : false;
+    var pending_item = followDOM(pendName, true, true, followback);
     dom.append(pending_item);
   }
   for(var i = 0; i < list.length; i++){
-    var follow = followDOM(list[i], false, follower);
+    var followName = list[i];
+    var followback = (following.indexOf(followName) == -1) ? true : false;
+    var follow = followDOM(followName, false, true, followback);
     dom.append(follow);
   }
 }
 
-function followDOM(follow, pending, follower){
+function fillFollowingList(list, pending, dom){
+  for (var i = 0; i < pending.length; i++){
+    var pending_item = followDOM(pending[i], true, false, false);
+    dom.append(pending_item);
+  }
+  for(var i = 0; i < list.length; i++){
+    var follow = followDOM(list[i], false, false, false);
+    dom.append(follow);
+  }
+}
+
+function followDOM(follow, pending, follower, followback){
   var div = $("<div></div>").addClass("follow-item");
   var user = $("<div></div>").addClass("follow-user");
   user.html(follow);
@@ -208,6 +231,11 @@ function followDOM(follow, pending, follower){
   remove.append(xicon);
 
   var controls = $("<div></div>").addClass("follow-controls");
+
+  if(followback){
+    var fback = $("<div></div>").addClass("followback").html("Follow");
+    controls.append(fback);
+  }
 
   if(pending){
     var pending = $("<div></div>").addClass("pending-label");
@@ -230,6 +258,28 @@ function followDOM(follow, pending, follower){
   div.append(user).append(controls);
 
   return div;
+}
+
+function notify(followers, following){
+  var button = $("#follow-button");
+  var elem = $(".follow-notify");
+
+  if (followers.length > 0){
+    elem.html(followers.length);
+    button.toggleClass("notifications", true);
+    $("#followers-tab .tab-notify").html(followers.length);
+  } else{
+    elem.empty();
+    $("#followers-tab .tab-notify").empty();
+    button.toggleClass("notifications", false);
+  }
+
+  if(following.length > 0){
+    $("#following-tab .tab-notify").html(following.length);
+  } else{
+    $("#following-tab .tab-notify").empty();
+  }
+
 }
 
 function followMsg(message, error){

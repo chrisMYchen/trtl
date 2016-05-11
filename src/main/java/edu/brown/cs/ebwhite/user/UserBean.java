@@ -71,7 +71,6 @@ public class UserBean implements User {
     this.email = mail;
     this.phone = pho;
   }
-
   @Override
   public int getId() {
     return mID;
@@ -106,21 +105,6 @@ public class UserBean implements User {
   public Set<Integer> getFollowing() {
     return following;
   }
-
-  // @Override
-  // public Set<Integer> getFriends() {
-  // return friends;
-  // }
-  //
-  // @Override
-  // public void addFriend(int f) {
-  // friends.add(f);
-  // }
-  //
-  // @Override
-  // public void removeFriend(int f) {
-  // friends.remove(f);
-  // }
 
   @Override
   public Set<Integer> getFollowers() {
