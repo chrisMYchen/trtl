@@ -30,8 +30,10 @@ public final class Db {
   /**
    * Pass in path to the database file to work with.
    *
-   * @param file path to database.
-   * @throws ClassNotFoundException Problem with Class.
+   * @param file
+   *          path to database.
+   * @throws ClassNotFoundException
+   *           Problem with Class.
    */
   public static void database(String file) throws ClassNotFoundException {
     mFile = file;
@@ -43,8 +45,8 @@ public final class Db {
    * Returns new connection to database.
    *
    * @return Connection to database.
-   * @throws SQLException SQLException with database.
-   * @throws NullPointerException Connection was null.
+   * @throws SQLException
+   *           SQLException with database.
    */
   public static synchronized Connection getConnection() throws SQLException {
     // make this work with threadlocal
@@ -66,7 +68,8 @@ public final class Db {
   /**
    * Close database connection.
    *
-   * @throws SQLException SQLException.
+   * @throws SQLException
+   *           SQLException.
    */
   public static void close() throws SQLException {
     if (conn.get() != null) {

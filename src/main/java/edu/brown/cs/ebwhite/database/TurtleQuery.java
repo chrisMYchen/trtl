@@ -11,15 +11,72 @@ import java.util.List;
 import edu.brown.cs.ebwhite.geo.LatLong;
 import edu.brown.cs.ebwhite.note.Note;
 
+/**
+ * TurtleQuery is a utility class which interacts with our database.
+ *
+ * @author hk125
+ *
+ */
 public class TurtleQuery {
+  /**
+   * The column of the id of the Note.
+   */
   private final static int NIDCOL = 1;
-  // private final static int UIDCOL = 2;
+
+  /**
+   * The column of the id of the user.
+   */
+  private final static int UIDCOL = 2;
+
+  /**
+   * The column of the time.
+   */
   private final static int TIMECOL = 3;
+
+  /**
+   * The column of the latitude.
+   */
   private final static int LATCOL = 4;
+
+  /**
+   * The column of the longitude.
+   */
   private final static int LNGCOL = 5;
+
+  /**
+   * The column of the text.
+   */
   private final static int TXTCOL = 6;
+
+  /**
+   * The column of the privacy.
+   */
+  private final static int PRIVCOL = 7;
+
+  /**
+   * The column of the key for images.
+   */
   private final static int AUTOKEYS = Statement.RETURN_GENERATED_KEYS;
 
+  /**
+   * Gets notes and handles getting notes.
+   *
+   * @param userID
+   *          the id of the user
+   * @param loc
+   *          the location of the user
+   * @param radius
+   *          the radius which to search in
+   * @param minPost
+   *          the minimum post
+   * @param maxPost
+   *          the maximum post
+   * @param timeStamp
+   *          the time
+   * @return a list of the notes according to the parameters given
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static List<Note> getNotes(int userID, LatLong loc, double radius,
       int minPost, int maxPost, long timeStamp) throws SQLException {
     double allowed_distance_latitude = radius / 110575; // this is in
@@ -42,6 +99,27 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Gets notes for an anonymous user.
+   *
+   * @param bottom_lat
+   *          the bottom latitude
+   * @param top_lat
+   *          the top latitude
+   * @param left_lng
+   *          the left longitude
+   * @param right_lng
+   *          the right longitude
+   * @param minPost
+   *          the minimum post
+   * @param maxPost
+   *          the maximum post
+   * @param timeStamp
+   *          the time
+   * @return a list of the notes which an anonymous user can see
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static List<Note> getNotesAnonymous(double bottom_lat, double top_lat,
       double left_lng, double right_lng, int minPost, int maxPost,
       long timeStamp) throws SQLException {
@@ -80,6 +158,29 @@ public class TurtleQuery {
 
   }
 
+  /**
+   * Gets notes for a logged in user.
+   *
+   * @param userID
+   *          the id of the user
+   * @param bottom_lat
+   *          the bottom latitude
+   * @param top_lat
+   *          the top latitude
+   * @param left_lng
+   *          the left longitude
+   * @param right_lng
+   *          the right longitude
+   * @param minPost
+   *          the minimum post
+   * @param maxPost
+   *          the maximum post
+   * @param timeStamp
+   *          the time
+   * @return a list of notes which a logged in user can see
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static List<Note> getNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp) throws SQLException {
@@ -105,13 +206,13 @@ public class TurtleQuery {
         try (ResultSet rs = prep.executeQuery()) {
           List<Note> allNotes = new ArrayList<>();
           while (rs.next()) {
-            int noteID = rs.getInt(1);
-            int uID = rs.getInt(2);
-            long time = rs.getLong(3);
-            double lat = rs.getDouble(4);
-            double lng = rs.getDouble(5);
-            String txt = rs.getString(6);
-            int priv = rs.getInt(7);
+            int noteID = rs.getInt(NIDCOL);
+            int uID = rs.getInt(UIDCOL);
+            long time = rs.getLong(TIMECOL);
+            double lat = rs.getDouble(LATCOL);
+            double lng = rs.getDouble(LNGCOL);
+            String txt = rs.getString(TXTCOL);
+            int priv = rs.getInt(PRIVCOL);
             String image = rs.getString("path");
             Note n = new Note.NoteBuilder(noteID, time).setUser(uID)
                 .setContent(txt).setLat(lat).setLng(lng).setPrivate(priv)
@@ -124,6 +225,25 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Updates the notes and handles note updating.
+   *
+   * @param userID
+   *          the id of the user
+   * @param loc
+   *          the location of the user
+   * @param radius
+   *          the radius which to search in
+   * @param minPost
+   *          the minimum post
+   * @param maxPost
+   *          the maximum post
+   * @param timeStamp
+   *          the time
+   * @return a list of the updated notes
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static List<Note> updateNotes(int userID, LatLong loc, double radius,
       int minPost, int maxPost, long timeStamp) throws SQLException {
     double allowed_distance_latitude = radius / 110575; // this is in
@@ -145,6 +265,27 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Updates the notes for an anonymous user.
+   *
+   * @param bottom_lat
+   *          the bottom latitude
+   * @param top_lat
+   *          the top latitude
+   * @param left_lng
+   *          the left longitude
+   * @param right_lng
+   *          the right longitude
+   * @param minPost
+   *          the minimum post
+   * @param maxPost
+   *          the maximum post
+   * @param timeStamp
+   *          the time
+   * @return a list of the updated notes for an anonymous
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static List<Note> updateNotesAnonymous(double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp) throws SQLException {
@@ -181,6 +322,29 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Updates notes for a logged in user.
+   *
+   * @param userID
+   *          the id of the user
+   * @param bottom_lat
+   *          the bottom latitude
+   * @param top_lat
+   *          the top latitude
+   * @param left_lng
+   *          the left longitude
+   * @param right_lng
+   *          the right longitude
+   * @param minPost
+   *          the minimum post
+   * @param maxPost
+   *          the maximum post
+   * @param timeStamp
+   *          the time
+   * @return a list of the updated notes for a logged in user
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static List<Note> updateNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
       int maxPost, long timeStamp) throws SQLException {
@@ -221,6 +385,16 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Checks if the login is valid.
+   *
+   * @param username
+   *          the username to be checked
+   * @param password
+   *          the password to be checked
+   * @return the user id if the login is valid, and -1 otherwise
+   * @throws SQLException
+   */
   public static int loginValid(String username, String password)
       throws SQLException {
     String query = "SELECT id from user WHERE LOWER(username) = LOWER(?) AND password = ? LIMIT 1";
@@ -239,6 +413,25 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Posts a note and handles note posting.
+   *
+   * @param userID
+   *          the user id
+   * @param time
+   *          the time
+   * @param lat
+   *          the latitude
+   * @param lng
+   *          the longitude
+   * @param text
+   *          the text
+   * @param privacy
+   *          the privacy of the note
+   * @return a list of the notes
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static int postNote(int userID, long time, double lat, double lng,
       String text, int privacy) throws SQLException {
 
@@ -259,6 +452,17 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Adds an image to a note.
+   *
+   * @param noteid
+   *          the id of the note
+   * @param path
+   *          the file path to the image
+   * @return the id of the image added
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static int addImage(int noteid, String path) throws SQLException {
     String query = "INSERT INTO image_note VALUES (NULL, ?, ?);";
     try (Connection conn = Db.getConnection()) {
@@ -278,6 +482,16 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Sets the path of the image.
+   *
+   * @param imageid
+   *          the id of the image
+   * @param path
+   *          the file path of the image
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static void setImagePath(int imageid, String path) throws SQLException {
     String query = "UPDATE image_note SET path=? WHERE id=?";
     try (Connection conn = Db.getConnection()) {
@@ -289,6 +503,25 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Adds a user to TRTL.
+   *
+   * @param username
+   *          the username to be added
+   * @param password
+   *          the password to be added
+   * @param firstname
+   *          the first name of the user to be added
+   * @param lastname
+   *          the last name of the user to be added
+   * @param email
+   *          the email of the user to be added
+   * @param phone
+   *          the phonenumber of the user to be added
+   * @return the id of the user
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static int addUser(String username, String password, String firstname,
       String lastname, String email, int phone) throws SQLException {
     String post = "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?);";
@@ -307,6 +540,15 @@ public class TurtleQuery {
     return getUserID(username);
   }
 
+  /**
+   * Gets the id of the user.
+   *
+   * @param username
+   *          the user name which the id is associated with
+   * @return the id of the user
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static int getUserID(String username) throws SQLException {
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn
@@ -323,6 +565,16 @@ public class TurtleQuery {
     }
   }
 
+  /**
+   * Removes the note.
+   *
+   * @param nodeId
+   *          the id of the note
+   * @param userId
+   *          the id of the user
+   * @throws SQLException
+   *           if there is an error with the query
+   */
   public static void removeNote(int nodeId, int userId) throws SQLException {
     try (Connection conn = Db.getConnection()) {
       try (PreparedStatement prep = conn
