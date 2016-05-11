@@ -136,10 +136,10 @@ public class SparkServer {
             timestamp, filter, profileID);
 
         NoteRanker noteRank = new NoteRanker();
-        if (uID != -1) {
-          noteRank.setCurrentUser(uID);
-        }
-        noteRank.setCurrentLocation(curr_loc);
+        // if (uID != -1) {
+        // noteRank.setCurrentUser(uID);
+        // }
+        // noteRank.setCurrentLocation(curr_loc);
         Collections.sort(notes, noteRank);
         notes = notes.subList(Math.min((notes.size()), minPost),
             Math.min(notes.size(), maxPost));
@@ -200,10 +200,10 @@ public class SparkServer {
         notes = TurtleQuery.updateNotes(uID, curr_loc, radius, minPost,
             maxPost, start_time, end_time, filter, profileID);
         NoteRanker noteRank = new NoteRanker();
-        if (uID != -1) {
-          noteRank.setCurrentUser(uID);
-        }
-        noteRank.setCurrentLocation(curr_loc);
+        // if (uID != -1) {
+        // noteRank.setCurrentUser(uID);
+        // }
+        // noteRank.setCurrentLocation(curr_loc);
         Collections.sort(notes, noteRank);
 
 

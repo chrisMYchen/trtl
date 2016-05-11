@@ -9,12 +9,16 @@ import java.util.Set;
 
 import edu.brown.cs.ebwhite.database.Db;
 
+/**
+ * User proxy that fills user information for the database.
+ * @author TRTL Team
+ *
+ */
 public class UserProxy extends EntityProxy<User> implements User {
   /**
-   * Constructor for ActorProxy.
+   * Constructor for UserProxy.
    *
-   * @param id
-   *          unique id representing actor
+   * @param id unique id representing user in the database
    */
   public UserProxy(int id) {
     super(id);
@@ -49,18 +53,6 @@ public class UserProxy extends EntityProxy<User> implements User {
         }
       }
     }
-
-    // query = "SELECT user_id FROM user_follower WHERE follower_id=?;";
-    //
-    // try (PreparedStatement prep = conn.prepareStatement(query)) {
-    // prep.setInt(1, getId());
-    // try (ResultSet rs = prep.executeQuery()) {
-    // while (rs.next()) {
-    // int followingID = rs.getInt(1);
-    // following.add(followingID);
-    // }
-    // }
-    // }
 
     query = "SELECT * FROM user_pending WHERE userid=? OR pending_id=?;";
 
@@ -98,6 +90,12 @@ public class UserProxy extends EntityProxy<User> implements User {
         pendingFollowing, username, firstname, lastname, email, phone));
   }
 
+  /**
+   * Gets a user id from a username by querying the database.
+   * @param username String username of a user in the database
+   * @return id for the user with the username
+   * @throws SQLException if there is an error accessing the database
+   */
   public static User ofName(String username) throws SQLException {
     String query = "SELECT id FROM user WHERE username=?;";
     try (Connection conn = Db.getConnection()) {

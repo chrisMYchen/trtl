@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Package for objects that relate to geographical information.
  * @author kzliu
  *
  */
