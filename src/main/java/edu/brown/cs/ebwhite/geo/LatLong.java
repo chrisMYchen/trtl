@@ -55,4 +55,9 @@ public class LatLong {
     return true;
   }
 
+  public static double distanceLatLong(LatLong l1, LatLong l2) {
+    return Math.sqrt(Math.pow((l1.getLat() - l2.getLat()), 2)
+        + Math.pow((l1.getLng() - l2.getLng()), 2));
+  }
+
 }

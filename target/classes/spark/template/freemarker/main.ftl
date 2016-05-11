@@ -5,9 +5,14 @@
   <meta name="theme-color" content="#A2D85A">
   <title>${title}</title>
   <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:400,600,300' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,500,200,600' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Oxygen:400,300,700' rel='stylesheet' type='text/css'>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="/js/linkify.min.js"></script>
+  <script src="/js/linkify-jquery.min.js"></script>
   <script src="/js/main.js"></script>
   <script src="/js/location.js"></script>
   <script src="/js/display.js"></script>
@@ -16,6 +21,20 @@
   <script src="/js/follow.js"></script>
   <script src="/js/update.js"></script>
   <script src="/js/image.js"></script>
+  <script src="/js/map.js"></script>
+  <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ9fjmVvsQ-e2Z52Cu7z8PxmVqpMvD8XA&callback=initMap">
+    </script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77422521-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/font.css">
@@ -53,7 +72,7 @@
       <div id="follow-close" class="close"><p><i class="material-icons">close</i></p></div>
       <div id="follow-msg" class="msg" style="display:none;"></div>
       <div id="follow-tabs" class="tabs">
-        <div id="following-tab" class="follow-tab">Following</div>
+        <div id="following-tab" class="follow-tab active">Following</div>
         <div id="followers-tab" class="follow-tab">Followers</div>
       </div>
       <div id="following" class="follow-page">
@@ -63,7 +82,7 @@
         </form>
         <div id="following-list" class="follow-list"></div>
       </div>
-      <div id="followers" class="follow-page">
+      <div id="followers" class="follow-page" style="display:none">
         <div id="follower-list" class="follow-list"></div>
       </div>
     </div>
@@ -79,6 +98,7 @@
       <div id="login-button" class="menu-item account loggedout">Login</div>
       <div id="follow-button" class="menu-item loggedin hidden">
         <i class="material-icons">people</i>
+        <div class="follow-notify"></div>
       </div>
       <div id="logout-button" class="menu-item account loggedin hidden">Logout</div>
     </div>
@@ -86,5 +106,6 @@
   <div id="wrapper">
     ${content}
   </div>
+  <script src="/js/salvattore.min.js"></script>
 </body>
 </html>
