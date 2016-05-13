@@ -22,7 +22,6 @@ public class Main {
     parser.accepts("database").withRequiredArg().ofType(String.class);
     OptionSpec<String> secure = parser.accepts("keystore").withRequiredArg().ofType(String.class);
     parser.accepts("keypass").requiredIf(secure).withRequiredArg().ofType(String.class);
-    OptionSpec<String> stringSpec = parser.nonOptions().ofType(String.class);
     OptionSet options = parser.parse(args);
 
     if (options.has("port")) {

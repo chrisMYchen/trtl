@@ -71,7 +71,7 @@ public class Friend {
 
     String post = "DELETE FROM user_pending WHERE (userid = ? AND pending_id = ?);";
     int pendingFollowerID = TurtleQuery.getUserID(pendingFollowerString);
-    assert (pendingFollowerID != -1);
+    assert pendingFollowerID != -1;
 
     User u = new UserProxy(userID);
     User f = new UserProxy(pendingFollowerID);

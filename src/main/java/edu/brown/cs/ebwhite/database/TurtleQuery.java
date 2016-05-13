@@ -21,12 +21,12 @@ public class TurtleQuery {
   /**
    * The column of the id of the Note.
    */
-  private final static int NIDCOL = 1;
+  private static final int NIDCOL = 1;
 
-  /**
-   * The column of the id of the user.
-   */
-  private final static int UIDCOL = 2;
+  // /**
+  // * The column of the id of the user.
+  // */
+  // private final static int UIDCOL = 2;
 
   /**
    * The column of the time.
@@ -48,10 +48,10 @@ public class TurtleQuery {
    */
   private final static int TXTCOL = 6;
 
-  /**
-   * The column of the privacy.
-   */
-  private final static int PRIVCOL = 7;
+  // /**
+  // * The column of the privacy.
+  // */
+  // private final static int PRIVCOL = 7;
 
   /**
    * the column of the vote
@@ -536,8 +536,11 @@ public class TurtleQuery {
         prep.setInt(6, privacy);
         prep.executeUpdate();
         ResultSet rs = prep.getGeneratedKeys();
-        rs.next();
-        return rs.getInt(1);
+        if (rs.next()) {
+          return rs.getInt(1);
+        } else {
+          throw new SQLException();
+        }
       }
     }
   }
@@ -560,11 +563,14 @@ public class TurtleQuery {
 
         /* Get autoincrement key */
         ResultSet rs = prep.getGeneratedKeys();
-        rs.next();
-        int imageID = rs.getInt(1);
-        String imagepath = path + imageID + ".jpg";
-        setImagePath(imageID, imagepath);
-        return imageID;
+        if (rs.next()) {
+          int imageID = rs.getInt(1);
+          String imagepath = path + imageID + ".jpg";
+          setImagePath(imageID, imagepath);
+          return imageID;
+        } else {
+          throw new SQLException();
+        }
       }
     }
   }
@@ -732,7 +738,6 @@ public class TurtleQuery {
 
   /**
    * Turns degrees into radians.
-   *
    * @param deg
    *          the degree
    * @return the radians

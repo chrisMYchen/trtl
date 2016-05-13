@@ -52,11 +52,11 @@ import edu.brown.cs.ebwhite.user.UserSerializer;
  */
 public class SparkServer {
   /** GSON object to convert objects to JSON.*/
-  Gson GSON;
+  private Gson GSON;
   /** Path for image when adding. */
-  String imagepath;
+  private String imagepath;
   /**If using external (aws db) or internal our own specified db. */
-  boolean external;
+  private boolean external;
   /**
    * Overloaded Spark Server object representing the port, keystore and keypass.
    * @param port Port to run server on.
@@ -111,7 +111,7 @@ public class SparkServer {
    * @author cchen5
    *
    */
-  private class HomeHandler implements TemplateViewRoute {
+  private static class HomeHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
       Map<String, Object> variables = ImmutableMap.of("title", "trtl");
@@ -163,7 +163,7 @@ public class SparkServer {
         // }
         // noteRank.setCurrentLocation(curr_loc);
         Collections.sort(notes, noteRank);
-        notes = notes.subList(Math.min((notes.size()), minPost),
+        notes = notes.subList(Math.min(notes.size(), minPost),
             Math.min(notes.size(), maxPost));
 
       } catch (NullPointerException np) {
@@ -357,7 +357,7 @@ public class SparkServer {
           }
         } else {
           BufferedImage image = ImageIO.read(is);
-          File outputfile = new File(imagepath + newImageID + ".jpg");
+          File outputfile = new File(path);
           ImageIO.write(image, "jpg", outputfile);
         }
 

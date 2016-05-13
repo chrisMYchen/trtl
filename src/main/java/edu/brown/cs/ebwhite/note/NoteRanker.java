@@ -1,5 +1,6 @@
 package edu.brown.cs.ebwhite.note;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -7,7 +8,8 @@ import java.util.Comparator;
  * @author TRTL team
  *
  */
-public class NoteRanker implements Comparator<Note> {
+@SuppressWarnings("serial")
+public class NoteRanker implements Comparator<Note>, Serializable {
 
   /**
    * We might want this for ranking in the future, but is currently unused.

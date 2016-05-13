@@ -56,7 +56,7 @@ public abstract class EntityProxy<E extends Entity> implements Entity {
         cache.put(id, internal);
       } catch (SQLException e) {
         System.out.println("ERROR: Could not connect to database.");
-        System.exit(1);
+        // System.exit(1);
       }
     }
 
