@@ -66,21 +66,17 @@ public class TurtleQuery {
   /**
    * Gets notes and handles getting notes.
    *
-   * @param userID
-   *          the id of the user
-   * @param loc
-   *          the location of the user
-   * @param radius
-   *          the radius which to search in
-   * @param minPost
-   *          the minimum post
-   * @param maxPost
-   *          the maximum post
-   * @param timeStamp
-   *          the time
+   * @param userID the id of the user
+   * @param loc the location of the user
+   * @param radius the radius which to search in
+   * @param minPost the minimum post
+   * @param maxPost the maximum post
+   * @param timeStamp the time
+   * @param filter integer specifying which filter to use (0 for all notes,
+   * 1 for friends, 2 for own notes, 3 for a single friend's notes)
+   * @param profileID id of user whose notes we want to see
    * @return a list of the notes according to the parameters given
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
   public static List<Note> getNotes(int userID, LatLong loc, double radius,
       int minPost, int maxPost, long timeStamp, int filter, int profileID)
@@ -168,25 +164,19 @@ public class TurtleQuery {
   /**
    * Gets notes for a logged in user.
    *
-   * @param userID
-   *          the id of the user
-   * @param bottom_lat
-   *          the bottom latitude
-   * @param top_lat
-   *          the top latitude
-   * @param left_lng
-   *          the left longitude
-   * @param right_lng
-   *          the right longitude
-   * @param minPost
-   *          the minimum post
-   * @param maxPost
-   *          the maximum post
-   * @param timeStamp
-   *          the time
+   * @param userID the id of the user
+   * @param bottom_lat the bottom latitude
+   * @param top_lat the top latitude
+   * @param left_lng the left longitude
+   * @param right_lng the right longitude
+   * @param minPost the minimum post
+   * @param maxPost the maximum post
+   * @param timeStamp the time
+   * @param filter integer specifying which filter to use (0 for all notes,
+   * 1 for friends, 2 for own notes, 3 for a single friend's notes)
+   * @param profileID id of user whose notes we want to see
    * @return a list of notes which a logged in user can see
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
   public static List<Note> getNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
@@ -289,21 +279,18 @@ public class TurtleQuery {
   /**
    * Updates the notes and handles note updating.
    *
-   * @param userID
-   *          the id of the user
-   * @param loc
-   *          the location of the user
-   * @param radius
-   *          the radius which to search in
-   * @param minPost
-   *          the minimum post
-   * @param maxPost
-   *          the maximum post
-   * @param timeStamp
-   *          the time
+   * @param userID the id of the user
+   * @param loc the location of the user
+   * @param radius the radius which to search in
+   * @param minPost the minimum post
+   * @param maxPost the maximum post
+   * @param start_time the start time to get new notes
+   * @param end_time the end time to get new notes
+   * @param filter integer specifying which filter to use (0 for all notes,
+   * 1 for friends, 2 for own notes, 3 for a single friend's notes)
+   * @param profileID id of user whose notes we want to see
    * @return a list of the updated notes
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
   public static List<Note> updateNotes(int userID, LatLong loc, double radius,
       int minPost, int maxPost, long start_time, long end_time, int filter,
@@ -330,23 +317,17 @@ public class TurtleQuery {
   /**
    * Updates the notes for an anonymous user.
    *
-   * @param bottom_lat
-   *          the bottom latitude
-   * @param top_lat
-   *          the top latitude
-   * @param left_lng
-   *          the left longitude
-   * @param right_lng
-   *          the right longitude
-   * @param minPost
-   *          the minimum post
-   * @param maxPost
-   *          the maximum post
-   * @param timeStamp
-   *          the time
+   * @param bottom_lat the bottom latitude
+   * @param top_lat the top latitude
+   * @param left_lng the left longitude
+   * @param right_lng the right longitude
+   * @param minPost the minimum post
+   * @param maxPost the maximum post
+   * @param start_time the start time to get new notes
+   * @param end_time the end time to get new notes
+   * 
    * @return a list of the updated notes for an anonymous
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
   public static List<Note> updateNotesAnonymous(double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
@@ -391,25 +372,20 @@ public class TurtleQuery {
   /**
    * Updates notes for a logged in user.
    *
-   * @param userID
-   *          the id of the user
-   * @param bottom_lat
-   *          the bottom latitude
-   * @param top_lat
-   *          the top latitude
-   * @param left_lng
-   *          the left longitude
-   * @param right_lng
-   *          the right longitude
-   * @param minPost
-   *          the minimum post
-   * @param maxPost
-   *          the maximum post
-   * @param timeStamp
-   *          the time
+   * @param userID the id of the user
+   * @param bottom_lat the bottom latitude
+   * @param top_lat the top latitude
+   * @param left_lng the left longitude
+   * @param right_lng the right longitude
+   * @param minPost the minimum post
+   * @param maxPost the maximum post
+   * @param start_time the start time to get new notes
+   * @param end_time the end time to get new notes
+   * @param filter integer specifying which filter to use (0 for all notes,
+   * 1 for friends, 2 for own notes, 3 for a single friend's notes)
+   * @param profileID id of user whose notes we want to see
    * @return a list of the updated notes for a logged in user
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
   public static List<Note> updateNotesLoggedIn(int userID, double bottom_lat,
       double top_lat, double left_lng, double right_lng, int minPost,
@@ -511,12 +487,10 @@ public class TurtleQuery {
   /**
    * Checks if the login is valid.
    *
-   * @param username
-   *          the username to be checked
-   * @param password
-   *          the password to be checked
+   * @param username the username to be checked
+   * @param password the password to be checked
    * @return the user id if the login is valid, and -1 otherwise
-   * @throws SQLException
+   * @throws SQLException if there is an error connecting to the database
    */
   public static int loginValid(String username, String password)
       throws SQLException {
@@ -539,21 +513,14 @@ public class TurtleQuery {
   /**
    * Posts a note and handles note posting.
    *
-   * @param userID
-   *          the user id
-   * @param time
-   *          the time
-   * @param lat
-   *          the latitude
-   * @param lng
-   *          the longitude
-   * @param text
-   *          the text
-   * @param privacy
-   *          the privacy of the note
+   * @param userID the user id
+   * @param time the time
+   * @param lat the latitude
+   * @param lng the longitude
+   * @param text the text
+   * @param privacy the privacy of the note
    * @return a list of the notes
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
   public static int postNote(int userID, long time, double lat, double lng,
       String text, int privacy) throws SQLException {
@@ -578,13 +545,10 @@ public class TurtleQuery {
   /**
    * Adds an image to a note.
    *
-   * @param noteid
-   *          the id of the note
-   * @param path
-   *          the file path to the image
+   * @param noteid the id of the note
+   * @param path the file path to the image
    * @return the id of the image added
-   * @throws SQLException
-   *           if there is an error with the query
+   * @throws SQLException if there is an error with the query
    */
   public static int addImage(int noteid, String path) throws SQLException {
     String query = "INSERT INTO image_note VALUES (NULL, ?, ?);";
@@ -691,12 +655,9 @@ public class TurtleQuery {
   /**
    * Removes the note.
    *
-   * @param nodeId
-   *          the id of the note
-   * @param userId
-   *          the id of the user
-   * @throws SQLException
-   *           if there is an error with the query
+   * @param noteId the id of the note
+   * @param userId the id of the user
+   * @throws SQLException if there is an error with the query
    */
   public static void removeNote(int noteId, int userId) throws SQLException {
     try (Connection conn = Db.getConnection()) {

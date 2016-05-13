@@ -59,8 +59,8 @@ public class NoteRanker implements Comparator<Note> {
       // System.out.println(LatLong.distanceLatLong(myLocation,
       // o1.getLatLong()));
     // }
-    double score1 = (o1.getVote()) / 2;
-    double score2 = (o2.getVote()) / 2;
+    double score1 = (o1.getVote()) / 2.d;
+    double score2 = (o2.getVote()) / 2.d;
     // one vote = 2 hours
     double value1 = timeSinceNote1 / 25000000 - score1;
     double value2 = timeSinceNote2 / 25000000 - score2;

@@ -103,7 +103,6 @@ public class Friend {
    *
    * @param userID the ID of the user
    * @param followingID the ID of the friend to unfollow
-   * @return true if successful
    * @throws SQLException if there is an error with the query
    */
   public static void unfollow(int userID, int followingID)

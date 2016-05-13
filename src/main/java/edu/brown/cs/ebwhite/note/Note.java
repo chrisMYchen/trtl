@@ -231,7 +231,8 @@ public class Note {
 
     /**
      * Setter for the note's text content.
-     * @param text new text content for the note
+     * @param content new text content for the note
+     * @return Note builder
      */
     public NoteBuilder setContent(String content) {
       this.text = content;
@@ -252,7 +253,7 @@ public class Note {
     /**
      * Setter for a latitude value.
      * @param myLat the latitude value for the note
-     * @return Noter builder
+     * @return Note builder
      */
     public NoteBuilder setLat(double myLat) {
       this.lat = myLat;
